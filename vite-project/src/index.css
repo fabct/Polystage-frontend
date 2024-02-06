@@ -1,0 +1,19 @@
+@font-face {
+    font-family: "CalibriRegular";
+    src: local("calibri-regular"),url("./fonts/calibri-regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "CalibriItalique";
+    src: local("calibri-italic"),url("./fonts/calibri-italic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "CalibriBold";
+    src: local("calibri-bold"),url("./fonts/calibri-bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "CalibriBoldItalic";
+    src: local("calibri-bold-italic"),url("./fonts/calibri-bold-italic.ttf") format("truetype");
+}
