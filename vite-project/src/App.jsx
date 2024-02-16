@@ -2,22 +2,30 @@ import {useState,useEffect} from 'react';
 import LoginPage from './pages/Login';
 import AdminPage from './pages/Admin';
 import StudentPage from './pages/Student';
+import Jury from './pages/Jury';
 
 function App() {
 
-  const [estLog, setEstLog] = useState(true); 
+  const [estLogAdm, setEstLogAdm] = useState(false); 
+  const [estLogSt, setEstLogSt] = useState(false); 
+  const [estLog, setEstLog] = useState(false); 
   // multiple userType a (admin), s (student), j (jury), t (tutor)
-  const [userType, setUserType] = useState('a');
+  const [userType, setUserType] = useState('');
   const [loginError, setLoginError] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
     // Cette fonction sera appelée à chaque changement dans estLog
-    if (estLog) {
-      setUserType('e');  // Vous pouvez ajouter la logique pour les autres types ici
+    if (estLogAdm) {
+      setUserType('a'); 
+      setEstLog(true); // Vous pouvez ajouter la logique pour les autres types ici
     }
-  }, [estLog]);
+    if (estLogSt){
+      setUserType('e');
+      setEstLog(true);
+    }
+  }, [estLogAdm,estLogSt]);
 
   const handleLogin = () => {
     // Mettez en œuvre la logique de connexion ici
@@ -26,7 +34,11 @@ function App() {
     // Vous pouvez envoyer les données à votre backend pour la validation
     if(password === 'admin' && username === 'admin'){
       setLoginError(false)
-      setEstLog(true)
+      setEstLogAdm(true)
+    }
+    else if(password === 'Dupond' && username === 'Dupond'){
+      setLoginError(false)
+      setEstLogSt(true)
     }
     else{
       setLoginError(true)
@@ -41,12 +53,27 @@ function App() {
     setPassword(e.target.value);
   };
 
+  const handleLogOutClick = () => {
+    setEstLog(false)
+    setEstLogAdm(false)
+    setEstLogSt(false)
+    setPassword('');
+    setUsername('');
+  };
+
   if(estLog){
     if(userType === 'a'){
-      return <AdminPage /> ;
+      return <AdminPage 
+            handleLogOutClick ={handleLogOutClick}
+              /> ;
     }
     if(userType === 'e'){
-      return <StudentPage />
+      return <StudentPage 
+              handleLogOutClick ={handleLogOutClick}
+              />;
+    }
+    if(userType === 'j'){
+      return <Jury />
     }
   }
   else{

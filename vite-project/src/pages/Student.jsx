@@ -1,12 +1,14 @@
 import '../index.css'
 import HeaderContent from '../contents/Admin/HeaderContent';
 import check from '../assets/Check.svg'
+import fileIcon from "../assets/fileIcon.svg";
 
-const StudentPage = () => {
+const StudentPage = (props) => {
     return(
         <div style={{gridTemplateArea:`'header header header' 'body body body'`, background: '#E6E6E6',height:'100%'}}>
             <HeaderContent 
                 gridArea={'header'}
+                handleLogOutClick ={props.handleLogOutClick}
             />
             <div style={{gridArea:'body', gridTemplateRows:'auto auto',height:'100%'}}>
                 <div style={{ position: 'relative' }}>
@@ -16,7 +18,7 @@ const StudentPage = () => {
                     </div>
       
                     {/* Div 2 */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'auto', gridTemplateRows: 'auto auto auto', gap: '10px', padding: '20px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'auto', gridTemplateRows: 'auto auto auto', gap: '10px', padding: '20px 20px 0px 20px' }}>
                         <div style={{ margin:'0 10px',gridColumn:'1/2', gridRow:'1/2', borderRadius:'20px',background:'white',padding: '10px' }}>
                             <h1 style={{textAlign:'center',color: 'black', fontFamily:'CalibriRegular', fontSize:'35px', fontWeight: '400'}}>Internship</h1>
                             <p style={{margin:'10px 30px',color: 'black', fontFamily:'CalibriRegular', fontSize:'20px', fontWeight: '400'}}> Company : Lorem Ipsum </p>
@@ -46,11 +48,23 @@ const StudentPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div style={{margin:'5px 10px' ,gridColumn:'1/2', gridRow:'3', borderRadius:'20px',background:'white', padding: '10px' }}>
-                            Rapport
+                    </div>
+                    <div style={{display:'grid', gridTemplateColumns:'auto auto',padding: '0px 20px 20px 20px'}}>
+                        <div style={{margin:'5px 10px', gridColumn:'1/2', borderRadius:'20px',background:'white', padding: '10px'}}>
+                            <h1 style={{textAlign:'center' ,margin:'25px 47px', color: 'black', fontFamily: 'CalibriRegular', fontSize: '35px', fontWeight: '400'}}>Rapport de Stage</h1>
+                            <div style={{margin:'10px' ,border:'4px dashed #356084',borderRadius:'10px',display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                                <img src={fileIcon} style={{marginTop:'20px',height:'50px',width:'50px'}}/>
+                                <h1 style={{ color: '#000', fontFamily: 'CalibriRegular', fontSize: '20px', fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal', marginTop: '20px' }}>Drag and drop or <span style={{color: '#00AEEF'}}>Choose</span> a file to upload</h1>
+                                <h1 style={{fontSize:'16px', fontFamily:'CalibriRegular',color:'#6b6b6b', fontWeight:'400',fontStyle:'normal'}}>Supported format : pdf</h1>
+                            </div>
                         </div>
-                        <div style={{margin:'0 10px' ,gridColumn:'3/4', gridRow:'3', borderRadius:'20px',background:'white', padding: '10px' }}>
-                            Présentation
+                        <div style={{margin:'5px 10px', gridColumn:'2/3',alignItems:'end' ,borderRadius:'20px',background:'white', padding: '10px'}}>
+                            <h1 style={{textAlign:'center' ,margin:'25px 47px', color: 'black', fontFamily: 'CalibriRegular', fontSize: '35px', fontWeight: '400'}}>Presentation</h1>
+                            <div style={{margin:'10px' ,border:'4px dashed #356084',borderRadius:'10px',display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                                <img src={fileIcon} style={{marginTop:'20px',height:'50px',width:'50px'}}/>
+                                <h1 style={{ color: '#000', fontFamily: 'CalibriRegular', fontSize: '20px', fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal', marginTop: '20px' }}>Drag and drop or <span style={{color: '#00AEEF'}}>Choose</span> a file to upload</h1>
+                                <h1 style={{fontSize:'16px', fontFamily:'CalibriRegular',color:'#6b6b6b', fontWeight:'400',fontStyle:'normal'}}>Supported format : pdf</h1>
+                            </div>
                         </div>
                     </div>
                 </div>

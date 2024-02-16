@@ -5,7 +5,7 @@ import SearchContent from "../contents/Admin/SerchContent";
 import AllContent from "../contents/Admin/GetAllContent";
 import Impxport from "../contents/Admin/ImportExportContent";
 
-const AdminPage = () => {
+const AdminPage = (props) => {
 
     const [selectedButton, setSelectedButton] = useState(null);
 
@@ -50,6 +50,7 @@ const AdminPage = () => {
         <div style={{gridTemplateArea:`'header header header' 'body body body'`, background: '#E6E6E6',height:'100%'}}>
             <HeaderContent 
                 gridArea={'header'}
+                handleLogOutClick ={props.handleLogOutClick}
             />
             <div style={{gridArea:'body', gridTemplateRows:'auto auto',height:'100%'}}>
                 <div style={{ position: 'relative' }}>
