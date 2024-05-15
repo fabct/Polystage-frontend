@@ -20,12 +20,10 @@ const LoginPage = () => {
    dans cette partie on va s'occuper de la requete pour connecter l'utilisateur
 
   */
-  const  handleLogin = () => {
-    // verif si les champs sont vides
+   const  handleLogin = () => {
     console.log('Username:', username);
     console.log('Password:', password);
-    // Vous pouvez envoyer les données à votre backend pour la validation
-    const response = post('login/', {
+    post('login/', {
         email: username,
         password: password,
       }).then((response) => {
