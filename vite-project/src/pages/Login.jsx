@@ -26,13 +26,15 @@ const LoginPage = () => {
     post('login/', {
         email: username,
         password: password,
-      }).then((response) => {
-      Cookies.set('userCookie', {
-        token: response.data.token,
-        user_id: response.data.id,
-        profile: response.data.profile,
-      });
-    }).catch((error) =>{
+      }).then(response => response.json())
+      .then(data => {
+        console.log(data);
+        Cookies.set('userCookie', {
+          token: data.token,
+          user_id: data.user_idid,
+          profile: data.profile,
+          });
+      }).catch((error) =>{
       console.error('Erreur de connexion:', error);
       setLoginError(true);
     });
