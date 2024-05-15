@@ -26,8 +26,7 @@ const LoginPage = () => {
     post('login/', {
         email: username,
         password: password,
-      }).then(response => response.json())
-      .then(data => {
+      }).then(data => {
         console.log(data);
         Cookies.set('userCookie', {
           token: data.token,
