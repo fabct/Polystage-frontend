@@ -1,4 +1,3 @@
-import {useState,useEffect} from 'react';
 import LoginPage from './pages/Login';
 import AdminPage from './pages/Admin';
 import StudentPage from './pages/Student';
@@ -23,11 +22,11 @@ function App() {
     }
   };
 
-  handleLogOutClick = () => {
+  const handleLogOutClick = () => {
     Cookies.remove('userCookie');
     return <Navigate to="/login" />;
   };
-  
+
   return (
     <Router>
       <Routes>
