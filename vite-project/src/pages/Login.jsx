@@ -2,7 +2,7 @@ import React from 'react';
 import LoginContent from '../contents/Login/LoginContent';
 import logo from '../assets/logo.svg';
 import '../index.css'
-import axios from 'axios';
+import apiService from '../services/apiService';
 import {useState} from 'react';
 import Cookies from 'js-cookie';
 
