@@ -2,7 +2,7 @@ import React from 'react';
 import LoginContent from '../contents/Login/LoginContent';
 import logo from '../assets/logo.svg';
 import '../index.css'
-import apiService from '../services/apiService';
+import {post} from '../service/service';
 import {useState} from 'react';
 import Cookies from 'js-cookie';
 
@@ -20,26 +20,25 @@ const LoginPage = () => {
    dans cette partie on va s'occuper de la requete pour connecter l'utilisateur
 
   */
-  const  handleLogin = async() => {
+  const  handleLogin = () => {
     // verif si les champs sont vides
     console.log('Username:', username);
     console.log('Password:', password);
     // Vous pouvez envoyer les données à votre backend pour la validation
-    try {
-      const response = await apiService.post('login/', {
+    const response = post('login/', {
         email: username,
         password: password,
-      });
+      }).then((response) => {
       Cookies.set('userCookie', {
         token: response.data.token,
         user_id: response.data.id,
         profile: response.data.profile,
       });
-    } catch (error) {
+    }).catch((error) =>{
       console.error('Erreur de connexion:', error);
       setLoginError(true);
-    }
-  };
+    });
+  }
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
