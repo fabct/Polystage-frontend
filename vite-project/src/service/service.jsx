@@ -58,8 +58,4 @@ const delet = async (endpoint) => {
   return response.json();
 };
 
-export default {
-  post,
-  get,
-  delet,
-};
+export { post };
