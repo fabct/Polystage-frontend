@@ -4,15 +4,18 @@ const BASE_URL = 'http://localhost:8000/'; // Remplacez par l'URL de votre API
 
 const apiService = {
   get: (endpoint) => {
-    return axios.get(`${BASE_URL}${endpoint}`);
+    url = `${BASE_URL}${endpoint}`;
+    return axios.get(url);
   },
 
   post: (endpoint, data) => {
-    return axios.post(`${BASE_URL}${endpoint}`, data);
+    url = `${BASE_URL}${endpoint}`;
+    return axios.post(url, data);
   },
 
   delete: (endpoint) => {
-    return axios.delete(`${BASE_URL}${endpoint}`);
+    url = `${BASE_URL}${endpoint}`;
+    return axios.delete(url);
   }
 };
 

@@ -20,25 +20,25 @@ const LoginPage = () => {
    dans cette partie on va s'occuper de la requete pour connecter l'utilisateur
 
   */
-  const handleLogin = () => {
+  const  handleLogin = async() => {
     // verif si les champs sont vides
     console.log('Username:', username);
     console.log('Password:', password);
     // Vous pouvez envoyer les données à votre backend pour la validation
-    axios.post('login/', {
-      email: username,
-      password: password
-    }).then((response) => {
-      Cookies.set('userCookie', {
-        token : response.data.token,
-        user_id : response.data.id,
-        profile : response.data.profile
+    try {
+      const response = await apiService.post('login/', {
+        email: username,
+        password: password,
       });
-    }
-    ).catch((error) => {
+      Cookies.set('userCookie', {
+        token: response.data.token,
+        user_id: response.data.id,
+        profile: response.data.profile,
+      });
+    } catch (error) {
       console.error('Erreur de connexion:', error);
       setLoginError(true);
-    });
+    }
   };
 
   const handleUsernameChange = (e) => {
