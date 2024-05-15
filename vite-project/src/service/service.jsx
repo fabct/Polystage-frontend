@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://localhost:8000/'; // Remplacez par l'URL de votre API
+const BASE_URL = 'http://localhost:8000/'; // Remplacez par l'URL de votre API
 
 const apiService = {
   get: (endpoint) => {

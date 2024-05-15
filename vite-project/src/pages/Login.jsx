@@ -25,13 +25,13 @@ const LoginPage = () => {
     console.log('Username:', username);
     console.log('Password:', password);
     // Vous pouvez envoyer les données à votre backend pour la validation
-    axios.post('/login', {
-      username: username,
+    axios.post('login/', {
+      email: username,
       password: password
     }).then((response) => {
       Cookies.set('userCookie', {
         token : response.data.token,
-        id : response.data.id,
+        user_id : response.data.id,
         profile : response.data.profile
       });
     }
