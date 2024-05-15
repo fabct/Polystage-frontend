@@ -1,15 +1,58 @@
 import React from 'react';
-import {useState} from 'react';
+import LoginContent from '../contents/Login/LoginContent';
 import logo from '../assets/logo.svg';
 import '../index.css'
+import axios from 'axios';
+import {useState} from 'react';
+import Cookies from 'js-cookie';
 
-import LoginContent from '../contents/Login/LoginContent';
 //import Content from '../Componement/LoginContent.jsx';
 
-const LoginPage = (props) => {
+const LoginPage = () => {
 
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false); 
 
+  let data = {};
+  /*
+   dans cette partie on va s'occuper de la requete pour connecter l'utilisateur
+
+  */
+  const handleLogin = () => {
+    // verif si les champs sont vides
+    console.log('Username:', username);
+    console.log('Password:', password);
+    // Vous pouvez envoyer les données à votre backend pour la validation
+    axios.post('/login', {
+      username: username,
+      password: password
+    }).then((response) => {
+      Cookies.set('userCookie', {
+        token : response.data.token,
+        id : response.data.id,
+        profile : response.data.profile
+      });
+    }
+    ).catch((error) => {
+      console.error('Erreur de connexion:', error);
+      setLoginError(true);
+    });
+  };
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+    /*
+   dans cette partie on va s'occuper de la requete pour changer le mot de passe
+   */
+  
   const handleForgotPassword = (e) => {
     // Mettez en œuvre la logique pour gérer le mot de passe oublié ici
     console.log('Forgot Password clicked');
@@ -25,14 +68,14 @@ const LoginPage = (props) => {
         Internship Manager
       </div>
       <LoginContent 
-        loginError={props.loginError}
+        loginError={loginError}
         forgotPassword={forgotPassword}
         content='content'
-        usernameValue={props.username}
-        usernameOnChange={props.handleUsernameChange}
-        passwordValue={props.password}
-        passwordOnChange={props.handlePasswordChange}
-        loginHandle={props.handleLogin}
+        usernameValue={username}
+        usernameOnChange={handleUsernameChange}
+        passwordValue={password}
+        passwordOnChange={handlePasswordChange}
+        loginHandle={handleLogin}
         handleForgotPassword={handleForgotPassword}
       />
     </div>
