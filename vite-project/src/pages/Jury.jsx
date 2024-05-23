@@ -1,4 +1,4 @@
-import HeaderContent from "../contents/Admin/HeaderContent";
+import HeaderContent from "../contents/Header/HeaderContent";
 
 const Jury = () => {
     return(

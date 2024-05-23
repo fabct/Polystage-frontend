@@ -1,4 +1,4 @@
-import ButtonNavBar from "./ButtonNavBar";
+import ButtonNavBar from "./Element/ButtonNavBar";
 
 
 const NavBarAdmin = (props) => {

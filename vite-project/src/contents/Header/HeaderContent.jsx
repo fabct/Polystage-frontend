@@ -12,6 +12,7 @@ const HeaderContent = (props) => {
                 </div>
                 <ProfileInfoButton 
                     handleLogOutClick ={props.handleLogOutClick}
+                    data={props.data}
                 />
         </div>
     );

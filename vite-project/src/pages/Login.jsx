@@ -5,8 +5,8 @@ import '../index.css'
 import {post} from '../service/service';
 import {useState} from 'react';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
-//import Content from '../Componement/LoginContent.jsx';
 
 const LoginPage = () => {
 
@@ -14,13 +14,33 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false); 
+  const navigate = useNavigate();
 
   let data = {};
   /*
    dans cette partie on va s'occuper de la requete pour connecter l'utilisateur
 
   */
-   const  handleLogin = () => {
+   const move = (profile) => {
+    switch (profile) {
+      case 'ADM':
+        navigate('/admin');
+        break;
+      case 'STU':
+        navigate('/student');
+        break;
+      case 'JUR':
+        navigate('/jury');
+        break;
+      case 'PRO':
+        navigate('/jury');
+        break;
+      default:
+        navigate('/');
+    }
+  }
+
+  const handleLogin = () => {
     console.log('Username:', username);
     console.log('Password:', password);
     post('login/', {
@@ -28,16 +48,21 @@ const LoginPage = () => {
         password: password,
       }).then(data => {
         console.log(data);
-        Cookies.set('userCookie', {
+        Cookies.set('userCookie', JSON.stringify({
           token: data.token,
-          user_id: data.user_idid,
+          user_id: data.user_id,
           profile: data.profile,
-          });
+        }), {
+          sameSite: 'none', // Set SameSite attribute
+          secure: true, // Set Secure attribute
+        });
+        move(data.profile);
       }).catch((error) =>{
-      console.error('Erreur de connexion:', error);
-      setLoginError(true);
-    });
-  }
+        console.error('Erreur de connexion:', error);
+        setLoginError(true);
+      });
+  };
+
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -47,14 +72,15 @@ const LoginPage = () => {
     setPassword(e.target.value);
   };
 
-    /*
-   dans cette partie on va s'occuper de la requete pour changer le mot de passe
-   */
+  /*
+  dans cette partie on va s'occuper de la requete pour changer le mot de passe
+  */
   
   const handleForgotPassword = (e) => {
     // Mettez en œuvre la logique pour gérer le mot de passe oublié ici
     console.log('Forgot Password clicked');
     setForgotPassword(true);
+    // implémenter l'appelle a l'api pour changer le mot de passe
   };
 
   return (

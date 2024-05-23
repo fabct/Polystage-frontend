@@ -17,3 +17,12 @@
     font-family: "CalibriBoldItalic";
     src: local("calibri-bold-italic"),url("./fonts/calibri-bold-italic.ttf") format("truetype");
 }
+
+#root {
+    font-family: "CalibriRegular";
+}
+
+#body {
+    margin:0; 
+    background:rgb(230, 230, 230);
+}

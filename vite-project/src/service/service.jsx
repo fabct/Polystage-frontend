@@ -1,24 +1,3 @@
-import axios from 'axios';
-
-//const BASE_URL = 'http://localhost:8000/'; // Remplacez par l'URL de votre API
-
-/*const apiService = {
-  get: (endpoint) => {
-    url = `${BASE_URL}${endpoint}`;
-    return axios.get(url);
-  },
-
-  post: (endpoint, data) => {
-    url = `${BASE_URL}${endpoint}`;
-    return axios.post(url, data);
-  },
-
-  delete: (endpoint) => {
-    url = `${BASE_URL}${endpoint}`;
-    return axios.delete(url);
-  }
-};*/
-
 let url = 'http://localhost:8000';
 
 const post = async (endpoint, data) => {
@@ -58,4 +37,17 @@ const delet = async (endpoint) => {
   return response.json();
 };
 
-export { post };
+const put = async (endpoint, data) => {
+  // Utilisez la variable 'url' ici
+  const response = await fetch(`${url}/${endpoint}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+
+  return response.json();
+}
+
+export { post, get, delet, put};

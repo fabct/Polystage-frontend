@@ -1,5 +1,5 @@
 import '../index.css'
-import HeaderContent from '../contents/Admin/HeaderContent';
+import HeaderContent from '../contents/Header/HeaderContent';
 import check from '../assets/Check.svg'
 import fileIcon from "../assets/fileIcon.svg";
 
