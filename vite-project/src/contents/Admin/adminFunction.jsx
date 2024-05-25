@@ -60,7 +60,7 @@ const AdminFunction = {
     },
 
     handleUpdatePromo : (props) => {
-        return put(`promoDetails/${props.editingId}/`, {annee: props.annee, filiere: props.filiere})
+        return put(`promoDetails/${props.editingId}/`, {annee: props.annee, filiere: props.filiereId})
         .then(data => {
             if(data.error){
                 console.error(data.error);

@@ -7,17 +7,15 @@ const DeleteButton = (props) => {
 
     const handleDelete = async () => {
         setLoading(true);
-        try {
-            const data = await delet(`${props.function}/${props.id}/`);
-            if(data){
-                console.log('Promo deleted successfully');
-                setLoading(false);
+        const data = delet(`${props.function}/${props.id}/`).then((data) => {
+            if(data.error){
+                setError(data.error);
+            }
+            else{
+                console.log(data);
                 props.refresh();
             }
-        } catch (error) {
-            console.error('Error deleting promo');
-            setLoading(false);
-        }
+        });
     };
 
     return (

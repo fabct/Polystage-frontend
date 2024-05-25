@@ -1,12 +1,13 @@
 import LoginPage from './pages/Login';
 import AdminPage from './pages/Admin';
 import StudentPage from './pages/Student';
+import FormCreator from './contents/Form/FormCreator';
 import Jury from './pages/Jury';
 
-import {Routes, Route, Navigate} from "react-router-dom"; // Importez Routes et Route
+import {Routes, Route} from "react-router-dom"; // Importez Routes et Route
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function PrivateRoute({ children, ...props }) {
   const navigate = useNavigate();
@@ -31,8 +32,9 @@ function PrivateRoute({ children, ...props }) {
 }
 
 function App() {
-  
-  const navigate = useNavigate(); // Use the hook here
+
+  const navigate = useNavigate(); 
+  const [newformId, setNewFormId] = useState(null);
 
   const handleLogOutClick = () => {
     Cookies.remove('userCookie',{
@@ -40,13 +42,15 @@ function App() {
       secure: true, // Set Secure attribute
     });
     navigate('/'); // Use navigate here
-  };
+};
 
   return (
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/admin" element={<PrivateRoute role="ADM"><AdminPage  handleLogOutClick={handleLogOutClick}/></PrivateRoute>} />
-        <Route path="/student" element={<PrivateRoute role="ETU"><StudentPage handleLogOutClick={handleLogOutClick}/></PrivateRoute>} />
+        <Route path="/admin" element={<PrivateRoute role="ADM"><AdminPage  handleLogOutClick={handleLogOutClick} setNewFormId={setNewFormId}/></PrivateRoute>}/>
+        <Route path="/admin/form/:formId" element={<PrivateRoute role="ADM"><FormCreator id={newformId} handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
+        <Route path="/student" element={<PrivateRoute role="ETU"><StudentPage handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
+        <Route path="/jury" element={<Jury handleLogOutClick={handleLogOutClick}/>}/>
       </Routes>
   )
 }

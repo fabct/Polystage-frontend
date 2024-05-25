@@ -2,12 +2,8 @@ import HeaderContent from "../contents/Header/HeaderContent";
 import NavBarAdmin from "../contents/Admin/Content/NavBarAdmin";
 import {useState} from 'react';
 import {useEffect} from 'react';
-import SearchContent from "../contents/Admin/SerchContent";
-import AllContent from "../contents/Admin/GetAllContent";
-import Impxport from "../contents/Admin/ImportExportContent";
-import Cookies from 'js-cookie';
-import { get } from "../service/service";
 import Content from "../contents/Admin/Content";
+import { getUserInfo } from "../service/function";
 
 const AdminPage = (props) => {
 
@@ -21,30 +17,13 @@ const AdminPage = (props) => {
         setLoading(false);});
     }, []);
 
-    const getUserInfo = () => {
-        const userCookie = Cookies.get('userCookie');
-        if (userCookie) {
-            const user = JSON.parse(userCookie);
-            const user_id = user.user_id;
-            return get(`userDetails/${user_id}`).then(data => {
-                console.log(data);
-                return data;
-            }).catch((error) => {
-                console.error('Erreur de connexion:', error);
-                return null;
-            });
-        } else {
-            return Promise.resolve(null);
-        }
-    }
-
     const buttonConfig = [
-        { type: 'user', action: 'search' },
-        { type: 'promo', action: 'all' },
-        { type: 'internship', action: 'search' },
-        { type: 'form', action: 'all' },
-        { type: 'import', action: 'import' },
-        { type: 'download', action: 'download' },
+        { type: 'user'},
+        { type: 'promo'},
+        { type: 'internship'},
+        { type: 'form'},
+        { type: 'import'},
+        { type: 'download'},
     ];
 
     const handleButtonClick = (buttonIndex) => {
@@ -57,8 +36,8 @@ const AdminPage = (props) => {
             return <h1 style={{margin: '300px 0 auto auto',textAlign:'center',color: '#000', fontFamily: 'CalibriRegular', fontSize: '48px', fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal'}}>Welcome Back {userInfo.first_name} </h1>;
         }
     
-        const { type, action } = buttonConfig[selectedButton];
-        return <Content type={type} action={action} />;
+        const { type } = buttonConfig[selectedButton];
+        return <Content type={type} setNewFormId={props.setNewFormId}/>;
     };
 
     if (loading) {

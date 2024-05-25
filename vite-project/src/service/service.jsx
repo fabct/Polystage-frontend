@@ -48,6 +48,6 @@ const put = async (endpoint, data) => {
   });
 
   return response.json();
-}
+};
 
 export { post, get, delet, put};

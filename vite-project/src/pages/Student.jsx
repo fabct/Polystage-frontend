@@ -2,23 +2,71 @@ import '../index.css'
 import HeaderContent from '../contents/Header/HeaderContent';
 import check from '../assets/Check.svg'
 import fileIcon from "../assets/fileIcon.svg";
+import {useState, useEffect} from 'react';
+import { getUserInfo } from "../service/function";
 
 const StudentPage = (props) => {
+
+    const [selectedButton, setSelectedButton] = useState(null);
+    const [userInfo, setUserInfo] = useState(null);
+    const [internshipData, setInternshipData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getUserInfo().then(data => {
+        setUserInfo(data);
+        setLoading(false);});
+    }, []);
+
+    const handleSearchInternship = () => {
+        return get('stageList/').then((data) => {
+            if(data.error){
+                console.error(data.error);
+            }
+            else{
+                console.log(data);
+                setInternshipData(data);
+            }
+        });
+    };
+
+    if (loading) {
+        return <div>Loading...</div>; // replace with your actual loading component or message
+    }
+    else{
     return(
         <div style={{gridTemplateArea:`'header header header' 'body body body'`, background: '#E6E6E6',height:'100%'}}>
             <HeaderContent 
                 gridArea={'header'}
                 handleLogOutClick ={props.handleLogOutClick}
+                data={userInfo}
             />
             <div style={{gridArea:'body', gridTemplateRows:'auto auto',height:'100%'}}>
                 <div style={{ position: 'relative' }}>
                     {/* Div 1 */}
                     <div style={{padding:'20px',height: '50px', backgroundColor: '#003865' }}>
-                        <h1 style={{margin:'0', textAlign:'center', fontSize:'48px', fontFamily:'CalibriRegular', color:'white'}}> Welcome Back Dupond Dupond</h1>
+                        <h1 style={{margin:'0', textAlign:'center', fontSize:'48px', fontFamily:'CalibriRegular', color:'white'}}> Bonjour {userInfo.first_name} {userInfo.last_name}</h1>
                     </div>
       
                     {/* Div 2 */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'auto', gridTemplateRows: 'auto auto auto', gap: '10px', padding: '20px 20px 0px 20px' }}>
+                        <div style={{ margin:'0 10px',gridColumn:'1/2', gridRow:'1/2', borderRadius:'20px',background:'white',padding: '10px' }}>
+                        {internshipData ? (
+                                <>
+                                    <h1 style={{textAlign:'center',color: 'black', fontFamily:'CalibriRegular', fontSize:'35px', fontWeight: '400'}}>Internship</h1>
+                                    <p style={{margin:'10px 30px',color: 'black', fontFamily:'CalibriRegular', fontSize:'20px', fontWeight: '400'}}> Company : Lorem Ipsum </p>
+                                    <p style={{margin:'10px 30px',color: 'black', fontFamily:'CalibriRegular', fontSize:'20px', fontWeight: '400'}}> Subject : Lorem Ipsum sidae lorem ipsum</p>
+                                    <p style={{margin:'10px 30px',color: 'black', fontFamily:'CalibriRegular', fontSize:'20px', fontWeight: '400'}}> Dates begin : 10/04/2024 </p>
+                                    <p style={{margin:'10px 30px',color: 'black', fontFamily:'CalibriRegular', fontSize:'20px', fontWeight: '400'}}> Dates End : 31/08/2024</p>
+                                </>
+                            ):(
+                                <>
+                                    <h1 style={{textAlign:'center',color: 'black', fontFamily:'CalibriRegular', fontSize:'35px', fontWeight: '400'}}>Revenez bientôt</h1>
+                                </>
+                            )
+                        };
+                        </div>
+                    
                         <div style={{ margin:'0 10px',gridColumn:'1/2', gridRow:'1/2', borderRadius:'20px',background:'white',padding: '10px' }}>
                             <h1 style={{textAlign:'center',color: 'black', fontFamily:'CalibriRegular', fontSize:'35px', fontWeight: '400'}}>Internship</h1>
                             <p style={{margin:'10px 30px',color: 'black', fontFamily:'CalibriRegular', fontSize:'20px', fontWeight: '400'}}> Company : Lorem Ipsum </p>
@@ -71,6 +119,7 @@ const StudentPage = (props) => {
             </div>
         </div>
     );
+    }
 }
 
 export default StudentPage;

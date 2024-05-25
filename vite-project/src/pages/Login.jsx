@@ -26,7 +26,7 @@ const LoginPage = () => {
       case 'ADM':
         navigate('/admin');
         break;
-      case 'STU':
+      case 'ETU':
         navigate('/student');
         break;
       case 'JUR':
