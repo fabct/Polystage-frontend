@@ -156,18 +156,24 @@ const Content = ({ type, setNewFormId }) => {
             setDirecteurPrenom(dataToEdit.filiere.prenom_directeur);
             setEditingId(dataToEdit.id);
         }
+        if(type === 'form'){
+            setNewFormId(dataToEdit.id);
+            navigate(`/admin/form/${dataToEdit.id}`);
+        }
     };
     
     const handleCancel = () => {
-        setEditingId(null);
-        setName('');
-        setFirstName('');
-        setEmail('');
-        setProfile('');
-        setNumStudent('');
-        setBirthDate('');
-        setPassword('');
-        setIsAdding(false);
+        if (window.confirm("Are you sure you want to cancel ?")) {
+            setEditingId(null);
+            setName('');
+            setFirstName('');
+            setEmail('');
+            setProfile('');
+            setNumStudent('');
+            setBirthDate('');
+            setPassword('');
+            setIsAdding(false);
+        }
     };
 
     const handleIsAdding = () => {
@@ -198,6 +204,7 @@ const Content = ({ type, setNewFormId }) => {
         .then(data => {
             if(data.error){
                 console.error(data.error);
+                window.alert(data.error);
             }
             else{
                 console.log(data);
@@ -210,6 +217,7 @@ const Content = ({ type, setNewFormId }) => {
                 setPassword('');
                 setIsAdding(false);
                 handleSearchUser();
+                window.alert('User Create with success!');
             }
         })
     };
@@ -230,23 +238,27 @@ const Content = ({ type, setNewFormId }) => {
     }
 
     const handleModifyUser = () => {
-        return put(`userDetails/${editingId}/`, {email: email, first_name: firstName, last_name: name})
-        .then(data => {
-            if(data.error){
-                console.error(data.error);
-                setName('');
-                setFirstName('');
-                setEmail('');
-            }
-            else{
-                console.log(data);
-                setEditingId(null);
-                setName('');
-                setFirstName('');
-                setEmail('');
-                handleSearchUser();
-            }
-        })
+        if (window.confirm("Are you sure you want to update this item?")) {
+            return put(`userDetails/${editingId}/`, {email: email, first_name: firstName, last_name: name})
+            .then(data => {
+                if(data.error){
+                    console.error(data.error);
+                    setName('');
+                    setFirstName('');
+                    setEmail('');
+                    window.alert(data.error);
+                }
+                else{
+                    console.log(data);
+                    setEditingId(null);
+                    setName('');
+                    setFirstName('');
+                    setEmail(''); 
+                    handleSearchUser();
+                    window.alert('User updated with success!');
+                }
+            })
+        }
     };
 
     /*
@@ -281,15 +293,19 @@ const Content = ({ type, setNewFormId }) => {
         setDirecteurNom('');
         setDirecteurPrenom('');
         setAnnee('');
+        window.alert('Promo Create with success!');
     }
 
     const handleUpdatePromo = () => {
-        console.log({editingId,annee,filiereId});
-        AdminFunction.handleUpdatePromo({editingId,annee,filiereId})
-        setEditingId('');
-        setAnnee('');
-        setFiliere('');
-        handleGetContent();
+        if (window.confirm("Are you sure you want to update this item ?")) {
+            console.log({editingId,annee,filiereId});
+            AdminFunction.handleUpdatePromo({editingId,annee,filiereId})
+            setEditingId('');
+            setAnnee('');
+            setFiliere('');
+            handleGetContent();
+            window.alert('Promo updated with success!');
+        }
     }
 
     /*

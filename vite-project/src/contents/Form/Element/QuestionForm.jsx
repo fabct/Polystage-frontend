@@ -1,23 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const Question = (props) => {
-    const { index, title, type, updateQuestion, deleteQuestion} = props;
-    
-    const [checkboxOptions, setCheckboxOptions] = useState([]);
-
-    const addCheckboxOption = () => {
-        setCheckboxOptions([...checkboxOptions, '']);
-    };
-    const deleteCheckboxOption= (index) => {
-       setCheckboxOptions(checkboxOptions.filter((_, i) => i !== index));
-    };
-
-    const handleCheckboxOptionChange = (questionIndex, optionIndex, event) => {
-        const newCheckboxOptions = [...checkboxOptions];
-        newCheckboxOptions[optionIndex] ={title:event.target.value};
-        setCheckboxOptions(newCheckboxOptions);
-        updateQuestion(questionIndex, 'checkbox', newCheckboxOptions);
-    };
+const Question = ({ index, title, type, updateQuestion, deleteQuestion, checkboxOptions, addCheckboxOption, deleteCheckboxOption, handleCheckboxOptionChange }) => {
 
     const containerStyle = {
         backgroundColor: 'white',
@@ -45,7 +28,6 @@ const Question = (props) => {
         border: '1px solid #ccc',
         fontSize: '16px',
     };
-
 
     const selectStyle = {
         padding: '10px',
@@ -98,27 +80,26 @@ const Question = (props) => {
                     </select>
                     {type === 'checkbox' && (
                         <>
-                        <div style={{display:'block'}}>
-                            <button style={buttonStyle} onClick={addCheckboxOption}>Add option</button>
-                            <label style={labelStyle}>Options :</label>
-                            {checkboxOptions.map((option, optionIndex) => (
-                                <div style={{display:'block'}}>
-                                    Option {optionIndex + 1}:
-                                    <input
-                                        key={optionIndex}
-                                        type="text"
-                                        value={option}
-                                        onChange={(event) => handleCheckboxOptionChange(index, optionIndex, event)}
-                                        style={InputStyle}
-                                    />
-                                    <button style={buttonStyle} onClick={() => deleteCheckboxOption(optionIndex)}>Delete</button>
-                                </div>
-                            ))}
-                        </div>
+                            <div style={{ display: 'block' }}>
+                                <button style={buttonStyle} onClick={addCheckboxOption}>Add option</button>
+                                <label style={labelStyle}>Options :</label>
+                                {checkboxOptions.map((option, optionIndex) => (
+                                    <div key={optionIndex} style={{ display: 'block' }}>
+                                        Option {optionIndex + 1}:
+                                        <input
+                                            type="text"
+                                            value={option.title}
+                                            onChange={(e) => handleCheckboxOptionChange(index, optionIndex, e.target.value)}
+                                            style={InputStyle}
+                                        />
+                                        <button style={buttonStyle} onClick={() => deleteCheckboxOption(optionIndex)}>Delete</button>
+                                    </div>
+                                ))}
+                            </div>
                         </>
                     )}
                 </div>
-                <div style={{display:'flex',justifyContent: 'flex-end', alignItems: 'center'}}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                     <button onClick={() => deleteQuestion(index)} style={buttonStyle}>Delete</button>
                 </div>
             </div>

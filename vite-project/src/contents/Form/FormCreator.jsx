@@ -4,7 +4,7 @@ import { getUserInfo } from "../../service/function";
 import HeaderContent from '../Header/HeaderContent';
 import HeadForm from './Element/HeadForm';
 import Question from './Element/QuestionForm';
-import { post } from '../../service/service';
+import { get, post } from '../../service/service';
 
 /*
     FormCreator
@@ -50,19 +50,21 @@ import { post } from '../../service/service';
 */
 
 function FormCreator(props) {
-    useEffect(() => {
-        getUserInfo().then(data => {
-        setUserInfo(data);
-        setLoading(false);});
-    }, []);
-
-    const [userInfo, setUserInfo] = useState(null); // Add this line
-    const [loading, setLoading] = useState(true); // Add this line
+    const [userInfo, setUserInfo] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
         title: '',
         description: '',
         questions: []
     });
+
+    useEffect(() => {
+        modifyForm();
+        getUserInfo().then(data => {
+            setUserInfo(data);
+            setLoading(false);
+        });
+    }, []);
 
     const onInputChange = (field, value) => {
         setForm({
@@ -74,7 +76,7 @@ function FormCreator(props) {
     const addQuestion = () => {
         setForm({
             ...form,
-            questions: [...form.questions, { title: '', type: 'text', answer: '' }]
+            questions: [...form.questions, { title: '', type: 'text', checkbox: [] }]
         });
     };
 
@@ -96,18 +98,73 @@ function FormCreator(props) {
         });
     };
 
+    const addCheckboxOption = (questionIndex) => {
+        const newQuestions = [...form.questions];
+        const newCheckboxOptions = [...newQuestions[questionIndex].checkbox, { title: '' }];
+        newQuestions[questionIndex].checkbox = newCheckboxOptions;
+        setForm({
+            ...form,
+            questions: newQuestions
+        });
+    };
+
+    const deleteCheckboxOption = (questionIndex, optionIndex) => {
+        const newQuestions = [...form.questions];
+        newQuestions[questionIndex].checkbox = newQuestions[questionIndex].checkbox.filter((_, i) => i !== optionIndex);
+        setForm({
+            ...form,
+            questions: newQuestions
+        });
+    };
+
+    const handleCheckboxOptionChange = (questionIndex, optionIndex, value) => {
+        setForm(currentForm => {
+            const newQuestions = [...currentForm.questions];
+            if (!newQuestions[questionIndex].checkbox) {
+                newQuestions[questionIndex].checkbox = [];
+            }
+            if (!newQuestions[questionIndex].checkbox[optionIndex]) {
+                newQuestions[questionIndex].checkbox[optionIndex] = {};
+            }
+            newQuestions[questionIndex].checkbox[optionIndex].title = value;
+            return {
+                ...currentForm,
+                questions: newQuestions
+            };
+        });
+    };
+
     const submitEditForm = () => {
         console.log(JSON.stringify(form));
-        // Sauvegardez les informations du formulaire ici
-        post(`formulaireList/`,{id:props.id,title:form.title,description:form.description}).then((data) => {
-            if(data.error){
+        post(`formulaireAllList/`, { id: props.id, title: form.title, description: form.description, question: form.questions }).then((data) => {
+            if (data.error) {
                 console.error(data.error);
-            }
-            else{
+            } else {
                 console.log(data);
             }
-        })
+        });
     };
+
+    const modifyForm = () => {
+        get(`formulaireAllDetails/${props.id}`).then((data) => {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                console.log("Data from API:", data); // Add this line
+            const newForm = {
+                title: data.title,
+                description: data.description,
+                questions: data.question ? data.question.map(questions => ({
+                    ...questions,
+                    checkbox: questions.checkbox ? questions.checkbox : []
+                })) : []
+            };
+            console.log("New form data:", newForm); // Add this line
+            setForm(newForm);
+            }
+        });
+    };
+    
 
     const buttonStyle = {
         backgroundColor: '#00AEEF',
@@ -121,38 +178,50 @@ function FormCreator(props) {
 
     if (loading) {
         return <div>Loading...</div>; // replace with your actual loading component or message
-    }
-    else{
-    return (
-        <div style={{gridTemplateArea:`'header header header' 'body body body'`, background: '#E6E6E6',height:'100%'}}>
-            <HeaderContent 
-                gridArea={'header'}
-                handleLogOutClick ={props.handleLogOutClick}
-                data={userInfo}
-            />
-            <div style={{gridArea:'body', gridTemplateRows:'auto auto',height:'100%', display:'grid'}}>
-                <HeadForm 
-                    hasEditAccess={true}
-                    onInputChange={onInputChange}
-                    addQuestion={addQuestion}
-                    title={form.title}
-                    description={form.description}
+    } else {
+        return (
+            <div style={{ gridTemplateArea: `'header header header' 'body body body'`, background: '#E6E6E6', height: '100%' }}>
+                <HeaderContent
+                    gridArea={'header'}
+                    handleLogOutClick={props.handleLogOutClick}
+                    data={userInfo}
                 />
-                {form.questions.map((question, index) => (
-                    <Question 
-                        key={index}
-                        index={index}
-                        title={question.title}
-                        type={question.type}
-                        updateQuestion={updateQuestion}
-                        deleteQuestion={deleteQuestion}
+                <div style={{ gridArea: 'body', gridTemplateRows: 'auto auto', height: '100%', display: 'grid' }}>
+                    <HeadForm
+                        hasEditAccess={true}
+                        onInputChange={onInputChange}
+                        addQuestion={addQuestion}
+                        title={form.title}
+                        description={form.description}
                     />
-                ))}
-                <button style={buttonStyle} onClick={submitEditForm}>Sauvegarder</button>
+                    {form.questions.map((question, index) => (
+                        <Question
+                            key={index}
+                            index={index}
+                            title={question.title}
+                            type={question.type}
+                            checkboxOptions={question.checkbox}
+                            updateQuestion={updateQuestion}
+                            deleteQuestion={deleteQuestion}
+                            addCheckboxOption={() => addCheckboxOption(index)}
+                            deleteCheckboxOption={(optionIndex) => deleteCheckboxOption(index, optionIndex)}
+                            handleCheckboxOptionChange={(index,optionIndex, value) => handleCheckboxOptionChange(index, optionIndex, value)}
+                        />
+                    ))}
+                    <button style={buttonStyle} onClick={submitEditForm}>Sauvegarder</button>
+                </div>
             </div>
-        </div>
         );
     }
 }
+
+/*
+    const handleCheckboxOptionChange = (questionIndex, optionIndex, value) => {
+        const newCheckboxOptions = [...checkboxOptions];
+        newCheckboxOptions[optionIndex] ={title: value};
+        setCheckboxOptions(newCheckboxOptions);
+        updateQuestion(questionIndex, 'checkbox', newCheckboxOptions);
+    };
+*/
 
 export default FormCreator;

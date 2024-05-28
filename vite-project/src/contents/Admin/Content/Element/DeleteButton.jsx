@@ -7,15 +7,18 @@ const DeleteButton = (props) => {
 
     const handleDelete = async () => {
         setLoading(true);
-        const data = delet(`${props.function}/${props.id}/`).then((data) => {
-            if(data.error){
-                setError(data.error);
-            }
-            else{
-                console.log(data);
-                props.refresh();
-            }
-        });
+        if (window.confirm("Are you sure you want to delete this item?")) {
+            const data = delet(`${props.function}/${props.id}/`).then((data) => {
+                if(data.error){
+                    setError(data.error);
+                }
+                else{
+                    console.log(data);
+                    props.refresh();
+                }
+            });
+        }
+        setLoading(false);
     };
 
     return (
