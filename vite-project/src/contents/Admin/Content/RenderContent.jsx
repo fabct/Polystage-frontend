@@ -2,6 +2,7 @@ import React from 'react';
 import ModifyButton from './Element/ModifyButton';
 import DeleteButton from './Element/DeleteButton';
 import CreateContentForm from './Element/CreateContentForm';
+import { buttonDeleteStyle, buttonStyle3 } from '../../Styles';
 
 // Paramètres pour le render Content
 /*
@@ -46,7 +47,9 @@ const cellAddStyle = {margin:'10px', fontFamily: 'CalibriRegular', fontStyle: 'n
 
 const RenderContent = (props) => {
     
-    return ( props.isAdding ? (
+    return ( 
+        <div style={{gridArea:'result', margin:'10px 20px', height:'325px',background:'white',borderRadius:'20px',overflow:'auto'}}>
+        { props.isAdding ? (
             <CreateContentForm 
                 inputs1={props.inputs1}
                 inputs2={props.inputs2}
@@ -79,8 +82,8 @@ const RenderContent = (props) => {
                                                 )}
                                         </div>
                                     ))}
-                                    <button style={{margin:'15px 2px'}} onClick={props.handleCancel}>Annuler</button>
-                                    <button style={{margin:'15px 2px'}} onClick={props.handleDoModify}>Valider</button>
+                                    <button style={buttonDeleteStyle} onClick={props.handleCancel}>Annuler</button>
+                                    <button style={buttonStyle3} onClick={props.handleDoModify}>Valider</button>
                             
                                 </>
                                 ) : (
@@ -106,6 +109,8 @@ const RenderContent = (props) => {
                     ))}
                 </div>
             )
+        }
+        </div>
     );
 }
 

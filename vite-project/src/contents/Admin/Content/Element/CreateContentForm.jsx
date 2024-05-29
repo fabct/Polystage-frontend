@@ -1,3 +1,4 @@
+import { buttonDeleteStyle, buttonStyle3 } from "../../../Styles";
 import InputSearch from "./InputSearch";
 import { useState } from 'react';
 
@@ -53,8 +54,8 @@ const CreateContentForm = (props) => {
                 ))}
             </form>
             <div style={{alignContent:'end'}}>
-                <button style={{margin:'0px 10px'}} onClick={props.handleCancel}>Annuler</button>
-                <button onClick={props.handleCreate}>Créer</button>
+                <button style={buttonDeleteStyle} onClick={props.handleCancel}>Annuler</button>
+                <button style={buttonStyle3} onClick={props.handleCreate}>Créer</button>
             </div>
         </div>
     );

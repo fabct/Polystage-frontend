@@ -5,8 +5,11 @@ import RenderContent from './Content/RenderContent';
 import ContentTitle from './Content/Element/Title';
 import AdminFunction from './adminFunction';
 import SearchContent from './Content/Element/SearchContent';
+import DragDrop from '../Student/DragDrop';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { buttonStyle1 } from '../Styles';
+import * as XLSX from 'xlsx';
 
 const Content = ({ type, setNewFormId }) => {
 
@@ -31,6 +34,9 @@ const Content = ({ type, setNewFormId }) => {
     const [directeurNom, setDirecteurNom] = useState('');
     const [directeurPrenom, setDirecteurPrenom] = useState('');
     const [internship, setInternship] = useState('');
+
+    const [file, setFile] = useState(null);
+    const [isUpload, setIsUpload] = useState(false);
 
     useEffect(() => {
         if (type === 'user') {
@@ -122,6 +128,35 @@ const Content = ({ type, setNewFormId }) => {
 
     const handleAnneeChange = (e) => {
         setAnnee(e.target.value);
+    }
+
+    const handleDropFile = (e) => {
+        let fileTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel.sheet.macroEnabled.12','application/vnd.oasis.opendocument.spreadsheet','application/vnd.oasis.opendocument.spreadsheet-template','application/vnd.ms-excel.sheet.binary','text/csv'];
+        let selectedFile = e.target.files[0];
+        if(selectedFile){
+            if(fileTypes.includes(selectedFile.type)){
+                setIsUpload(true);
+                let reader = new FileReader();
+                reader.readAsArrayBuffer(selectedFile);
+                reader.onload = function(e) {
+                    let workbook = XLSX.read(e.target.result, {type: 'buffer'});
+                    let sheetdata = [];
+                    for(var i = 0; i < workbook.SheetNames.length; i++){
+                        let sheetName = workbook.SheetNames[i];
+                        const worksheet = workbook.Sheets[sheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                        sheetdata[sheetName] = jsonData;
+                    }
+                    console.log(sheetdata);
+                    setFile(sheetdata);
+                }
+            }
+            else{
+                window.alert('File type not supported');
+                setFile(null);
+                setIsUpload(false);
+            }
+        } 
     }
 
     /*
@@ -431,6 +466,15 @@ const Content = ({ type, setNewFormId }) => {
                 />
             );
         }
+        if (type === 'import') {
+            return(
+                <ContentTitle 
+                    researchTitle={'Importer des données'}
+                    inputs = {[]}
+                    isAdding={false}
+                />
+            );
+        }
     }
 
     // Rendu du contenu
@@ -544,8 +588,32 @@ const Content = ({ type, setNewFormId }) => {
                 />
             );
         }
+        if (type === 'import') {
+            return(
+                <DragDrop
+                    style={{margin:'5px 10px', gridColumn:'2/3', borderRadius:'20px',background:'white', padding: '10px'}}
+                    isUpload={isUpload}
+                    handleDropFile = {handleDropFile}
+                    data={file}
+                /> 
+            );
+        }
         // Ajoutez d'autres conditions pour les autres types
     };
+
+    const renderButton = () => {
+        if (type === 'import'){
+            return(
+                <button style={buttonStyle1} onClick={handleIsAdding}>Upload</button>
+            );
+        }
+        else{
+            return(
+                <button style={buttonStyle1} onClick={handleIsAdding}>Créer</button>
+            );
+        }
+    };
+
 
     return (
         <div>
@@ -554,14 +622,9 @@ const Content = ({ type, setNewFormId }) => {
                 {renderSearch()}
                 </div>
                 {renderTitle()}
-                <div style={{gridArea:'result', margin:'10px 20px', height:'325px',background:'white',borderRadius:'20px',overflow:'auto'}}>
                 {renderContent()}
-                </div>
-                <div style={{ gridArea: 'button', display: 'flex'}}>
-                    <Button
-                        content={'Créer'}
-                        onClick={handleIsAdding}
-                    />
+                <div style={{ gridArea: 'button', display: 'flex', justifyContent: 'center'}}>
+                {renderButton()}
                 </div>
             </div>
         </div>

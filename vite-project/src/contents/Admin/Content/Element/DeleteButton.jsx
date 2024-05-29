@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { delet } from '../../../../service/service';
+import { buttonDeleteStyle } from '../../../Styles';
 
 const DeleteButton = (props) => {
     const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ const DeleteButton = (props) => {
             <button
                 onClick={handleDelete}
                 disabled={loading}
+                style={buttonDeleteStyle}
             >
                 Delete
             </button>
