@@ -51,22 +51,18 @@ const AdminPage = (props) => {
                     handleLogOutClick ={props.handleLogOutClick}
                     data={userInfo}
                 />
-                <div style={{gridArea:'body', gridTemplateRows:'auto auto',height:'100%'}}>
-                    <div style={{ position: 'relative' }}>
-                        {/* Div 1 */}
-                        <div style={{ height: '50px', backgroundColor: '#003865' }}>
-                            <div style={{ position: 'absolute',margin:'10px 0' ,top: '0', left: '0', width: '100%' }}>
-                                <NavBarAdmin 
-                                    onClick = {handleButtonClick}
-                                    selectedButton = {selectedButton}
-                                />
-                            </div>
-                        </div>
-          
-                        {/* Div 2 */}
-                        <div style={{padding:'20px auto' ,background: '#E6E6E6', height: '100%', position: 'relative' }}>
-                            {renderContent()}
-                        </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr 1fr', height: '100%' }}>
+                    {/* Div 1 - NavBar */}
+                    <div style={{ gridRow: '1 / span 2', gridColumn: '1', backgroundColor: '#003865',height:'100%'}}>
+                        <NavBarAdmin 
+                            onClick = {handleButtonClick}
+                            selectedButton = {selectedButton}
+                        />
+                    </div>
+
+                    {/* Div 2 - Content */}
+                    <div style={{ gridRow: '1', gridColumn: '2 / span 2', background: '#E6E6E6' }}>
+                        {renderContent()}
                     </div>
                 </div>
             </div>

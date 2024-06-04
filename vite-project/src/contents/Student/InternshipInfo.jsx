@@ -19,7 +19,7 @@ const Info = (props) => {
                         <h1 style={{textAlign:'center',color: 'grey', fontFamily:'CalibriRegular', fontSize:'35px', fontWeight: '400'}}>Revenez bientôt</h1>
                     </>
                 )
-            };
+            }
         </div>
 
     );

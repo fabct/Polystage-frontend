@@ -617,7 +617,7 @@ const Content = ({ type, setNewFormId }) => {
 
     return (
         <div>
-            <div style={{margin:'78px 70px', gridTemplateAreas:`'search . .' 'result result result' '. . button'`,borderRadius: '20px', background: '#D9D9D9', padding:'10px'}}>
+            <div style={{margin:'78px 70px', gridTemplateAreas:`'search . .' 'result result result' '. . button'`,borderRadius: '5px', background: '#D9D9D9', padding:'10px'}}>
                 <div style={{gridArea:'search', margin:'20px 20px', borderRadius: '20px', background:'white', display:'inline-block'}}>
                 {renderSearch()}
                 </div>

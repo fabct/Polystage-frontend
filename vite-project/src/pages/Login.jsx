@@ -41,8 +41,6 @@ const LoginPage = () => {
   }
 
   const handleLogin = () => {
-    console.log('Username:', username);
-    console.log('Password:', password);
     post('login/', {
         email: username,
         password: password,
@@ -89,7 +87,7 @@ const LoginPage = () => {
         <img src={logo} alt="Logo" style={{width:'100%', height:'80%'}}/>
       </div>
       <div style={{ gridArea: 'title', textAlign: 'center', marginTop:'80px', marginBottom:'63px' ,color:'white', fontFamily: 'CalibriRegular', fontSize: '64px', fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal'}}>
-        Internship Manager
+        Polystage
       </div>
       <LoginContent 
         loginError={loginError}

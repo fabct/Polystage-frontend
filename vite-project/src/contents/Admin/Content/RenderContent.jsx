@@ -48,7 +48,7 @@ const cellAddStyle = {margin:'10px', fontFamily: 'CalibriRegular', fontStyle: 'n
 const RenderContent = (props) => {
     
     return ( 
-        <div style={{gridArea:'result', margin:'10px 20px', height:'325px',background:'white',borderRadius:'20px',overflow:'auto'}}>
+        <div style={{gridArea:'result', margin:'10px 20px', height:'325px',background:'white',borderRadius:'5px',overflow:'auto'}}>
         { props.isAdding ? (
             <CreateContentForm 
                 inputs1={props.inputs1}

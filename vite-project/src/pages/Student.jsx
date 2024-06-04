@@ -1,17 +1,18 @@
 import '../index.css'
 import HeaderContent from '../contents/Header/HeaderContent';
-import check from '../assets/Check.svg'
-import fileIcon from "../assets/fileIcon.svg";
 import {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getUserInfo } from "../service/function";
+import { get } from "../service/service";
 import Info from '../contents/Student/InternshipInfo';
-import DragDrop from '../contents/Student/DragDrop';
+import { buttonStyle3 } from '../contents/Styles';
 
 const StudentPage = (props) => {
-
+    const navigate = useNavigate();
     const [selectedButton, setSelectedButton] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
     const [noteData, setNoteData] = useState(null); // [ {id: 1, note: 12}, {id: 2, note: 15}, {id: 3, note: 10} ]
+    const [formData, setFormData] = useState([]);
     const [existingInternship, setExistingInternship] = useState(false);
     const [internshipData, setInternshipData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -26,10 +27,22 @@ const StudentPage = (props) => {
         {type : 'convocation', keys: ['Date','Time']},
     ];
 
+    const trStyle = {
+        margin: '10px 10px',
+        backgroundColor:'white',  
+        borderRadius: '10px',
+        boxShadow: '0px 4px 4px #00000040',
+        height: '50px',
+        display: 'flex',
+        gridColumn: '1/4', 
+        gridRow: '3/3'
+    }
+
     useEffect(() => {
         getUserInfo().then(data => {
         setUserInfo(data);
         setLoading(false);});
+        handleGetForm();
     }, []);
 
     const handleSearchInternship = () => {
@@ -44,6 +57,23 @@ const StudentPage = (props) => {
             }
         });
     };
+
+    const handleGetForm = () => {
+        return get(`formulaireDetails/40a90560-27a3-4727-9f07-ab6d21966b5f/`).then((data) => {
+            if(data.error){
+                console.error(data.error);
+            }
+            else{
+                console.log(data);
+                setFormData(data);
+            }
+        })
+    }
+
+    const handleRespond = () => {
+        props.setNewFormId(formData.id);
+        navigate(`/student/form/${formData.id}`);
+    }
 
     if (loading) {
         return <div>Loading...</div>; // replace with your actual loading component or message
@@ -89,16 +119,12 @@ const StudentPage = (props) => {
                             data={noteData}
                             existingInternship={existingInternship}
                         />
-                        <div style={{ margin: '0 10px', gridColumn: '1/4', gridRow: '2/3', borderRadius: '20px', background: 'white', padding: '10px', display: 'grid',gridTemplateColumns: 'auto auto auto'}}>
-                            <div style={{gridColumn:'1/2'}}>
-                                <h1 style={{margin: '25px 47px', color: 'black', fontFamily: 'CalibriRegular', fontSize: '35px', fontWeight: '400' }}>Formulaire auto évaluation</h1>
-                            </div>
-                            <div style={{gridColumn:'3/4', display:'flex'}}>
-                                <h1 style={{margin:'25px 47px', color: 'black', fontFamily: 'CalibriRegular', fontSize: '35px', fontWeight: '400'}}>Limit date : 20/08/2024</h1>
-                                <div style={{margin:'5px auto'}}>
-                                    <img src={check} style={{ alignSelf: 'center', height: '40px',width: '40px'}} />
-                                    <p style={{textAlign:'center', margin:'2px', color: 'black', fontFamily: 'CalibriRegular', fontSize: '25px', fontWeight: '400'}}>Do</p>
-                                </div>
+                        <div style={{margin: '0 10px',display: 'grid', gridColumn: '1/4', gridRow: '3/3', background:'white',borderRadius: '20px',padding: '10px'}}>
+                            <h1 style={{margin:'0',fontSize:'30px', fontFamily:'CalibriRegular'}}>Formulaires :</h1>
+                            <div style={trStyle}>
+                                <div style={{alignContent:'center', margin:'10px'}}>Titre : {formData.title}</div>
+                                <div style={{alignContent:'center', margin:'10px'}}>Description : {formData.description}</div>
+                                <button style={buttonStyle3} onClick={handleRespond}>Remplir</button>
                             </div>
                         </div>
                     </div>

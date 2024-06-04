@@ -8,6 +8,7 @@ import {Routes, Route} from "react-router-dom"; // Importez Routes et Route
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import FormRespond from './contents/Form/FormRespond';
 
 function PrivateRoute({ children, ...props }) {
   const navigate = useNavigate();
@@ -49,7 +50,8 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/admin" element={<PrivateRoute role="ADM"><AdminPage  handleLogOutClick={handleLogOutClick} setNewFormId={setNewFormId}/></PrivateRoute>}/>
         <Route path="/admin/form/:formId" element={<PrivateRoute role="ADM"><FormCreator id={newformId} handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
-        <Route path="/student" element={<PrivateRoute role="ETU"><StudentPage handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
+        <Route path="/student" element={<PrivateRoute role="ETU"><StudentPage handleLogOutClick={handleLogOutClick} setNewFormId={setNewFormId}/></PrivateRoute>}/>
+        <Route path="/student/form/:formId" element={<PrivateRoute role="ETU"><FormRespond id={newformId} handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
         <Route path="/jury" element={<Jury handleLogOutClick={handleLogOutClick}/>}/>
       </Routes>
   )

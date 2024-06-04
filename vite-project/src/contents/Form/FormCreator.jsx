@@ -146,7 +146,7 @@ function FormCreator(props) {
     };
 
     const modifyForm = () => {
-        get(`formulaireAllDetails/${props.id}`).then((data) => {
+        get(`formulaireAllDetails/${props.id}/`).then((data) => {
             if (data.error) {
                 console.error(data.error);
             } else {

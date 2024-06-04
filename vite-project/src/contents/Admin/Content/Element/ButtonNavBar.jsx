@@ -2,19 +2,18 @@
 function ButtonNavBar(props){
 
     const buttonStyle={
-        width: '200px', 
-        margin:'15px 7px',
-        height: '60px',
+        margin:'10px 20px',
         border:'none',
-        borderRadius: '40px', 
-        backgroundColor: props.isSelected ? '#FFF' :'#129ED9', 
+        backgroundColor: '#003865', 
         fontFamily: 'CalibriRegular', 
         fontSize: '36px', 
         fontStyle: 'normal', 
         fontWeight: '400', 
         lineHeight: 'normal', 
-        color: '#0B6083',
-        boxShadow: props.isSelected ? '0px 4px 4px 0px rgba(0, 0, 0, 0.25)' : 'none'
+        textAlign: 'left',
+        color: props.isSelected ? '#00AEEF':'#FFF',
+        display: 'flex',
+        alignItems: 'center',
     }
 
 
@@ -23,6 +22,7 @@ function ButtonNavBar(props){
             style={buttonStyle} 
             onClick={props.onClick}
             >
+            <img src={props.logo} style={{marginRight:'15px'}}/>
             {props.title}
         </button>
     );

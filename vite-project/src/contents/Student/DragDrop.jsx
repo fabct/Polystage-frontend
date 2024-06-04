@@ -21,7 +21,7 @@ const DragDrop = (props) => {
                 <h1 style={{ color: '#000', fontFamily: 'CalibriRegular', fontSize: '20px', fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal', marginTop: '20px' }}><span style={{color: '#00AEEF'}}>Choose</span> a file to upload</h1>
                 <h1 style={{fontSize:'16px', fontFamily:'CalibriRegular',color:'#6b6b6b', fontWeight:'400',fontStyle:'normal'}}>Supported format : pdf</h1>
                 <input type="file"  style={{margin:'20px auto'}} onChange={props.handleDropFile} required/>
-          </div>
+            </div>
         </div>
 
         <div style={{padding:'20px',marginTop:'20px',backgroundColor:'whitesmoke',textAlign:'center'}}>
