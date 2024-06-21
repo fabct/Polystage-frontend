@@ -27,7 +27,7 @@ import { buttonDeleteStyle, buttonStyle3 } from '../../Styles';
 */
 
 const getNestedValue = (obj, key) => {
-    return key.split('.').reduce((acc, part) => acc && acc[part], obj);
+    return key.split('.').reduce((acc, part) => acc && acc[part] ? acc[part] : null, obj);
 };
 
 const trStyle = {
@@ -48,7 +48,7 @@ const cellAddStyle = {margin:'10px', fontFamily: 'CalibriRegular', fontStyle: 'n
 const RenderContent = (props) => {
     
     return ( 
-        <div style={{gridArea:'result', margin:'10px 20px', height:'325px',background:'white',borderRadius:'5px',overflow:'auto'}}>
+        <div style={{gridArea:'result', height:'325px',background:'white',borderRadius:'5px',overflow:'auto'}}>
         { props.isAdding ? (
             <CreateContentForm 
                 inputs1={props.inputs1}

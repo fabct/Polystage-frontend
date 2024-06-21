@@ -20,10 +20,12 @@ const AdminPage = (props) => {
     const buttonConfig = [
         { type: 'user'},
         { type: 'promo'},
+        { type: 'jury'},
         { type: 'internship'},
         { type: 'form'},
+        { type: 'email'},
         { type: 'import'},
-        { type: 'download'},
+        { type: 'export'},
     ];
 
     const handleButtonClick = (buttonIndex) => {

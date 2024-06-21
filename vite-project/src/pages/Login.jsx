@@ -14,15 +14,14 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false); 
+  const [verifyCode, setVerifyCode] = useState(false);
   const navigate = useNavigate();
-
-  let data = {};
   /*
    dans cette partie on va s'occuper de la requete pour connecter l'utilisateur
 
   */
-   const move = (profile) => {
-    switch (profile) {
+   const move = (data) => {
+    switch (data.profile) {
       case 'ADM':
         navigate('/admin');
         break;
@@ -54,7 +53,7 @@ const LoginPage = () => {
           sameSite: 'none', // Set SameSite attribute
           secure: true, // Set Secure attribute
         });
-        move(data.profile);
+        move(data);
       }).catch((error) =>{
         console.error('Erreur de connexion:', error);
         setLoginError(true);
@@ -70,6 +69,10 @@ const LoginPage = () => {
     setPassword(e.target.value);
   };
 
+  const handleVerifyCode = () => {
+    console.log('Verify Code clicked');
+    setVerifyCode(true);
+  }
   /*
   dans cette partie on va s'occuper de la requete pour changer le mot de passe
   */
@@ -99,6 +102,8 @@ const LoginPage = () => {
         passwordOnChange={handlePasswordChange}
         loginHandle={handleLogin}
         handleForgotPassword={handleForgotPassword}
+        handleVerifyCode={handleVerifyCode}
+        verifyCode={verifyCode}
       />
     </div>
   );

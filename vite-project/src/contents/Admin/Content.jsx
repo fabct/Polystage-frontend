@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../Login/ButtonLoginPage';
 import { get, post, put } from '../../service/service';
 import RenderContent from './Content/RenderContent';
 import ContentTitle from './Content/Element/Title';
 import AdminFunction from './adminFunction';
 import SearchContent from './Content/Element/SearchContent';
-import DragDrop from '../Student/DragDrop';
+import DragDrop from '../CommunContent/DragDrop';
+import ExportContent from '../Admin/Content/ExportContent';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { buttonStyle1 } from '../Styles';
+import documentCreator from '../../service/documentCreator';
 import * as XLSX from 'xlsx';
 
 const Content = ({ type, setNewFormId }) => {
@@ -19,14 +20,11 @@ const Content = ({ type, setNewFormId }) => {
 
     const [name, setName] = useState('');
     const [firstName, setFirstName] = useState('');
-    const [birthDate, setBirthDate] = useState('');
     const [editingId, setEditingId] = useState(null);
     const [isAdding, setIsAdding] = useState(false);
     const [email, setEmail] = useState('');
     const [profile, setProfile] = useState('');
     const [numStudent, setNumStudent] = useState('');
-    const [password, setPassword] = useState('');
-    const [verifyPassword, setVerifyPassword] = useState('');
     const [ajoutFiliere, setAjoutFiliere] = useState(false);
     const [annee, setAnnee] = useState('');
     const [filiere, setFiliere] = useState('');
@@ -37,6 +35,10 @@ const Content = ({ type, setNewFormId }) => {
 
     const [file, setFile] = useState(null);
     const [isUpload, setIsUpload] = useState(false);
+    const [isDownload, setIsDownload] = useState(false);
+    const [exportOption, setExportOption] = useState('');
+    const [fileType, setFileType] = useState('');
+    const [promoSelected, setPromoSelected] = useState(null);
 
     useEffect(() => {
         if (type === 'user') {
@@ -67,19 +69,10 @@ const Content = ({ type, setNewFormId }) => {
     const handleFirstNameChange = (e) => {
         setFirstName(e.target.value);
     };
-  
-    const handleBirthDateChange = (e) => {
-        setBirthDate(e.target.value);
-    };
-
     // Modification des informations d'un utilisateur
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
-    };
-
-    const handlePasswordChange = (e) => {
-        setPassword(e.target.value);
     };
 
     const handleProfileChange = (e) => {
@@ -88,10 +81,6 @@ const Content = ({ type, setNewFormId }) => {
 
     const handleNumStudentChange= (e) => {
         setNumStudent(e.target.value);
-    };
-
-    const handleVerifyPasswordChange = (e) => {
-        setVerifyPassword(e.target.value);
     };
 
     // Pour promo
@@ -159,6 +148,17 @@ const Content = ({ type, setNewFormId }) => {
         } 
     }
 
+    // export
+
+    const handleSetExportOption = (e) => {
+        setExportOption(e.target.value);
+    }
+
+    const handlePromoSelected = (value) => {
+        promoDetails(value);
+        console.log(promoSelected);
+    }
+
     /*
         Pour Tous les types
     */
@@ -181,6 +181,7 @@ const Content = ({ type, setNewFormId }) => {
             setName(dataToEdit.last_name);
             setFirstName(dataToEdit.first_name);
             setEmail(dataToEdit.email);
+            setProfile(dataToEdit.profile);
             setEditingId(dataToEdit.id);
         }
         else if(type === 'promo'){
@@ -205,9 +206,8 @@ const Content = ({ type, setNewFormId }) => {
             setEmail('');
             setProfile('');
             setNumStudent('');
-            setBirthDate('');
-            setPassword('');
             setIsAdding(false);
+            renderContent();
         }
     };
 
@@ -228,6 +228,10 @@ const Content = ({ type, setNewFormId }) => {
             setNewFormId(newFormId);
             navigate(`/admin/form/${newFormId}`);
         }
+        if(type === 'export'){
+            setIsDownload(true);
+            exportData(promoSelected,exportOption);
+        }
     }
 
     /*
@@ -235,7 +239,7 @@ const Content = ({ type, setNewFormId }) => {
     */
 
     const handleCreateUser = () => {
-        return post(`userList/`, {first_name: firstName, last_name: name, email: email,password1: password, password2: verifyPassword,num_etudiant: numStudent, date_naissance: birthDate, profile: profile})
+        return post(`userList/`, {first_name: firstName, last_name: name, email: email,num_etudiant: numStudent, profile: profile})
         .then(data => {
             if(data.error){
                 console.error(data.error);
@@ -248,8 +252,6 @@ const Content = ({ type, setNewFormId }) => {
                 setEmail('');
                 setProfile('');
                 setNumStudent('');
-                setBirthDate('');
-                setPassword('');
                 setIsAdding(false);
                 handleSearchUser();
                 window.alert('User Create with success!');
@@ -274,25 +276,30 @@ const Content = ({ type, setNewFormId }) => {
 
     const handleModifyUser = () => {
         if (window.confirm("Are you sure you want to update this item?")) {
-            return put(`userDetails/${editingId}/`, {email: email, first_name: firstName, last_name: name})
-            .then(data => {
-                if(data.error){
-                    console.error(data.error);
-                    setName('');
-                    setFirstName('');
-                    setEmail('');
-                    window.alert(data.error);
-                }
-                else{
-                    console.log(data);
-                    setEditingId(null);
-                    setName('');
-                    setFirstName('');
-                    setEmail(''); 
-                    handleSearchUser();
-                    window.alert('User updated with success!');
-                }
-            })
+            console.log({editingId, name, firstName, email, profile});
+            if(profile === 'ADM' || profile === 'ETU' || profile === 'ENS' || profile === 'TUT' || profile === 'PRO'){
+                return put(`userDetails/${editingId}/`, {email: email, first_name: firstName, last_name: name,profile: profile})
+                .then(data => {
+                    if(data.error){
+                        window.alert(data.error);
+                        console.error(data.error);
+                        setName('');
+                        setFirstName('');
+                        setEmail('');
+                        setProfile('');
+                    }
+                    else{
+                        console.log(data);
+                        setEditingId(null);
+                        setName('');
+                        setFirstName('');
+                        setEmail(''); 
+                        setProfile('');
+                        handleSearchUser();
+                        window.alert('User updated with success!');
+                    }
+                })
+            }
         }
     };
 
@@ -312,23 +319,25 @@ const Content = ({ type, setNewFormId }) => {
     }
 
     const handleCreatePromo = () => {
-        if(ajoutFiliere){
-            AdminFunction.handleCreateFiliere({filiere, nom_directeur: directeurNom, prenom_directeur: directeurPrenom}).then((data) => {
-                AdminFunction.handleCreatePromo({annee: annee,filiere: data.id})
-                .then(() => {
+        if (window.confirm("Are you sure you want to update this item ?")) {
+            if(ajoutFiliere){
+                AdminFunction.handleCreateFiliere({filiere, nom_directeur: directeurNom, prenom_directeur: directeurPrenom}).then((data) => {
+                    AdminFunction.handleCreatePromo({annee: annee,filiere: data.id})
+                    .then(() => {
+                    });
                 });
-            });
+            }
+            else{
+                AdminFunction.handleCreatePromo({annee: annee,filiere: filiere})
+            }
+            handleGetContent();
+            setAjoutFiliere(false);
+            setFiliere('');
+            setDirecteurNom('');
+            setDirecteurPrenom('');
+            setAnnee('');
+            window.alert('Promo Create with success!');
         }
-        else{
-            AdminFunction.handleCreatePromo({annee: annee,filiere: filiere})
-        }
-        handleGetContent();
-        setAjoutFiliere(false);
-        setFiliere('');
-        setDirecteurNom('');
-        setDirecteurPrenom('');
-        setAnnee('');
-        window.alert('Promo Create with success!');
     }
 
     const handleUpdatePromo = () => {
@@ -376,6 +385,45 @@ const Content = ({ type, setNewFormId }) => {
     }
 
     /*
+        Pour import et export
+    */
+   const promoDetails = (id) => {
+        return get(`promoDetails/${id}`).then((data) => {
+            if(data.error){
+                console.error(data.error);
+            }
+            else{
+                setPromoSelected(data);
+                get(`filiereDetails/${data.filiere}`).then((filiere) => {
+                    if(filiere.error){
+                        console.error(filiere.error);
+                    }
+                    else{
+                        setPromoSelected(prevState => ({...prevState, filiereDetails: filiere}));
+                    }
+                });
+                console.log(data);
+            }
+        });
+    }
+
+    const exportData = (promoSelected,exportOption) => {
+        if(exportOption === 'notes'){
+            console.log(promoSelected);
+            return post(`exportNote/`,{filiere: promoSelected.filiereDetails.nom, promo: promoSelected.annee}).then((data) => {
+                if(data.error){
+                    console.error(data.error);
+                }
+                else{
+                    console.log(data);
+                    documentCreator.exportDoc(data,fileType);
+                }
+            });
+        }
+    }
+
+
+    /*
         Rendu du contenu
     */
 
@@ -391,13 +439,6 @@ const Content = ({ type, setNewFormId }) => {
                         { name: 'Email', handleInputSearch: handleEmailChange, type: 'text'},                    
                     ]}
                     handleSearch = {handleSearchUser}
-                />
-            );
-        }
-        if(type === 'promo'){
-            return (
-                <SearchContent 
-                    isSearching = {false}
                 />
             );
         }
@@ -417,7 +458,7 @@ const Content = ({ type, setNewFormId }) => {
                 />
             );
         }
-        if(type === 'form'){
+        else{
             return (
                 <SearchContent 
                     isSearching = {false}
@@ -475,6 +516,15 @@ const Content = ({ type, setNewFormId }) => {
                 />
             );
         }
+        if(type === 'export'){
+            return(
+                <ContentTitle 
+                    researchTitle={'Exporter des données'}
+                    inputs = {[]}
+                    isAdding={false}
+                />
+            );
+        }
     }
 
     // Rendu du contenu
@@ -488,18 +538,15 @@ const Content = ({ type, setNewFormId }) => {
                         { infoCellUpdate: 'Prenom',beUpdate:true, handleChangeCellUpdate: handleFirstNameChange,key:key[0]},
                         { infoCellUpdate: 'Nom',beUpdate:true, handleChangeCellUpdate: handleNameChange,key:key[1]},
                         { infoCellUpdate: 'Email',beUpdate:true, handleChangeCellUpdate: handleEmailChange,key:key[2]},
-                        { infoCellUpdate: 'Profile',beUpdate:false,key:key[3]},
+                        { infoCellUpdate: 'Profile',beUpdate:true,handleChangeCellUpdate: handleProfileChange,key:key[3]},
                     ]}
                     inputs1 = {[
                         { infoCell: 'First Name', handleInpuChangeCell: handleFirstNameChange, type: 'text' },
                         { infoCell: 'Name', handleInpuChangeCell: handleNameChange, type: 'text' },
-                        { infoCell: 'Email', handleInpuChangeCell: handleEmailChange, type: 'text'},
-                        { infoCell: 'Password', handleInpuChangeCell: handlePasswordChange, type: 'password'},
-                        { infoCell: 'Verify Password', handleInpuChangeCell: handleVerifyPasswordChange, type: 'password'},
+                        { infoCell: 'Email', handleInpuChangeCell: handleEmailChange, type: 'text'}
                     ]}
                     inputs2 = {[
-                        { infoCell: 'Num Student', value: numStudent, handleInpuChangeCell: handleNumStudentChange, type: 'text' },
-                        { infoCell: 'Birth Date', value: birthDate, handleInpuChangeCell: handleBirthDateChange, type: 'date' },
+                        { infoCell: 'Num Student', value: numStudent, handleInpuChangeCell: handleNumStudentChange, type: 'text' }
                     ]}
                     options = {[
                         {value: "",text: "Sélectionner profile", type: 'text' },
@@ -598,6 +645,20 @@ const Content = ({ type, setNewFormId }) => {
                 /> 
             );
         }
+        if (type === 'export') {
+            return(
+                <ExportContent
+                    style={{margin:'5px 10px', gridColumn:'2/3', borderRadius:'20px',background:'white', padding: '10px'}}
+                    handleGetPromos={handleGetContent}
+                    data={data}
+                    exportOption={exportOption}
+                    handleSetExportOption={handleSetExportOption}
+                    handlePromoSelected={handlePromoSelected}
+                    setFileType={setFileType}
+                    fileType={fileType}
+                /> 
+            );
+        }
         // Ajoutez d'autres conditions pour les autres types
     };
 
@@ -605,6 +666,11 @@ const Content = ({ type, setNewFormId }) => {
         if (type === 'import'){
             return(
                 <button style={buttonStyle1} onClick={handleIsAdding}>Upload</button>
+            );
+        }
+        if (type === 'export'){
+            return(
+                <button style={buttonStyle1} onClick={handleIsAdding}>Download</button>
             );
         }
         else{
@@ -617,7 +683,7 @@ const Content = ({ type, setNewFormId }) => {
 
     return (
         <div>
-            <div style={{margin:'78px 70px', gridTemplateAreas:`'search . .' 'result result result' '. . button'`,borderRadius: '5px', background: '#D9D9D9', padding:'10px'}}>
+            <div style={{gridTemplateAreas:`'search . .' 'result result result' '. . button'`,borderRadius: '5px', background: '#D9D9D9', padding:'10px'}}>
                 <div style={{gridArea:'search', margin:'20px 20px', borderRadius: '20px', background:'white', display:'inline-block'}}>
                 {renderSearch()}
                 </div>
