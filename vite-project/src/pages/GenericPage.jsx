@@ -25,7 +25,7 @@ const GenericPage = (props) => {
     }, []);
 
     const isJuryMember = async (data) => {
-        return post('isJury/', { user_id: data.id }).then((response) => {
+        return post('isJury/', { id_user: data.id }).then((response) => {
         if (response.error) {
             console.error(response.error);
         } else {
@@ -41,7 +41,7 @@ const GenericPage = (props) => {
             case 'ETU':
                 return <StudentPage userInfo={userInfo} setNewFormId={props.setNewFormId} />;
             case 'ENS':
-                return isJury.is_jury ? <Jury userInfo={userInfo} /> : <div>Teacher</div>;
+                return isJury.is_jury ? <Jury userInfo={userInfo}  isJury={isJury}/> : <div>Teacher</div>;
             case 'PRO':
                 return <div>Professional</div>;
             default:

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import CalendarView from './CalendarView';
 import ListView from './ListView';
+import InfSup from './InfSup';
 import moment from 'moment';
+import { post } from '../../service/service';
 import 'moment/locale/fr'; // Si vous souhaitez utiliser la localisation française
 
 
@@ -26,18 +28,25 @@ const generateFakeSoutenances = (startDate, numDays) => {
 const JuryView = (props) => {
     const [activeTab, setActiveTab] = useState('calendar');
     const [currentStartDate, setCurrentStartDate] = useState(moment().startOf('week'));
-    const [soutenances, setSoutenances] = useState(generateFakeSoutenances(currentStartDate, 8)); // Génère pour une semaine
+    const [soutenances, setSoutenances] = useState(null); // Génère pour une semaine
     const [infSup, setInfSup] = useState(false);
     const [infSupData, setInfSupData] = useState(null);
 
     useEffect(() => {
-        const fetchSoutenances = async () => {
-            const response = await fetch('/api/soutenances');
-            const data = await response.json();
-            setSoutenances(data);
-        };
-        fetchSoutenances();
+        soutenanceJury();
     }, []);
+
+    const soutenanceJury = () => {
+        console.log(props.isJury.jury[0]);
+        return post('getSoutenanceJury/', { id_jury: props.isJury.jury[0] }).then((response) => {
+            if (response.error) {
+                console.error(response.error);
+            } else {
+                console.log(response);
+                setSoutenances(response);
+            }
+        });
+    }
 
     const handleInfSup = (event) => {
         setInfSup(true);
@@ -46,7 +55,7 @@ const JuryView = (props) => {
 
     const renderTabContent = () => {
         if(infSup){
-            <InfSup infSupData={infSupData} setInfSup={setInfSup} />
+            return <InfSup infSupData={infSupData} setInfSup={setInfSup} />;
         }
         switch (activeTab) {
             case 'calendar':

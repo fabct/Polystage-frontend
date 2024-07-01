@@ -281,7 +281,7 @@ const Content = ({ type, setNewFormId }) => {
             }
             else{
                 console.log(data);
-                setData(data.users);
+                setData(data);
             }
         })
     }
@@ -397,8 +397,8 @@ const Content = ({ type, setNewFormId }) => {
                 console.error(data.error);
             }
             else{
-                console.log(data.stages);
-                setData(data.stages);
+                console.log(data);
+                setData(data);
             }
         });
     }

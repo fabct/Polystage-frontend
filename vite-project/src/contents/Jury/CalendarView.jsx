@@ -1,29 +1,32 @@
-import React, { useState } from 'react';
 import moment from 'moment';
 import 'moment/locale/fr'; // Si vous souhaitez utiliser la localisation française
 
 const CalendarView = (props) => {
 
+    if (props.soutenances == null) {
+        return <div>Loading...</div>;
+    }
 
     const events = props.soutenances.map(soutenance => ({
-        title: soutenance.title,
-        start: new Date(soutenance.startDate),
-        end: new Date(soutenance.endDate),
+        title: `${soutenance.etudiant.first_name} ${soutenance.etudiant.last_name}`,
+        date: moment(soutenance.date_soutenance, "DD-MM-YYYY").toDate(),
+        heure: soutenance.heure_soutenance,
+        soutenance: soutenance,
     }));
 
     const renderEventsForDay = (day) => {
         const dayEvents = events.filter(event =>
-            moment(event.start).isSame(day, 'day')
+            moment(event.date).isSame(day, 'day')
         );
 
         return dayEvents.map((event, index) => (
             <div 
                 key={index} 
                 className={`event ${index % 2 === 0 ? 'event-even' : 'event-odd'}`} 
-                onClick={props.handleInfSup(event)}
+                onClick={() => props.handleInfSup(event.soutenance)}
             >
                 <h4>{event.title}</h4>
-                <p>{moment(event.start).format('LT')} - {moment(event.end).format('LT')}</p>
+                <p>{moment(event.heure, 'HH:mm').format('LT')} - {moment(event.heure, 'HH:mm').add(1, 'hour').format('LT')}</p>
             </div>
         ));
     };
