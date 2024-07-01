@@ -1,0 +1,201 @@
+.calendar-container {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.calendar-title {
+    text-align: center;
+    color: #356084;
+    margin-bottom: 20px;
+    font-family: 'CalibriRegular', sans-serif;
+}
+
+.calendar-navigation {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.calendar-navigation button {
+    background-color: #356084;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.calendar-navigation button:hover {
+    background-color: #274a6e;
+}
+
+.calendar-grid {
+    display: flex;
+    justify-content: space-between;
+}
+
+.day-column {
+    flex: 1;
+    margin: 10px;
+}
+
+.day-column h3 {
+    text-align: center;
+    color: #003865;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.event {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.event-even {
+    background-color: whitesmoke; /* AliceBlue */
+}
+
+.event-odd {
+    background-color: rgb(186, 186, 186); /* LightSkyBlue */
+}
+
+.event:hover {
+    background-color: #9dcbfc; /* Lighter blue for hover effect */
+}
+
+.event h4 {
+    margin: 0;
+    color: #003865;
+    font-size: 1em;
+}
+
+.event p {
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.tabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.title {
+    flex: 1;
+    font-size: 1.5em;
+    color: #003865;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.tab {
+    background-color: #003865;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tab:hover {
+    background-color: #002744;
+}
+
+.tab.active {
+    background-color: #001f33;
+}
+
+.tab.super-jury {
+    background-color: #FF6347; /* Tomato color */
+}
+
+.tab.super-jury:hover {
+    background-color: #FF4500; /* Darker tomato color */
+}
+
+.tab.super-jury.active {
+    background-color: #FF0000; /* Red color */
+}
+
+
+/* List View */
+.list-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial, sans-serif';
+}
+
+.soutenance-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.soutenance-item {
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.soutenance-item:hover {
+    transform: scale(1.02);
+}
+
+.soutenance-title {
+    margin: 0 0 10px;
+    font-size: 1.5em;
+    color: #003865;
+}
+
+.soutenance-description {
+    margin: 0 0 10px;
+    color: #666;
+}
+
+.soutenance-timing {
+    margin: 0;
+    color: #999;
+    font-size: 0.9em;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-item {
+    background-color: #003865;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.page-item:hover {
+    background-color: #002744;
+}
+
+.page-item.active {
+    background-color: #001f33;
+}

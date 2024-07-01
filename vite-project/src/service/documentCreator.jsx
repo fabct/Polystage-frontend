@@ -16,7 +16,7 @@ const exportDoc = (data, fileType) => {
         const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
         saveAs(blob, 'export.xlsx');
     }
-};
+}; 
 
 export default {
     exportDoc

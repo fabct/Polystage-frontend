@@ -22,7 +22,7 @@ function LoginContent(props){
     }
     
     function Paragraph(props){
-        return <p style={{gridArea: props.gridArea, textAlign:'center', marginTop:'30px', marginBottom:'50px', color: props.color, fontFamily: 'CalibriRegular', fontSize: '20px', fontWeight: '400', lineHeight: 'normal'}}>{props.content}</p>;
+        return <p style={{gridArea: props.gridArea, textAlign:'center', color: props.color, fontFamily: 'CalibriRegular', fontSize: '20px', fontWeight: '400', lineHeight: 'normal'}}>{props.content}</p>;
             
     }
 
@@ -86,7 +86,7 @@ function LoginContent(props){
     
         else{
             return(
-            <div style={{...divStyle, gridTemplateAreas: `'subtitle' 'p' 'username' 'password' 'forgot' 'login'`}}>
+            <div style={{...divStyle, gridTemplateAreas: `'subtitle' 'p' 'error' 'username' 'password' 'forgot' 'login'`}}>
                 <Title 
                     content={'Login'}
                 />

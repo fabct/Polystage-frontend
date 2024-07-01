@@ -26,13 +26,16 @@ const LoginPage = () => {
         navigate('/admin');
         break;
       case 'ETU':
-        navigate('/student');
+        navigate(`/student`);
         break;
-      case 'JUR':
-        navigate('/jury');
+      case 'ENS':
+        navigate(`/teacher`);
+        break;
+      case 'TUT':
+        navigate(`/tutor`);
         break;
       case 'PRO':
-        navigate('/jury');
+        navigate(`/${data.profile}`);
         break;
       default:
         navigate('/');
@@ -45,6 +48,11 @@ const LoginPage = () => {
         password: password,
       }).then(data => {
         console.log(data);
+        if (data.error) {
+          console.error(data.error);
+          setLoginError(true);
+        }
+        else{
         Cookies.set('userCookie', JSON.stringify({
           token: data.token,
           user_id: data.user_id,
@@ -54,10 +62,8 @@ const LoginPage = () => {
           secure: true, // Set Secure attribute
         });
         move(data);
-      }).catch((error) =>{
-        console.error('Erreur de connexion:', error);
-        setLoginError(true);
-      });
+      }
+      })
   };
 
 

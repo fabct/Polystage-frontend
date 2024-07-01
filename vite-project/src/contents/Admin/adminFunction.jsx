@@ -7,19 +7,6 @@ const AdminFunction = {
         Promos
     */
 
-    handleGetPromo : (props) => {
-        props.setEditingId(null);
-        props.setIsAdding(false);
-        return get(`promoFiliere/`).then((data) => {
-            if(data.error){
-                console.error(data.error);
-            }
-            else{
-                console.log(data);
-                props.setData(data); // This line needs to be corrected
-            }
-        })
-    },
 
     handleCreatePromo : (props) => {
         return post(`promoList/`, {filiere: props.filiere, annee: props.annee})

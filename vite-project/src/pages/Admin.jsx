@@ -47,7 +47,7 @@ const AdminPage = (props) => {
     }
     else{
         return (
-            <div style={{gridTemplateArea:`'header header header' 'body body body'`, background: '#E6E6E6',height:'100%'}}>
+            <div className='general-content' style={{gridTemplateArea:`'header header header' 'body body body'`}}>
                 <HeaderContent 
                     gridArea={'header'}
                     handleLogOutClick ={props.handleLogOutClick}

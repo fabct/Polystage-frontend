@@ -4,7 +4,7 @@ import RenderContent from './Content/RenderContent';
 import ContentTitle from './Content/Element/Title';
 import AdminFunction from './adminFunction';
 import SearchContent from './Content/Element/SearchContent';
-import DragDrop from '../CommunContent/DragDrop';
+import ImportContent from '../Admin/Content/ImportContent';
 import ExportContent from '../Admin/Content/ExportContent';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,6 +13,8 @@ import documentCreator from '../../service/documentCreator';
 import * as XLSX from 'xlsx';
 
 const Content = ({ type, setNewFormId }) => {
+
+    const [searchContent, setSearchContent] = useState('');
 
     // UseState Généraux
     const [data, setData] = useState([]);
@@ -31,9 +33,8 @@ const Content = ({ type, setNewFormId }) => {
     const [filiereId, setFiliereId] = useState('');
     const [directeurNom, setDirecteurNom] = useState('');
     const [directeurPrenom, setDirecteurPrenom] = useState('');
-    const [internship, setInternship] = useState('');
 
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState({});
     const [isUpload, setIsUpload] = useState(false);
     const [isDownload, setIsDownload] = useState(false);
     const [exportOption, setExportOption] = useState('');
@@ -45,6 +46,9 @@ const Content = ({ type, setNewFormId }) => {
             handleSearchUser();
         } else if (type === 'promo') {
             handleGetContent();
+        }
+        else if (type === 'jury') {
+            handleSearchJury();
         }
         else if (type === 'internship') {
             handleSearchInternship();
@@ -61,7 +65,12 @@ const Content = ({ type, setNewFormId }) => {
     /*
         Ecoute entrée clavier
     */
-    // Recherche d'utilisateur par nom et prénom
+    // Rechercge 
+    const handleInputSearch = (e) => {
+        setSearchContent(e.target.value);
+    };
+
+    //// Modification et création des informations d'un utilisateur
     const handleNameChange = (e) => {
         setName(e.target.value);
     };
@@ -69,7 +78,6 @@ const Content = ({ type, setNewFormId }) => {
     const handleFirstNameChange = (e) => {
         setFirstName(e.target.value);
     };
-    // Modification des informations d'un utilisateur
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -120,7 +128,8 @@ const Content = ({ type, setNewFormId }) => {
     }
 
     const handleDropFile = (e) => {
-        let fileTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel.sheet.macroEnabled.12','application/vnd.oasis.opendocument.spreadsheet','application/vnd.oasis.opendocument.spreadsheet-template','application/vnd.ms-excel.sheet.binary','text/csv'];
+        setFile('')
+        let fileTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-excel.sheet.macroEnabled.12','application/vnd.oasis.opendocument.spreadsheet','application/vnd.oasis.opendocument.spreadsheet-template','application/vnd.ms-excel.sheet.binary'];
         let selectedFile = e.target.files[0];
         if(selectedFile){
             if(fileTypes.includes(selectedFile.type)){
@@ -136,16 +145,16 @@ const Content = ({ type, setNewFormId }) => {
                         const jsonData = XLSX.utils.sheet_to_json(worksheet);
                         sheetdata[sheetName] = jsonData;
                     }
-                    console.log(sheetdata);
-                    setFile(sheetdata);
+                    setFile(prevFile => ({...prevFile, ...sheetdata}));
                 }
             }
             else{
                 window.alert('File type not supported');
                 setFile(null);
                 setIsUpload(false);
-            }
+            } 
         } 
+        e.target.value = '';
     }
 
     // export
@@ -167,7 +176,7 @@ const Content = ({ type, setNewFormId }) => {
         {type : 'user', keys: ['first_name', 'last_name', 'email', 'profile']},
         {type : 'promo', keys: ['filiere.nom','annee','filiere.nom_directeur','filiere.prenom_directeur']},
         {type : 'internship', keys: ['nom_entreprise','sujet','confidentiel','date_debut','date_fin']},
-        {type : 'form', keys: ['title','description']}
+        {type : 'form', keys: ['titre','description']}
     ];
 
     const getTypeKeys = (type) => {
@@ -232,6 +241,9 @@ const Content = ({ type, setNewFormId }) => {
             setIsDownload(true);
             exportData(promoSelected,exportOption);
         }
+        if(type === 'import' && isUpload){
+            handleUploadFile();
+        }
     }
 
     /*
@@ -263,13 +275,13 @@ const Content = ({ type, setNewFormId }) => {
         setEditingId(null);
         setIsAdding(false);
         setData([]);
-        return post(`userSearch/`, {first_name: firstName, last_name: name, email: email}).then(data => {
+        return post(`userSearch/`, {search: searchContent}).then(data => {
             if(data.error){
                 console.error(data.error);
             }
             else{
                 console.log(data);
-                setData(data);
+                setData(data.users);
             }
         })
     }
@@ -309,7 +321,15 @@ const Content = ({ type, setNewFormId }) => {
 
     const handleGetContent = () => {
         setData([]);
-        AdminFunction.handleGetPromo({setData, setEditingId, setIsAdding});
+        return get(`promoFiliere/`).then((data) => {
+            if(data.error){
+                console.error(data.error);
+            }
+            else{
+                console.log(data);
+                setData(data);
+            }
+        });
     }
     
     const handleGetFilière = () => {
@@ -351,19 +371,34 @@ const Content = ({ type, setNewFormId }) => {
             window.alert('Promo updated with success!');
         }
     }
-
     /*
-        Pour stage
+        Pour Jury
     */
 
-    const handleSearchInternship = () => {
-        return get('stageList/').then((data) => {
+    const handleSearchJury = () => {
+        return post('jurySearch/',{search: searchContent}).then((data) => {
             if(data.error){
                 console.error(data.error);
             }
             else{
                 console.log(data);
                 setData(data);
+            }
+        });
+    }
+
+    /*
+        Pour stage
+    */
+
+    const handleSearchInternship = () => {
+        return post('stageSearch/',{search: searchContent}).then((data) => {
+            if(data.error){
+                console.error(data.error);
+            }
+            else{
+                console.log(data.stages);
+                setData(data.stages);
             }
         });
     }
@@ -385,7 +420,30 @@ const Content = ({ type, setNewFormId }) => {
     }
 
     /*
-        Pour import et export
+        Pour import
+    */
+   const handleUploadFile = () => {
+        if(fileType === 'user'){
+            console.log(file);
+        }
+        else if(fileType === 'stage'){
+            console.log(file);
+        }
+        else if(fileType === 'soutenance'){
+            console.log(file);
+        }
+        else if(fileType === 'jury'){
+            console.log(file);
+        }
+        else{
+            window.alert('Aucun type de fichier selectionné');
+            setIsUpload(false);
+        }
+   }
+
+
+    /*
+        Pour export
     */
    const promoDetails = (id) => {
         return get(`promoDetails/${id}`).then((data) => {
@@ -433,11 +491,8 @@ const Content = ({ type, setNewFormId }) => {
                 <SearchContent 
                     isSearching = {true}
                     SearchTitle = {'Rechercher un utilisateur'}
-                    inputs = {[
-                        { name: 'First Name', handleInputSearch: handleFirstNameChange, type: 'text' },
-                        { name: 'Name', handleInputSearch: handleNameChange, type: 'text' },
-                        { name: 'Email', handleInputSearch: handleEmailChange, type: 'text'},                    
-                    ]}
+                    handleInputSearch = {handleInputSearch}
+                    type={'text' }                 
                     handleSearch = {handleSearchUser}
                 />
             );
@@ -445,15 +500,10 @@ const Content = ({ type, setNewFormId }) => {
         if(type === 'internship'){
             return (
                 <SearchContent 
-                    isSearching = {true}SearchTitle = {'Rechercher un stage'}
-                    inputs = {[
-                        { name: 'First Name Student', handleInputSearch: handleFirstNameChange, type: 'text' },
-                        { name: 'Name Student', handleInputSearch: handleNameChange, type: 'text' },
-                        { name: 'First Name Tuteur', handleInputSearch: handleFirstNameChange, type: 'text' },
-                        { name: 'Name Tuteur', handleInputSearch: handleNameChange, type: 'text' },   
-                        { name: 'Company', handleInputSearch: handleNameChange, type: 'text' },          
-                        { name: 'Subject', handleInputSearch: handleNameChange, type: 'text' },       
-                    ]}
+                    isSearching = {true}
+                    SearchTitle = {'Rechercher un stage'}
+                    handleInputSearch = {handleInputSearch}
+                    type={'text' }                 
                     handleSearch = {handleSearchInternship}
                 />
             );
@@ -474,6 +524,7 @@ const Content = ({ type, setNewFormId }) => {
                     researchTitle={'Résultat de la recherche'}
                     inputs = {[{ name: 'First Name'},{ name: 'Name'},{ name: 'Email'},  { name: 'Profile'},{ name: 'Modify'}, { name: 'Add'}]}
                     isAdding={isAdding}
+                    isSearching={true}
                     isAddingTitle={'Nouvel utilisateur'}
                 />
             );
@@ -484,7 +535,19 @@ const Content = ({ type, setNewFormId }) => {
                     researchTitle={'Résultat de la recherche'}
                     inputs = {[{ name: 'Nom de la Filière'}, { name: 'Année'}, { name: 'Directeur Name'}, { name: 'Directeur First Name'}, { name: 'Modify'}, { name: 'Delete'}]}
                     isAdding={isAdding}
+                    isSearching={true}
                     isAddingTitle={'Nouvelle promo'}
+                />
+            );
+        }
+        if(type === 'jury'){
+            return(
+                <ContentTitle 
+                    researchTitle={'Résultat de la recherche'}
+                    inputs = {[{ name: 'Nom'}, { name: 'Année'}, { name: 'Directeur Name'}, { name: 'Directeur First Name'}, { name: 'Modify'}, { name: 'Delete'}]}
+                    isAdding={isAdding}
+                    isSearching={true}
+                    isAddingTitle={'Nouveaux Jury'}
                 />
             );
         }
@@ -494,6 +557,7 @@ const Content = ({ type, setNewFormId }) => {
                     researchTitle={'Résultat de la recherche'}
                     inputs = {[{ name: 'Nom Entreprise'},{ name: 'Sujet'},{ name: 'Confidentialité'},{ name: 'Date de debut'},{ name: 'Date de fin'}, { name: 'Modify'}, { name: 'Delete'}]}
                     isAdding={isAdding}
+                    isSearching={true}
                     isAddingTitle={'Nouveau stage'}
                 />
             );
@@ -504,6 +568,7 @@ const Content = ({ type, setNewFormId }) => {
                     researchTitle={'Résultat de la recherche'}
                     inputs = {[{ name: 'Nom du formulaire'},{ name: 'Description'},{ name: 'Edit'},{ name: 'Delete'}]}
                     isAdding={isAdding}
+                    isSearching={true}
                 />
             );
         }
@@ -513,6 +578,7 @@ const Content = ({ type, setNewFormId }) => {
                     researchTitle={'Importer des données'}
                     inputs = {[]}
                     isAdding={false}
+                    isSearching={false}
                 />
             );
         }
@@ -522,6 +588,7 @@ const Content = ({ type, setNewFormId }) => {
                     researchTitle={'Exporter des données'}
                     inputs = {[]}
                     isAdding={false}
+                    isSearching={false}
                 />
             );
         }
@@ -611,6 +678,16 @@ const Content = ({ type, setNewFormId }) => {
             />
             );
         }
+        if (type === 'jury'){
+            <RenderContent 
+            data={data}
+            handleModify = {handleModify}
+            handleSearch = {handleSearchJury}
+            function = {'juryDetails'}
+            type = {type}
+            keys = {key}
+        />
+        }
         if (type === 'internship') {
             return(
                 <RenderContent 
@@ -637,11 +714,12 @@ const Content = ({ type, setNewFormId }) => {
         }
         if (type === 'import') {
             return(
-                <DragDrop
-                    style={{margin:'5px 10px', gridColumn:'2/3', borderRadius:'20px',background:'white', padding: '10px'}}
+                <ImportContent
                     isUpload={isUpload}
                     handleDropFile = {handleDropFile}
                     data={file}
+                    setFileType={setFileType}
+                    fileType={fileType}
                 /> 
             );
         }
@@ -684,11 +762,13 @@ const Content = ({ type, setNewFormId }) => {
     return (
         <div>
             <div style={{gridTemplateAreas:`'search . .' 'result result result' '. . button'`,borderRadius: '5px', background: '#D9D9D9', padding:'10px'}}>
-                <div style={{gridArea:'search', margin:'20px 20px', borderRadius: '20px', background:'white', display:'inline-block'}}>
+                <div style={{gridArea:'search', margin:'20px 20px', borderRadius: '20px', background:'white', display:'flex', width:'fit-content'}}>
                 {renderSearch()}
                 </div>
+                <div style={{gridArea:'result',backgroundColor:'white',borderRadius:'5px'}}>
                 {renderTitle()}
                 {renderContent()}
+                </div>
                 <div style={{ gridArea: 'button', display: 'flex', justifyContent: 'center'}}>
                 {renderButton()}
                 </div>

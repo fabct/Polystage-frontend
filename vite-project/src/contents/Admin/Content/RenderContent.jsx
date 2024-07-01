@@ -33,9 +33,9 @@ const getNestedValue = (obj, key) => {
 const trStyle = {
     margin: '10px 10px',
     backgroundColor:'white', 
-    border: '3px solid rgb(11, 96, 131)', 
+    border: '1px solid #ddd',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     borderRadius: '10px',
-    boxShadow: '0px 4px 4px #00000040',
     height: '50px',
     display: 'flex'
 }
@@ -48,7 +48,7 @@ const cellAddStyle = {margin:'10px', fontFamily: 'CalibriRegular', fontStyle: 'n
 const RenderContent = (props) => {
     
     return ( 
-        <div style={{gridArea:'result', height:'325px',background:'white',borderRadius:'5px',overflow:'auto'}}>
+        <div style={{ height:'400px',overflow:'auto'}}>
         { props.isAdding ? (
             <CreateContentForm 
                 inputs1={props.inputs1}

@@ -1,0 +1,49 @@
+.content-info {
+    margin: 0 10px; 
+    border-radius: 20px;
+    background: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-style-internship-info {
+    color: #356084;
+    font-family: 'CalibriRegular', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin: 0;
+}
+
+.title-internship-info {
+    padding: 10px;
+}
+
+.title-content-internship-info {
+    top: 10px;
+    width: 100%;
+}
+
+.info-item-internship-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #356084;
+}
+
+.description-internship-info {
+    font-size: 16px;
+    font-family: 'CalibriRegular';
+    font-weight: bold;
+    color: #333;
+}
+
+.content-true:hover {
+    background: #356084;
+    cursor: pointer;
+}

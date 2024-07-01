@@ -4,8 +4,6 @@ import React, { useState, useEffect } from 'react';
 
 const ExportContent = (props) => {
 
-
-
     const fileTypes = [
         { name: 'CSV', type:'csv',logo: CSVLogo },
         { name: 'Excel', type:'xlsx',logo: XLSLogo },
