@@ -88,7 +88,7 @@ const Question = ({ index, title, type, updateQuestion, deleteQuestion, checkbox
                                         Option {optionIndex + 1}:
                                         <input
                                             type="text"
-                                            value={option.title}
+                                            value={option.titre}
                                             onChange={(e) => handleCheckboxOptionChange(index, optionIndex, e.target.value)}
                                             style={InputStyle}
                                         />

@@ -12,7 +12,7 @@ import emailLogo from "../../../assets/email.svg";
 
 const NavBarAdmin = (props) => {
 
-    const buttonName = [" User"," Promo"," Jury"," Stage"," Formulaire"," Email"," Import"," Export"];
+    const buttonName = [" User"," Session"," Jury"," Stage"," Formulaire"," Email"," Import"," Export"];
     const buttonLogo = [userLogo, promoLogo, groupLogo ,stageLogo, formulaireLogo, emailLogo,importLogo, exportLogo];
 
     return(

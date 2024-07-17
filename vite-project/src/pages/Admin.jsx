@@ -4,22 +4,33 @@ import {useState} from 'react';
 import {useEffect} from 'react';
 import Content from "../contents/Admin/Content";
 import { getUserInfo } from "../service/function";
+import SessionDetails from "../contents/Admin/SessionDetails";
+import ModifyData from "../contents/Admin/Content/ModifyData";
+import CreateContentForm from "../contents/Admin/Content/Element/CreateContentForm";
+import { useNavigate } from 'react-router-dom';
 
 const AdminPage = (props) => {
 
     const [selectedButton, setSelectedButton] = useState(null);
+    const [editing, setEditing] = useState(false);
+    const [editingId, setEditingId] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         getUserInfo().then(data => {
         setUserInfo(data);
-        setLoading(false);});
+        setLoading(false);}).catch(error => {
+            console.log(error);
+            handleLogOutClick();
+        });
     }, []);
+
+    const navigate = useNavigate();
 
     const buttonConfig = [
         { type: 'user'},
-        { type: 'promo'},
+        { type: 'session'},
         { type: 'jury'},
         { type: 'internship'},
         { type: 'form'},
@@ -30,16 +41,34 @@ const AdminPage = (props) => {
 
     const handleButtonClick = (buttonIndex) => {
         setSelectedButton(buttonIndex);
+        setEditing(false);
+    };
+
+    const handleModify = (dataToEdit) => {        
+        if(buttonConfig[selectedButton].type === 'form'){
+            props.setCreate(false);
+            props.setObjectId(dataToEdit.id);
+            navigate(`/admin/form/${dataToEdit.id}`);
+        }
+        else{    
+            setEditing(true);
+            setEditingId(dataToEdit.id);
+        }
     };
 
 
     const renderContent = () => {
         if (selectedButton === null) {
-            return <h1 style={{margin: '300px 0 auto auto',textAlign:'center',color: '#000', fontFamily: 'CalibriRegular', fontSize: '48px', fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal'}}>Welcome Back {userInfo.first_name} </h1>;
+            return <h1 className="bonjour">Bonjour {userInfo.first_name} {userInfo.last_name}</h1>;
         }
-    
         const { type } = buttonConfig[selectedButton];
-        return <Content type={type} setNewFormId={props.setNewFormId}/>;
+        if(editing && type === 'session'){
+            return <SessionDetails editingId={editingId} setEditing={setEditing}/>;
+        }
+        if(editing){
+            return <ModifyData editingId={editingId} setEditing={setEditing} type={type}/>;
+        }
+        return <Content type={type} setObjectId={props.setObjectId} handleModify={handleModify} setCreate={props.setCreate}/>;
     };
 
     if (loading) {
@@ -47,7 +76,7 @@ const AdminPage = (props) => {
     }
     else{
         return (
-            <div className='general-content' style={{gridTemplateArea:`'header header header' 'body body body'`}}>
+            <div className='general-content' style={{gridTemplateArea:`'header header header' 'body body body'`, height:'100%'}}>
                 <HeaderContent 
                     gridArea={'header'}
                     handleLogOutClick ={props.handleLogOutClick}

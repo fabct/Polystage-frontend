@@ -12,7 +12,7 @@ import { buttonStyle1 } from '../Styles';
 import documentCreator from '../../service/documentCreator';
 import * as XLSX from 'xlsx';
 
-const Content = ({ type, setNewFormId }) => {
+const Content = ({ type, setObjectId, handleModify, setCreate}) => {
 
     const [searchContent, setSearchContent] = useState('');
 
@@ -41,10 +41,14 @@ const Content = ({ type, setNewFormId }) => {
     const [fileType, setFileType] = useState('');
     const [promoSelected, setPromoSelected] = useState(null);
 
+    const [newEtudiant, setNewEtudiant] = useState('');
+    const [newJury, setNewJury] = useState('');
+
+
     useEffect(() => {
         if (type === 'user') {
             handleSearchUser();
-        } else if (type === 'promo') {
+        } else if (type === 'session') {
             handleGetContent();
         }
         else if (type === 'jury') {
@@ -111,21 +115,18 @@ const Content = ({ type, setNewFormId }) => {
         }
     }
 
-    const handleNewFiliereChange = (e) => {
-        setFiliere(e.target.value);
-    }
-
-    const handleDirecteurNomChange = (e) => {
-        setDirecteurNom(e.target.value);
-    }
-
-    const handleDirecteurPrenomChange = (e) => {
-        setDirecteurPrenom(e.target.value);
-    }
-
-    const handleAnneeChange = (e) => {
+    const handleNomChange = (e) => {
         setAnnee(e.target.value);
-    }
+    };
+    const handleFiniChange = (e) => {
+        setFini(e.target.checked);
+    };
+    const handleNewEtudiantChange = (e) => {
+        setNewEtudiant(e.target.value);
+    };
+    const handleNewJuryChange = (e) => {
+        setNewJury(e.target.value);
+    };
 
     const handleDropFile = (e) => {
         setFile('')
@@ -149,7 +150,7 @@ const Content = ({ type, setNewFormId }) => {
                 }
             }
             else{
-                window.alert('File type not supported');
+                window.alert('Format de fichier non pris en charge');
                 setFile(null);
                 setIsUpload(false);
             } 
@@ -174,7 +175,8 @@ const Content = ({ type, setNewFormId }) => {
 
     const keys = [
         {type : 'user', keys: ['first_name', 'last_name', 'email', 'profile']},
-        {type : 'promo', keys: ['filiere.nom','annee','filiere.nom_directeur','filiere.prenom_directeur']},
+        {type : 'session', keys: ['nom']},
+        {type : 'jury', keys: ['num_jury','campus','batiment','salle']},
         {type : 'internship', keys: ['nom_entreprise','sujet','confidentiel','date_debut','date_fin']},
         {type : 'form', keys: ['titre','description']}
     ];
@@ -183,32 +185,9 @@ const Content = ({ type, setNewFormId }) => {
         const typeObject = keys.find((item) => item.type === type);
         return typeObject ? typeObject.keys : [];
     };
-
-    const handleModify = (dataToEdit) => {
-        if(type === 'user'){    
-            console.log(dataToEdit.id);
-            setName(dataToEdit.last_name);
-            setFirstName(dataToEdit.first_name);
-            setEmail(dataToEdit.email);
-            setProfile(dataToEdit.profile);
-            setEditingId(dataToEdit.id);
-        }
-        else if(type === 'promo'){
-            setFiliereId(dataToEdit.filiere.id);
-            setAnnee(dataToEdit.annee);
-            setFiliere(dataToEdit.filiere.nom);
-            setDirecteurNom(dataToEdit.filiere.nom_directeur);
-            setDirecteurPrenom(dataToEdit.filiere.prenom_directeur);
-            setEditingId(dataToEdit.id);
-        }
-        if(type === 'form'){
-            setNewFormId(dataToEdit.id);
-            navigate(`/admin/form/${dataToEdit.id}`);
-        }
-    };
     
     const handleCancel = () => {
-        if (window.confirm("Are you sure you want to cancel ?")) {
+        if (window.confirm("Êtes vous sur de vouloir Annuler?")) {
             setEditingId(null);
             setName('');
             setFirstName('');
@@ -224,17 +203,16 @@ const Content = ({ type, setNewFormId }) => {
         if(type === 'user'){
             setIsAdding(true);
         }
-        if(type === 'promo'){
+        if(type === 'session'){
             setIsAdding(true);
-            handleGetFilière();
         }
         if(type === 'internship'){
             setIsAdding(true);
         }
         if(type === 'form'){
-            setIsAdding(true);
             const newFormId = uuidv4();
-            setNewFormId(newFormId);
+            setObjectId(newFormId);
+            setCreate(true);
             navigate(`/admin/form/${newFormId}`);
         }
         if(type === 'export'){
@@ -266,7 +244,7 @@ const Content = ({ type, setNewFormId }) => {
                 setNumStudent('');
                 setIsAdding(false);
                 handleSearchUser();
-                window.alert('User Create with success!');
+                window.alert('Utilisateur créer !');
             }
         })
     };
@@ -287,7 +265,7 @@ const Content = ({ type, setNewFormId }) => {
     }
 
     const handleModifyUser = () => {
-        if (window.confirm("Are you sure you want to update this item?")) {
+        if (window.confirm("Êtes vous sur de vouloir mofier cet utilisateur ?")) {
             console.log({editingId, name, firstName, email, profile});
             if(profile === 'ADM' || profile === 'ETU' || profile === 'ENS' || profile === 'TUT' || profile === 'PRO'){
                 return put(`userDetails/${editingId}/`, {email: email, first_name: firstName, last_name: name,profile: profile})
@@ -308,7 +286,7 @@ const Content = ({ type, setNewFormId }) => {
                         setEmail(''); 
                         setProfile('');
                         handleSearchUser();
-                        window.alert('User updated with success!');
+                        window.alert('Information utilisateur mise à jour !');
                     }
                 })
             }
@@ -321,7 +299,7 @@ const Content = ({ type, setNewFormId }) => {
 
     const handleGetContent = () => {
         setData([]);
-        return get(`promoFiliere/`).then((data) => {
+        return get(`sessionList/`).then((data) => {
             if(data.error){
                 console.error(data.error);
             }
@@ -339,7 +317,7 @@ const Content = ({ type, setNewFormId }) => {
     }
 
     const handleCreatePromo = () => {
-        if (window.confirm("Are you sure you want to update this item ?")) {
+        if (window.confirm("Êtes vous sur de vouloir modifier cette session ?")) {
             if(ajoutFiliere){
                 AdminFunction.handleCreateFiliere({filiere, nom_directeur: directeurNom, prenom_directeur: directeurPrenom}).then((data) => {
                     AdminFunction.handleCreatePromo({annee: annee,filiere: data.id})
@@ -356,19 +334,19 @@ const Content = ({ type, setNewFormId }) => {
             setDirecteurNom('');
             setDirecteurPrenom('');
             setAnnee('');
-            window.alert('Promo Create with success!');
+            window.alert('Session crée avec succès !');
         }
     }
 
     const handleUpdatePromo = () => {
-        if (window.confirm("Are you sure you want to update this item ?")) {
+        if (window.confirm("Êtes vous sur de vouloir modifier cette session ?")) {
             console.log({editingId,annee,filiereId});
             AdminFunction.handleUpdatePromo({editingId,annee,filiereId})
             setEditingId('');
             setAnnee('');
             setFiliere('');
             handleGetContent();
-            window.alert('Promo updated with success!');
+            window.alert('Information de la session modifié avec succès !');
         }
     }
     /*
@@ -376,7 +354,7 @@ const Content = ({ type, setNewFormId }) => {
     */
 
     const handleSearchJury = () => {
-        return post('jurySearch/',{search: searchContent}).then((data) => {
+        return get('juryList/').then((data) => {
             if(data.error){
                 console.error(data.error);
             }
@@ -522,21 +500,21 @@ const Content = ({ type, setNewFormId }) => {
             return(
                 <ContentTitle 
                     researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'First Name'},{ name: 'Name'},{ name: 'Email'},  { name: 'Profile'},{ name: 'Modify'}, { name: 'Add'}]}
+                    inputs = {[{ name: 'Prénom'},{ name: 'Nom'},{ name: 'Mail'},{ name: 'Profil'}, { name: 'Supprimer'}]}
                     isAdding={isAdding}
                     isSearching={true}
                     isAddingTitle={'Nouvel utilisateur'}
                 />
             );
         }
-        if(type === 'promo'){
+        if(type === 'session'){
             return(
                 <ContentTitle 
                     researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'Nom de la Filière'}, { name: 'Année'}, { name: 'Directeur Name'}, { name: 'Directeur First Name'}, { name: 'Modify'}, { name: 'Delete'}]}
+                    inputs = {[{ name: 'Nom de la séssion'}, { name: 'Supprimer'}]}
                     isAdding={isAdding}
                     isSearching={true}
-                    isAddingTitle={'Nouvelle promo'}
+                    isAddingTitle={'Nouvelle Session'}
                 />
             );
         }
@@ -544,7 +522,7 @@ const Content = ({ type, setNewFormId }) => {
             return(
                 <ContentTitle 
                     researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'Nom'}, { name: 'Année'}, { name: 'Directeur Name'}, { name: 'Directeur First Name'}, { name: 'Modify'}, { name: 'Delete'}]}
+                    inputs = {[{ name: 'Numéro de jury'}, { name: 'Campus'}, { name: 'Batiment'}, { name: 'Salle'},{ name: 'Supprimer'}]}
                     isAdding={isAdding}
                     isSearching={true}
                     isAddingTitle={'Nouveaux Jury'}
@@ -555,7 +533,7 @@ const Content = ({ type, setNewFormId }) => {
             return(
                 <ContentTitle 
                     researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'Nom Entreprise'},{ name: 'Sujet'},{ name: 'Confidentialité'},{ name: 'Date de debut'},{ name: 'Date de fin'}, { name: 'Modify'}, { name: 'Delete'}]}
+                    inputs = {[{ name: 'Nom Entreprise'},{ name: 'Sujet'},{ name: 'Confidentialité'},{ name: 'Date de debut'},{ name: 'Date de fin'},{ name: 'Supprimer'}]}
                     isAdding={isAdding}
                     isSearching={true}
                     isAddingTitle={'Nouveau stage'}
@@ -566,7 +544,7 @@ const Content = ({ type, setNewFormId }) => {
             return(
                 <ContentTitle 
                     researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'Nom du formulaire'},{ name: 'Description'},{ name: 'Edit'},{ name: 'Delete'}]}
+                    inputs = {[{ name: 'Nom du formulaire'},{ name: 'Description'},{ name: 'Supprimer'}]}
                     isAdding={isAdding}
                     isSearching={true}
                 />
@@ -601,19 +579,11 @@ const Content = ({ type, setNewFormId }) => {
             return (
                 <RenderContent 
                     data={data}
-                    fields={[
-                        { infoCellUpdate: 'Prenom',beUpdate:true, handleChangeCellUpdate: handleFirstNameChange,key:key[0]},
-                        { infoCellUpdate: 'Nom',beUpdate:true, handleChangeCellUpdate: handleNameChange,key:key[1]},
-                        { infoCellUpdate: 'Email',beUpdate:true, handleChangeCellUpdate: handleEmailChange,key:key[2]},
-                        { infoCellUpdate: 'Profile',beUpdate:true,handleChangeCellUpdate: handleProfileChange,key:key[3]},
-                    ]}
-                    inputs1 = {[
+                    inputs = {[
                         { infoCell: 'First Name', handleInpuChangeCell: handleFirstNameChange, type: 'text' },
                         { infoCell: 'Name', handleInpuChangeCell: handleNameChange, type: 'text' },
-                        { infoCell: 'Email', handleInpuChangeCell: handleEmailChange, type: 'text'}
-                    ]}
-                    inputs2 = {[
-                        { infoCell: 'Num Student', value: numStudent, handleInpuChangeCell: handleNumStudentChange, type: 'text' }
+                        { infoCell: 'Email', handleInpuChangeCell: handleEmailChange, type: 'text'},
+                        { infoCell: 'Num Student', value: numStudent, handleInpuChangeCell: handleNumStudentChange, type: 'selector' }
                     ]}
                     options = {[
                         {value: "",text: "Sélectionner profile", type: 'text' },
@@ -623,7 +593,6 @@ const Content = ({ type, setNewFormId }) => {
                         {value: "TUT",text: "TUT", type: 'text' },
                         {value: "PRO",text: "PRO", type: 'text' },
                     ]}
-                    selector = {true}
                     handleChangeSelect = {handleProfileChange}
                     infoCellSelect = {'Profile :'}
                     handleCreate = {handleCreateUser}
@@ -639,30 +608,16 @@ const Content = ({ type, setNewFormId }) => {
                 />
             );
         }
-        if (type === 'promo') {
+        if (type === 'session') {
             return(
             <RenderContent 
                 data={data}
-                fields={[
-                    { infoCellUpdate: 'Filière',beUpdate:false,key:key[0]},
-                    { infoCellUpdate: 'Annee',beUpdate:true, handleChangeCellUpdate: handleAnneeChange,key:key[1]},
-                    { infoCellUpdate: 'Directeur Nom',beUpdate:false,key:key[2]},
-                    { infoCellUpdate: 'Directeur Prenom',beUpdate:false,key:key[3]},
+                inputs={[
+                    { infoCell: 'Nom', handleInpuChangeCell: handleNomChange, type: 'text', value: data.nom },
+                    { infoCell: 'Etudiant', handleInpuChangeCell: handleNewEtudiantChange, type: 'object' },
+                    { infoCell: 'Jury', handleInpuChangeCell: handleNewJuryChange, type: 'object' }
                 ]}
-                inputs1 = {[
-                    { infoCell: 'Annee', handleInpuChangeCell: handleAnneeChange, type: 'text' },
-                ]}
-                inputs2 = {[
-                    { infoCell: 'Nom Filière', value: filiere, handleInpuChangeCell: handleNewFiliereChange, type: 'text' },
-                    { infoCell: 'Directeur Nom', value: directeurNom, handleInpuChangeCell: handleDirecteurNomChange, type: 'text' },
-                    { infoCell: 'Directeur Prenom', value: directeurPrenom, handleInpuChangeCell: handleDirecteurPrenomChange, type: 'text' },
-                ]}
-                options = {[
-                    {value: "",text: "Sélectionner filière", type: 'text' },
-                    {value: "new",text: "Ajouter une nouvelle filière", type: 'text' },
-                    ...specificData.map((data) => ({value: data.nom,text: data.nom, type: 'text' }))
-                ]}
-                selector = {true}
+                selector = {false}
                 handleChangeSelect = {handleFilièreChange}
                 infoCellSelect = {'Filière :'}
                 handleCreate = {handleCreatePromo}
@@ -679,14 +634,14 @@ const Content = ({ type, setNewFormId }) => {
             );
         }
         if (type === 'jury'){
-            <RenderContent 
+            return (<RenderContent 
             data={data}
             handleModify = {handleModify}
             handleSearch = {handleSearchJury}
             function = {'juryDetails'}
             type = {type}
             keys = {key}
-        />
+        />);
         }
         if (type === 'internship') {
             return(

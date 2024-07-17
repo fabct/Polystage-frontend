@@ -1,13 +1,48 @@
 import { buttonDeleteStyle, buttonStyle3 } from "../../../Styles";
-import InputSearch from "./InputSearch";
 import { useState } from 'react';
+import { post } from '../../../../service/service';
+import DataTable from './DataTable';
+import AddInSession from './AddInSession';
 
 const CreateContentForm = (props) => {
 
     const [selectedOption, setSelectedOption] = useState("");
+    const [selectedData, setSelectedData] = useState("");
+    const [add, setAdd] = useState(false);
+    const [availableData, setAvailableData] = useState([]);
+
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
+    };
+
+    const handleMemberAddClick = (id) => {
+        setSelectedData('');
+        setAdd(false);
+    };
+
+    const handleCancelClick = () => {
+        setSelectedData('');
+        setAdd(false);
+    };
+    
+    const handleSelectChange = (event) => {
+        setSelectedData(event.target.value);
+    };
+
+    const handleAdd = (key) => {
+        add ? setAdd(false) : setAdd(true);
+        if(key === 'Etudiant'){
+            return post(`userSearch/`, {search:'',profile:'ETU'}).then(data => {
+                if(data.error){
+                    console.error(data.error);
+                }
+                else{
+                    console.log(data);
+                    setAvailableData(data);
+                }
+            })
+        }
     };
 
     const inputsMap = {
@@ -15,48 +50,128 @@ const CreateContentForm = (props) => {
         "new": props.inputs2,
         // Ajoutez plus de clés ici pour plus de combinaisons de type et de valeur
     };
-    
+
     const inputs = inputsMap[selectedOption] || [];
 
-    return(
-        <div style={{margin: '10px 10px', backgroundColor:'white', border: '3px solid rgb(11, 96, 131)', borderRadius: '10px', boxShadow: '0px 4px 4px #00000040', padding: '10px', display: 'flex'}}>
-            <form>
-                {
-                    props.inputs1.map((input, index) => (
-                        <div key={index} style={props.cellAddStyle}> {input.infoCell}
-                            <InputSearch 
-                                onChange = {input.handleInpuChangeCell}
-                                marginLeft={'15px'}
-                                type={input.type}
-                            />
-                        </div>
-                    ))
-                }
-                {props.selector ? (
-                    <div style={props.cellAddStyle}> {props.infoCellSelect}
-                        <select style={{ marginLeft: '10px' }} onChange={(event) => {props.handleChangeSelect(event);handleOptionChange(event);}}>
+    const renderField = (key, value, type) => {
+        if(value === undefined && type === 'object'){
+            value = [];
+        }
+        else if(value === undefined){
+            value = '';
+        }
+
+        if (type === 'object') {
+            return (
+                <DataTable 
+                    title={key} 
+                    headers={['Id', 'Email', 'Nom', 'Prénom', 'Actions']}
+                    data={value.map(({ id, email, last_name, first_name }) => ({
+                        id,
+                        email,
+                        last_name,
+                        first_name,
+                    }))}
+                    handleRemove={props.handleRemove}
+                    handleRowClick={null}
+                    addButtonLabel={`Ajouter ${key}`}
+                    handleAdd={()=> handleAdd(key)}
+                />
+            );
+        }
+
+        if (type === 'boolean') {
+            return (
+                <div key={key}>
+                    <label>{key.replace('_', ' ')}: {value ? 'Oui' : 'Non'}</label>
+                </div>
+            );
+        }
+
+        if (type === 'selector') {
+            return (
+                <div key={key}>
+                    <label>{key.replace('_', ' ')}:</label>
+                    <select
+                        name={key}
+                        value={value}
+                        onChange={handleOptionChange}
+                    >
                         {props.options.map((option, index) => (
-                            <option value={option.value} key={index}>{option.text}</option>
+                            <option key={index} value={option.value}>{option.text}</option>
                         ))}
-                        </select>
-                    </div>
-                ):(
-                    <></>
-                )}
-                {inputs.map((input, index) => (
-                    <div key={index} style={props.cellAddStyle}> {input.infoCell}
-                        <InputSearch 
-                            onChange = {input.handleInpuChangeCell}
-                            marginLeft={'15px'}
-                            type={input.type}
-                        />
-                    </div>
-                ))}
-            </form>
-            <div style={{alignContent:'end'}}>
-                <button style={buttonDeleteStyle} onClick={props.handleCancel}>Annuler</button>
-                <button style={buttonStyle3} onClick={props.handleCreate}>Créer</button>
+                    </select>
+                </div>
+            );
+        }
+
+        if (key.includes('email')) {
+            return (
+                <div key={key}>
+                    <label>{key.replace('_', ' ')}:</label>
+                    <input
+                        type="email"
+                        name={key}
+                        value={value}
+                        onChange={props.handleInpuChangeCell}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <div key={key}>
+                <label>{key.replace('_', ' ')}:</label>
+                <input
+                    type="text"
+                    name={key}
+                    value={value}
+                    onChange={props.handleInpuChangeCell}
+                />
             </div>
+        );
+    };
+
+    const renderContent = () => {
+        if(add){
+            return(
+                <AddInSession 
+                title={`Ajouter`}
+                selected={selectedData}
+                availableData={availableData.map(({ id, first_name, last_name, email }) => ({
+                        id,
+                        first_name,
+                        last_name,
+                        email
+                }))}
+                handleSelectChange={handleSelectChange}
+                handleStudentAddClick={handleMemberAddClick}
+                handleCancelClick={handleCancelClick}
+                />
+            );
+        }
+
+        return (
+            <>
+                <form>
+                    {props.inputs.map((input, index) => (
+                        <div key={index} style={props.cellAddStyle}>
+                            {renderField(input.infoCell, input.value, input.type)}
+                        </div>
+                    ))}
+                </form>
+                <div className='button-group'>
+                    <button style={buttonDeleteStyle} onClick={props.handleCancel}>Annuler</button>
+                    <button style={buttonStyle3} onClick={props.handleCreate}>Créer</button>
+                </div>
+            </>
+        );
+    };
+
+    return (
+        <div className="modify-data-content">
+            {renderContent()}
+            
         </div>
     );
 }

@@ -53,13 +53,18 @@ function FormCreator(props) {
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
-        title: '',
+        titre: '',
         description: '',
+        session: '',
+        profile:'',
+        langue:'',
         questions: []
     });
 
     useEffect(() => {
-        modifyForm();
+        if(!props.create){
+            modifyForm();
+        }
         getUserInfo().then(data => {
             setUserInfo(data);
             setLoading(false);
@@ -136,7 +141,7 @@ function FormCreator(props) {
 
     const submitEditForm = () => {
         console.log(JSON.stringify(form));
-        post(`formulaireAllList/`, { id: props.id, title: form.title, description: form.description, question: form.questions }).then((data) => {
+        post(`createFormulaireAll/`, { id: props.id,langue:form.langue,profile:form.profile,session:form.session ,title: form.title, description: form.description, question: form.questions }).then((data) => {
             if (data.error) {
                 console.error(data.error);
             } else {
@@ -146,7 +151,7 @@ function FormCreator(props) {
     };
 
     const modifyForm = () => {
-        get(`formulaireAllDetails/${props.id}/`).then((data) => {
+        get(`getFormulaireAll/${props.id}/`).then((data) => {
             if (data.error) {
                 console.error(data.error);
             } else {
@@ -187,18 +192,20 @@ function FormCreator(props) {
                     data={userInfo}
                 />
                 <div style={{ gridArea: 'body', gridTemplateRows: 'auto auto', height: '100%', display: 'grid' }}>
+                    
+
                     <HeadForm
                         hasEditAccess={true}
                         onInputChange={onInputChange}
                         addQuestion={addQuestion}
-                        title={form.title}
+                        title={form.titre}
                         description={form.description}
                     />
                     {form.questions.map((question, index) => (
                         <Question
                             key={index}
                             index={index}
-                            title={question.title}
+                            title={question.titre}
                             type={question.type}
                             checkboxOptions={question.checkbox}
                             updateQuestion={updateQuestion}

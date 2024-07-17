@@ -30,87 +30,52 @@ const getNestedValue = (obj, key) => {
     return key.split('.').reduce((acc, part) => acc && acc[part] ? acc[part] : null, obj);
 };
 
-const trStyle = {
-    margin: '10px 10px',
-    backgroundColor:'white', 
-    border: '1px solid #ddd',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    borderRadius: '10px',
-    height: '50px',
-    display: 'flex'
-}
-
-const cellStyle = {textAlign: 'center', fontFamily: 'CalibriRegular', fontStyle: 'normal', flex: 1, margin: 'auto'}; // Add flex: 1 and width: auto
 
 const cellAddStyle = {margin:'10px', fontFamily: 'CalibriRegular', fontStyle: 'normal', flex: 1}; // Add flex: 1 and width: auto
 
-
-const RenderContent = (props) => {
-    
-    return ( 
-        <div style={{ height:'400px',overflow:'auto'}}>
-        { props.isAdding ? (
+const content = (props) => {
+    if(props.isAdding) {
+        return(
             <CreateContentForm 
-                inputs1={props.inputs1}
-                inputs2={props.inputs2}
+                inputs={props.inputs}
                 options={props.options}
-                selector={props.selector}
                 handleChangeSelect={props.handleChangeSelect}
                 infoCellSelect={props.infoCellSelect}
                 handleCreate={props.handleCreate}
                 handleCancel={props.handleCancel}
                 type={props.type}
                 cellAddStyle={cellAddStyle}
-                
-
             />
-            ) : (
-                <div id={props.content}>
-                    {props.data.map((data) => (
-                            <div style={trStyle} key={data.id}>
-                            {props.editingId === data.id ? (
-                                <>
-                                    {props.fields.map((field, index) => (
-                                        <div key={index} style={cellStyle}>
-                                            {field.infoCellUpdate} : 
-                                            {field.beUpdate ? (
-                                                <input style={{ marginLeft: '5px' }} defaultValue={getNestedValue(data, field.key)} onChange={field.handleChangeCellUpdate}/>
-                                                ):(
-                                                    <>
-                                                    {getNestedValue(data, field.key)}
-                                                    </>
-                                                )}
-                                        </div>
-                                    ))}
-                                    <button style={buttonDeleteStyle} onClick={props.handleCancel}>Annuler</button>
-                                    <button style={buttonStyle3} onClick={props.handleDoModify}>Valider</button>
-                            
-                                </>
-                                ) : (
-                                <>
-                                {props.keys.map((key) => (
-                                    <div style={cellStyle} key={key}>{getNestedValue(data, key)}</div>
-                                ))}
-                                <div style={cellStyle}>
-                                    <ModifyButton
-                                        handleModify={() => props.handleModify(data)}
-                                    />
-                                </div>
-                                <div style={cellStyle}>
-                                    <DeleteButton 
-                                        id={data.id}
-                                        refresh={props.handleSearch}
-                                        function={props.function}
-                                    />
-                                </div>
-                                </>
-                                )}
-                            </div>
-                    ))}
-                </div>
-            )
-        }
-        </div>
+        );
+    }
+    else{
+        return(
+            <div id={props.content} className="render-table">
+                {props.data.map((data) => (
+                    <div className="tr-style" key={data.id} onClick={() => props.handleModify(data)}> 
+                        {props.keys.map((key) => (
+                            <div className="cell-style" key={key}>{getNestedValue(data, key)}</div>
+                        ))}
+                        <div className="cell-style">
+                            <DeleteButton 
+                                id={data.id}
+                                refresh={props.handleSearch}
+                                function={props.function}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+}
+
+const RenderContent = (props) => {
+    
+    return ( 
+        <>
+            {content(props)}
+        </>
     );
 }
 

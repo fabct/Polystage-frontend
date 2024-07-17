@@ -1,12 +1,32 @@
+import Cookies from 'js-cookie';
 let url = 'http://localhost:8000';
 
+const getCookie = () =>{
+  const cookie = Cookies.get('userCookie');
+  let userData = {};
+  if (cookie) {
+    try {
+      userData = JSON.parse(cookie);
+      console.log(userData);
+      return userData.token;
+    } catch (error) {
+      console.error('Error parsing userCookie:', error);
+    }
+  }
+}
+
 const post = async (endpoint, data) => {
-  // Utilisez la variable 'url' ici
+  const token = getCookie();
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+  if (endpoint !== 'login/') {
+    const token = getCookie();
+    headers['Authorization'] = 'Token ' + token;
+  }
   const response = await fetch(`${url}/${endpoint}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: headers,
     body: JSON.stringify(data)
   });
 
@@ -14,22 +34,23 @@ const post = async (endpoint, data) => {
 };
 
 const get = async (endpoint) => {
-  // Utilisez la variable 'url' ici
+  const token = getCookie();
   const response = await fetch(`${url}/${endpoint}`, {
     method: 'GET',
     headers: {
+      'Authorization' : 'Token '+token,
       'Content-Type': 'application/json'
     }
   });
-
   return response.json();
 };
 
 const delet = async (endpoint) => {
-  // Utilisez la variable 'url' ici
+  const token = getCookie();
   const response = await fetch(`${url}/${endpoint}`, {
     method: 'DELETE',
     headers: {
+      'Authorization' : 'Token '+token,
       'Content-Type': 'application/json'
     }
   });
@@ -38,10 +59,11 @@ const delet = async (endpoint) => {
 };
 
 const put = async (endpoint, data) => {
-  // Utilisez la variable 'url' ici
+  const token = getCookie();
   const response = await fetch(`${url}/${endpoint}`, {
     method: 'PUT',
     headers: {
+      'Authorization' : 'Token '+token,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
