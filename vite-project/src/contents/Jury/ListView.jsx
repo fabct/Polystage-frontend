@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SearchContent from '../Admin/Content/Element/SearchContent';
+import Loading from '../Loading';
 
 const ListView = ({ soutenances }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -23,11 +24,11 @@ const ListView = ({ soutenances }) => {
 
 
     const handleSearch = () => {
-        console.log('Search');
+        return get
     }
 
     if(soutenances == null){
-        return <div>Loading...</div>;
+        return <Loading />;
     }
 
     return (

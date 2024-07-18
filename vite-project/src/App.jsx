@@ -58,7 +58,7 @@ function App() {
         <Route path="/admin" element={<PrivateRoute role="ADM" handleLogOutClick={handleLogOutClick}><AdminPage  handleLogOutClick={handleLogOutClick} setObjectId={setObjectId} setCreate={setCreate}/></PrivateRoute>}/>
         <Route path="/admin/form/:formId" element={<PrivateRoute role="ADM" handleLogOutClick={handleLogOutClick}><FormCreator id={objectId} handleLogOutClick={handleLogOutClick} create={create}/></PrivateRoute>}/>
         <Route path="/student" element={<PrivateRoute role="ETU" handleLogOutClick={handleLogOutClick}><GenericPage handleLogOutClick={handleLogOutClick} setObjectId={setObjectId}/></PrivateRoute>}/>
-        <Route path="/student/form/:formId" element={<PrivateRoute role="ETU" handleLogOutClick={handleLogOutClick}><FormRespond id={objectId} handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
+        <Route path="/:roleId/form/:formId" element={<PrivateRoute role="ETU" handleLogOutClick={handleLogOutClick}><FormRespond id={objectId} handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
         <Route path="/teacher" element={<PrivateRoute role="ENS" handleLogOutClick={handleLogOutClick}><GenericPage handleLogOutClick={handleLogOutClick} setObjectId={setObjectId}/></PrivateRoute>}/>
         <Route path="/tutor" element={<PrivateRoute role="TUT" handleLogOutClick={handleLogOutClick}><GenericPage handleLogOutClick={handleLogOutClick} setObjectId={setObjectId}/></PrivateRoute>}/>
       </Routes>

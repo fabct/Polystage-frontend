@@ -9,7 +9,7 @@
     text-align: center;
     color: #356084;
     margin-bottom: 20px;
-    font-family: 'CalibriRegular', sans-serif;
+    font-family: 'CalibriRegular';
 }
 
 .calendar-navigation {
@@ -136,7 +136,7 @@
     background-color: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial, sans-serif';
+    font-family: 'CalibriRegular';
 }
 
 .soutenance-list {
@@ -203,14 +203,14 @@
 /* Inf Sup */
 
 .infSup-container {
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: white;
     padding: 20px;
+    border-radius: 5px;
     margin: 20px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    max-width: 1000px;
+    margin: 20px auto;
+    font-family: 'CalibriRegular';
 }
 
 .infSup-header {
@@ -224,21 +224,82 @@
 
 .infSup-title {
     font-size: 24px;
-    color: #356084;
-    margin: 0;
-}
-
-.infSup-closeButton {
-    background-color: transparent;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    color: #999;
-}
-
-.infSup-content {
-    line-height: 1.6;
-    font-size: 16px;
     color: #333;
 }
 
+.infSup-closeButton {
+    background-color: #f44336;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 16px;
+}
+
+.infSup-closeButton:hover {
+    background-color: #d32f2f;
+}
+
+.infSup-content {
+    display: flex;
+    font-family: 'CalibriRegular';
+    font-size: 18px;
+    color: #555;
+}
+
+.infSup-content p {
+    margin: 10px 0;
+}
+
+.infSup-content h3 {
+    margin-top: 20px;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.info-jury {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: left;
+    font-family: 'CalibriRegular', sans-serif;
+}
+
+.info-jury h1 {
+    color: #003865;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.info-jury h2 {
+    color: #333;
+    font-size: 20px;
+    margin: 5px 0;
+}
+
+.info-jury .label {
+    font-weight: bold;
+    color: #0056b3;
+}
+
+.info-jury .value {
+    color: #333;
+}
+
+.infSup-content-inf{
+    margin-right: auto;
+}
+
+.jury-selector {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.jury-selector label {
+    margin-right: 10px;
+}

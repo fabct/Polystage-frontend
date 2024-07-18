@@ -45,7 +45,7 @@ const StudentPage = (props) => {
     }, []);
 
     const handleSearchInternship = () => {
-        return get('etudiantAll/'+props.userInfo.id+"/").then((data) => {
+        return get('etudiantAll/').then((data) => {
             if(data.error){
                 console.error(data.error);
             }
@@ -58,7 +58,10 @@ const StudentPage = (props) => {
     };
 
     const handleGetForm = () => {
-        return get(`formulaireDetails/40a90560-27a3-4727-9f07-ab6d21966b5f/`).then((data) => {
+        if(internshipData === null){
+            return;
+        }
+        return get(`formUser/${internshipData.stage.id}/`).then((data) => {
             if(data.error){
                 console.error(data.error);
             }
@@ -70,7 +73,7 @@ const StudentPage = (props) => {
     }
 
     const handleRespond = () => {
-        props.setNewFormId(formData.id);
+        props.setObjectId(formData.id);
         navigate(`/student/form/${formData.id}`);
     }
 

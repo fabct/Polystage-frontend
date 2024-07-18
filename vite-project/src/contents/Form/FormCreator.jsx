@@ -7,6 +7,7 @@ import Question from './Element/QuestionForm';
 import RightRespond from './Element/RightRespond';
 import { get, post } from '../../service/service';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../Loading';
 
 /*
     FormCreator
@@ -218,7 +219,7 @@ function FormCreator(props) {
     };
 
     if (loading) {
-        return <div>Loading...</div>; // replace with your actual loading component or message
+        return <Loading />; // replace with your actual loading component or message
     } else {
         return (
             <div style={{ gridTemplateArea: `'header header header' 'body body body'`, background: '#E6E6E6', height: '100%' }}>

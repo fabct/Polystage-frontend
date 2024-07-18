@@ -1,15 +1,16 @@
 import moment from 'moment';
 import 'moment/locale/fr'; // Si vous souhaitez utiliser la localisation française
+import Loading from '../Loading';
 
 const CalendarView = (props) => {
 
     if (props.soutenances == null) {
-        return <div>Loading...</div>;
+        return <Loading />;
     }
 
     const events = props.soutenances.map(soutenance => ({
-        title: `${soutenance.etudiant.first_name} ${soutenance.etudiant.last_name}`,
-        date: moment(soutenance.date_soutenance, "DD-MM-YYYY").toDate(),
+        title: `${soutenance.stage.etudiant.first_name} ${soutenance.stage.etudiant.last_name}`,
+        date: moment(soutenance.date_soutenance, "YYYY-MM-DD").toDate(),
         heure: soutenance.heure_soutenance,
         soutenance: soutenance,
     }));

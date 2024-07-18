@@ -5,6 +5,7 @@ import { getUserInfo } from "../service/function";
 import { post } from "../service/service";
 import StudentPage from "../contents/Student/StudentContent";
 import Jury from "../contents/Jury/Jury";
+import Loading from "../contents/Loading";
 
 const GenericPage = (props) => {
     const [userInfo, setUserInfo] = useState(null);
@@ -39,9 +40,9 @@ const GenericPage = (props) => {
     const renderRoleContent = () => {
         switch (userInfo.profile) {
             case 'ETU':
-                return <StudentPage userInfo={userInfo} setNewFormId={props.setNewFormId} />;
+                return <StudentPage userInfo={userInfo} setObjectId={props.setObjectId} role={'etudiant'}/>;
             case 'ENS':
-                return isJury.is_jury ? <Jury userInfo={userInfo}  isJury={isJury}/> : <div>Teacher</div>;
+                return isJury.is_jury ? <Jury userInfo={userInfo}  isJury={isJury} role={'jury'} setObjectId={props.setObjectId}/> : <div>Teacher</div>;
             case 'PRO':
                 return <div>Professional</div>;
             default:
@@ -50,7 +51,7 @@ const GenericPage = (props) => {
     }
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loading />;
     }
     else{
     return (
@@ -59,7 +60,7 @@ const GenericPage = (props) => {
             <div style={{ gridArea: 'body', gridTemplateRows: 'auto auto', height: '100%' }}>
                 <div style={{ position: 'relative' }}>
                     <div style={{ height: 'fit-content', backgroundColor: '#003865' }}>
-                        <h1 className="user-welcome-title"> Welcome Back {userInfo?.first_name} {userInfo?.last_name}</h1>
+                        <h1 className="user-welcome-title"> Bonjour {userInfo?.first_name} {userInfo?.last_name}</h1>
                     </div>
                 </div>
                 {renderRoleContent()}

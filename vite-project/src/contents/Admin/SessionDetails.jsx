@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { get, post } from '../../service/service';
 import DataTable from './Content/Element/DataTable';
 import AddInSession from './Content/Element/AddInSession';
+import Loading from '../Loading';
 
 const SessionDetails = (props) => {
     const [session, setSession] = useState(null);
@@ -74,9 +75,7 @@ const SessionDetails = (props) => {
 
     if (!session) {
         return (
-            <div className="loading">
-                <div>Loading...</div>
-            </div>
+            <Loading />
         );
     }
      

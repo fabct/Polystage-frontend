@@ -8,6 +8,7 @@ import SessionDetails from "../contents/Admin/SessionDetails";
 import ModifyData from "../contents/Admin/Content/ModifyData";
 import CreateContentForm from "../contents/Admin/Content/Element/CreateContentForm";
 import { useNavigate } from 'react-router-dom';
+import Loading from "../contents/Loading";
 
 const AdminPage = (props) => {
 
@@ -72,7 +73,7 @@ const AdminPage = (props) => {
     };
 
     if (loading) {
-        return <div>Loading...</div>; // replace with your actual loading component or message
+        return <Loading /> // replace with your actual loading component or message
     }
     else{
         return (
@@ -83,15 +84,12 @@ const AdminPage = (props) => {
                     data={userInfo}
                 />
                 <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr 1fr', height: '100%' }}>
-                    {/* Div 1 - NavBar */}
                     <div style={{ gridRow: '1 / span 2', gridColumn: '1', backgroundColor: '#003865',height:'100%'}}>
                         <NavBarAdmin 
                             onClick = {handleButtonClick}
                             selectedButton = {selectedButton}
                         />
                     </div>
-
-                    {/* Div 2 - Content */}
                     <div style={{ gridRow: '1', gridColumn: '2 / span 2', background: '#E6E6E6' }}>
                         {renderContent()}
                     </div>

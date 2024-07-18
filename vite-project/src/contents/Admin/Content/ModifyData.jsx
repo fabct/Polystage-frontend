@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { get, post } from '../../../service/service';
 import DataTable from './Element/DataTable';
 import AddInSession from './Element/AddInSession';
+import Loading from '../../Loading';
 
 const ModifyData = (props) => {
     const [dataDetails, setDataDetails] = useState(null);
@@ -68,7 +69,7 @@ const ModifyData = (props) => {
 
     const renderContent = () => {
         if (!dataDetails) {
-            return <div>Loading...</div>;
+            return <Loading />;
         }
 
         if(add){

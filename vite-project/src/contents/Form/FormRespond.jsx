@@ -3,6 +3,7 @@ import { get } from '../../service/service';
 import { getUserInfo } from '../../service/function';
 import HeaderContent from '../Header/HeaderContent';
 import HeadForm from './Element/HeadForm';
+import Loading from '../Loading';
 
 const FormRespond = (props) => {
     const [userInfo, setUserInfo] = useState(null);
@@ -81,7 +82,7 @@ const FormRespond = (props) => {
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
     };
     if (loading) {
-        return <div>Loading...</div>; // replace with your actual loading component or message
+        return <Loading />; // replace with your actual loading component or message
     } else {
         return (
             <div style={{ gridTemplateArea: `'header header header' 'body body body'`, background: '#E6E6E6', height: '100%' }}>
