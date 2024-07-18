@@ -1,9 +1,6 @@
 import LoginPage from './pages/Login';
 import AdminPage from './pages/Admin';
-import StudentPage from './contents/Student/StudentContent';
 import FormCreator from './contents/Form/FormCreator';
-import SessionDetails from './contents/Admin/SessionDetails';
-import Jury from './contents/Jury/Jury';
 
 import {Routes, Route} from "react-router-dom"; // Importez Routes et Route
 import Cookies from 'js-cookie';

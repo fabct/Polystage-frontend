@@ -47,7 +47,7 @@ const FormHeader = (props) => {
             <div>
                 <input
                     disabled={!props.hasEditAccess}
-                    name="title"
+                    name="titre"
                     onChange={(event) => props.onInputChange(event.target.name, event.target.value)}
                     placeholder="Titre du formulaire"
                     value={props.title}

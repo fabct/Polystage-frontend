@@ -4,7 +4,9 @@ import { getUserInfo } from "../../service/function";
 import HeaderContent from '../Header/HeaderContent';
 import HeadForm from './Element/HeadForm';
 import Question from './Element/QuestionForm';
+import RightRespond from './Element/RightRespond';
 import { get, post } from '../../service/service';
+import { useNavigate } from 'react-router-dom';
 
 /*
     FormCreator
@@ -52,12 +54,13 @@ import { get, post } from '../../service/service';
 function FormCreator(props) {
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [session, setSession] = useState([]);
     const [form, setForm] = useState({
-        titre: '',
-        description: '',
-        session: '',
-        profile:'',
-        langue:'',
+        titre: null,
+        description: null,
+        session: null,
+        profile:null,
+        langue:null,
         questions: []
     });
 
@@ -65,11 +68,14 @@ function FormCreator(props) {
         if(!props.create){
             modifyForm();
         }
+        getSession();
         getUserInfo().then(data => {
             setUserInfo(data);
             setLoading(false);
         });
     }, []);
+
+    const navigate = useNavigate();
 
     const onInputChange = (field, value) => {
         setForm({
@@ -81,7 +87,7 @@ function FormCreator(props) {
     const addQuestion = () => {
         setForm({
             ...form,
-            questions: [...form.questions, { title: '', type: 'text', checkbox: [] }]
+            questions: [...form.questions, { titre: '', type: 'text', checkbox: [] }]
         });
     };
 
@@ -105,7 +111,7 @@ function FormCreator(props) {
 
     const addCheckboxOption = (questionIndex) => {
         const newQuestions = [...form.questions];
-        const newCheckboxOptions = [...newQuestions[questionIndex].checkbox, { title: '' }];
+        const newCheckboxOptions = [...newQuestions[questionIndex].checkbox, { titre: '' }];
         newQuestions[questionIndex].checkbox = newCheckboxOptions;
         setForm({
             ...form,
@@ -131,7 +137,7 @@ function FormCreator(props) {
             if (!newQuestions[questionIndex].checkbox[optionIndex]) {
                 newQuestions[questionIndex].checkbox[optionIndex] = {};
             }
-            newQuestions[questionIndex].checkbox[optionIndex].title = value;
+            newQuestions[questionIndex].checkbox[optionIndex].titre = value;
             return {
                 ...currentForm,
                 questions: newQuestions
@@ -141,13 +147,28 @@ function FormCreator(props) {
 
     const submitEditForm = () => {
         console.log(JSON.stringify(form));
-        post(`createFormulaireAll/`, { id: props.id,langue:form.langue,profile:form.profile,session:form.session ,title: form.title, description: form.description, question: form.questions }).then((data) => {
+        console.log(props.id);
+        if(props.create){
+            return post(`createFormulaireAll/`, { id: props.id,langue:form.langue,profile:form.profile,session:form.session ,titre: form.titre, description: form.description, question: form.questions }).then((data) => {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    console.log(data);
+                    navigate('/admin');
+                }
+            });
+        }
+
+        return post(`modifyFormulaire/`, { id: props.id,langue:form.langue,profile:form.profile,session:form.session ,titre: form.titre, description: form.description, question: form.questions }).then((data) => {
             if (data.error) {
                 console.error(data.error);
             } else {
                 console.log(data);
+                navigate('/admin');
             }
         });
+
+        
     };
 
     const modifyForm = () => {
@@ -157,8 +178,11 @@ function FormCreator(props) {
             } else {
                 console.log("Data from API:", data); // Add this line
             const newForm = {
-                title: data.title,
+                titre: data.titre,
                 description: data.description,
+                session: data.session,
+                profile:data.profile,
+                langue:data.langue,
                 questions: data.question ? data.question.map(questions => ({
                     ...questions,
                     checkbox: questions.checkbox ? questions.checkbox : []
@@ -169,6 +193,18 @@ function FormCreator(props) {
             }
         });
     };
+
+    const getSession = () => {
+        return get(`sessionList/`).then((data) => {
+            if(data.error){
+                console.error(data.error);
+            }
+            else{
+                console.log(data);
+                setSession(data);
+            }
+        });
+    }
     
 
     const buttonStyle = {
@@ -192,7 +228,7 @@ function FormCreator(props) {
                     data={userInfo}
                 />
                 <div style={{ gridArea: 'body', gridTemplateRows: 'auto auto', height: '100%', display: 'grid' }}>
-                    
+                    <RightRespond session={session} onInputChange={onInputChange} form={form}/>
 
                     <HeadForm
                         hasEditAccess={true}

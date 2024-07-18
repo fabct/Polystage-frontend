@@ -61,7 +61,7 @@ const Question = ({ index, title, type, updateQuestion, deleteQuestion, checkbox
                 <textarea
                     name="description"
                     value={title}
-                    onChange={(e) => updateQuestion(index, 'title', e.target.value)}
+                    onChange={(e) => updateQuestion(index, 'titre', e.target.value)}
                     style={QuestionStyle}
                 ></textarea>
             </div>
