@@ -6,7 +6,7 @@ import {post} from '../service/service';
 import {useState} from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import role from '../service/app-local';
+import {role, role_str} from '../service/app-local';
 
 
 const LoginPage = () => {
@@ -27,16 +27,10 @@ const LoginPage = () => {
         navigate('/admin');
         break;
       case role[1]:
-        navigate(`/student`);
-        break;
       case role[2]:
-        navigate(`/teacher`);
-        break;
       case role[3]:
-        navigate(`/tutor`);
-        break;
       case role[4]:
-        navigate(`/${data.profile}`);
+        navigate(`/${role_str[data.profile]}`);
         break;
       default:
         navigate('/');

@@ -25,12 +25,33 @@ function PrivateRoute({ children, ...props }) {
   }
 
   useEffect(() => {
-    if (!userData.token || userData.profile !== props.role) {
-      console.log('User not logged in or wrong role')
+    if (!userData.token) {
+      console.log('User not logged in');
       props.handleLogOutClick();
       navigate('/');
+      return;
+  }
+
+    if (props.role) {
+      if (Array.isArray(props.role)) {
+        // If role is an array, check if userData.profile is in that array
+        if (!props.role.includes(userData.profile)) {
+          console.log('User does not have the right role');
+          props.handleLogOutClick();
+          navigate('/');
+          return;
+        }
+      } else {
+        // If role is not an array, check if userData.profile matches the role
+        if (userData.profile !== props.role) {
+          console.log('User does not have the right role');
+          props.handleLogOutClick();
+          navigate('/');
+          return;
+        }
+      }
     }
-  }, [userData, navigate]);
+  }, [userData, navigate, props]);
 
   return userData.token ? children : null;
 }
@@ -40,6 +61,8 @@ function App() {
   const navigate = useNavigate(); 
   const [objectId, setObjectId] = useState(null);
   const [create, setCreate] = useState(false);
+
+  const role = ['ETU', 'ENS', 'PRO', 'TUT'];
 
   const handleLogOutClick = () => {
     get('logout/').then(data => {
@@ -57,10 +80,8 @@ function App() {
         <Route path="/" element={<LoginPage handleLogOutClick={handleLogOutClick}/>} />
         <Route path="/admin" element={<PrivateRoute role="ADM" handleLogOutClick={handleLogOutClick}><AdminPage  handleLogOutClick={handleLogOutClick} setObjectId={setObjectId} setCreate={setCreate}/></PrivateRoute>}/>
         <Route path="/admin/form/:formId" element={<PrivateRoute role="ADM" handleLogOutClick={handleLogOutClick}><FormCreator id={objectId} handleLogOutClick={handleLogOutClick} create={create}/></PrivateRoute>}/>
-        <Route path="/student" element={<PrivateRoute role="ETU" handleLogOutClick={handleLogOutClick}><GenericPage handleLogOutClick={handleLogOutClick} setObjectId={setObjectId}/></PrivateRoute>}/>
-        <Route path="/:roleId/form/:formId" element={<PrivateRoute role="ETU" handleLogOutClick={handleLogOutClick}><FormRespond id={objectId} handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
-        <Route path="/teacher" element={<PrivateRoute role="ENS" handleLogOutClick={handleLogOutClick}><GenericPage handleLogOutClick={handleLogOutClick} setObjectId={setObjectId}/></PrivateRoute>}/>
-        <Route path="/tutor" element={<PrivateRoute role="TUT" handleLogOutClick={handleLogOutClick}><GenericPage handleLogOutClick={handleLogOutClick} setObjectId={setObjectId}/></PrivateRoute>}/>
+        <Route path="/:roleId" element={<PrivateRoute role={role} handleLogOutClick={handleLogOutClick}><GenericPage handleLogOutClick={handleLogOutClick} setObjectId={setObjectId}/></PrivateRoute>}/>
+        <Route path="/:roleId/form/:formId" element={<PrivateRoute role={role} handleLogOutClick={handleLogOutClick}><FormRespond objectId={objectId} handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
       </Routes>
   )
 }

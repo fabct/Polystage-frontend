@@ -1,12 +1,12 @@
 import HeaderContent from "../contents/Header/HeaderContent";
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getUserInfo } from "../service/function";
 import { post } from "../service/service";
 import StudentPage from "../contents/Student/StudentContent";
 import Jury from "../contents/Jury/Jury";
+import Tuteur from "../contents/Tuteur/Tuteur";
 import Loading from "../contents/Loading";
-import role from "../service/app-local";
+import {role} from "../service/app-local";
 
 const GenericPage = (props) => {
     const [userInfo, setUserInfo] = useState(null);
@@ -17,7 +17,7 @@ const GenericPage = (props) => {
         getUserInfo().then((data) => {
             setUserInfo(data);
             console.log(data.profile );
-            if (data.profile === 'ENS' || data.profile === 'PRO') {
+            if (data.profile === 'ENS' || data.profile === 'PRO' || data.profile === 'TUT') {
                 isJuryMember(data);
             }
             else{
@@ -43,9 +43,16 @@ const GenericPage = (props) => {
             case role[1]:
                 return <StudentPage userInfo={userInfo} setObjectId={props.setObjectId} role={'etudiant'}/>;
             case role[2]:
-                return isJury.is_jury ? <Jury userInfo={userInfo}  isJury={isJury} role={'jury'} setObjectId={props.setObjectId}/> : <div>Teacher</div>;
             case role[4]:
-                return <div>Professional</div>;
+                return isJury.is_jury ? <Jury userInfo={userInfo}  isJury={isJury} role={'jury'} setObjectId={props.setObjectId}/> : <div></div>;
+            case role[3]:
+                return (
+                    <>
+                        <Tuteur userInfo={userInfo} setObjectId={props.setObjectId} role={'tuteur'}/>
+                        {isJury.is_jury ? (<Jury userInfo={userInfo}  isJury={isJury} role={'jury'} setObjectId={props.setObjectId}/>) :( <div></div>)}
+                    </>
+                    
+                );
             default:
                 return <div>Role not found</div>;
         }

@@ -400,24 +400,159 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
     /*
         Pour import
     */
-   const handleUploadFile = () => {
+    const importDataStructureToUpload = {
+        user: ['email','first_name', 'last_name', 'profile', 'num_etudiant'],
+        stage: ['email_tuteur', 'sujet', 'confidentiel', 'date_debut', 'date_fin','nom_entreprise','num_etudiant','num_convention'],
+        session: ['nom'],
+        soutenance: ['num_convention', 'nom_session', 'date_soutenance', 'heure_soutenance', 'num_jury'],
+        // jury combination of jury and membresJury
+        jury: ['nom_session', 'num_jury', 'zoom', 'campus','batiment','salle'],
+        membresJury: ['membresJury'],  
+    };
+
+    const importDataFileStructure = {
+        Utilisateur : [ 'Email','First Name', 'Last Name', 'Profile', 'Num Etudiant'],
+        Stage : ['Email Tuteur', 'Sujet', 'Confidentiel', 'Date Debut', 'Date Fin', 'Nom Entreprise', 'Num Etudiant','Num de Convention'],
+        Session : ['Nom'],
+        Soutenance : ['Num Convention', 'Nom Session', 'Date Soutenance', 'Heure Soutenance', 'Num Jury'],
+        Jury : ['Nom Session','Num Jury','Zoom' ,'Campus', 'Batiment', 'Salle'],
+        MembresJury : ['Num Jury','Email']
+    };
+
+    const sectionMapping = {
+        Utilisateur: 'user',
+        Stage: 'stage',
+        Session: 'session',
+        Soutenance: 'soutenance',
+        Jury: 'jury',
+        MembresJury: 'membresJury'
+    };    
+
+    const handleUploadFile = () => {
+        console.log(file);
+        const transformedData = transformData(file, sectionMapping, importDataStructureToUpload, importDataFileStructure);
         if(fileType === 'user'){
-            console.log(file);
+            return post(`importUser/`, transformedData.user).then((data) => {
+                if(data.errors){
+                    for (const error of data.errors) {
+                        const error1 = JSON.stringify(error.error)
+                        const user = JSON.stringify(error.user)
+                        window.alert(error1+`\n`+user);
+                        setFile(null);
+                    }
+                }
+                else{
+                    setFile(null);
+                    window.alert('Utilisateur importé avec succès !');
+                }
+            });
         }
-        else if(fileType === 'stage'){
-            console.log(file);
+        else if(fileType === 'stage'){  
+            return post(`importStage/`, transformedData.stage).then((data) => {
+                if(data.errors){
+                    console.error(data.errors);
+                    for (const error of data.errors) {
+                        const error1 = JSON.stringify(error.errors)
+                        const stage = JSON.stringify(error.stage)
+                        window.alert(error1+`\n`+stage);
+                        setFile(null);
+                    }
+                }
+                else{
+                    setFile(null);
+                    window.alert('Stage importé avec succès !');
+                }
+            });
         }
         else if(fileType === 'soutenance'){
-            console.log(file);
+            console.log(transformedData);
+            return post(`importSoutenance/`, transformedData.soutenance).then((data) => {
+                if(data.errors){
+                    console.error(data.errors);
+                    for (const error of data.errors) {
+                        const error1 = JSON.stringify(error.errors)
+                        const stage = JSON.stringify(error.soutenance)
+                        window.alert(error1+`\n`+stage);
+                        setFile(null);
+                    }
+                }
+                else{
+                    setFile(null);
+                    window.alert('Soutenance importé avec succès !');
+                }
+            });
         }
         else if(fileType === 'jury'){
-            console.log(file);
+            console.log(transformedData);
+            return post(`importJury/`, {jury: transformedData.jury, membresJury: transformedData.membresJury}).then((data) => {
+                if(data.errors){
+                    console.error(data.errors);
+                    for (const error of data.errors) {
+                        const error1 = JSON.stringify(error.errors)
+                        const stage = JSON.stringify(error.jury)
+                        window.alert(error1+`\n`+stage);
+                        setFile(null);
+                    }
+                }
+                else{
+                    setFile(null);
+                    window.alert('Jury importé avec succès !');
+                }
+            });
+        }
+        else if(fileType === 'session'){
+            console.log(transformedData);
+            return post(`importSession/`, transformedData.session).then((data) => {
+                if(data.errors){
+                    for (const error of data.errors) {
+                        console.error(error);
+                        const error1 = JSON.stringify(error.errors)
+                        const session = JSON.stringify(error.session)
+                        window.alert(error1+`\n`+session);
+                        setFile(null);
+                    }
+                }
+                else{
+                    setFile(null);
+                    window.alert('Session importé avec succès !');
+                }
+            });
         }
         else{
             window.alert('Aucun type de fichier selectionné');
             setIsUpload(false);
         }
-   }
+    }
+
+    const transformData = (importedData, sectionMapping, dataStructureMap, fileStructureMap) => {
+        const transformedData = {};
+    
+        Object.keys(sectionMapping).forEach(section => {
+            const targetSection = sectionMapping[section];
+            const dataKeys = dataStructureMap[targetSection];
+            const fileKeys = fileStructureMap[section];
+    
+            // Vérifiez si la section existe dans les données importées
+            if (!importedData[section] || !fileKeys) return;
+    
+            if (section === 'MembresJury') {
+                transformedData[targetSection] = importedData[section].map(row => row['Email']);
+            } else {
+                transformedData[targetSection] = importedData[section].map(row => {
+                    const transformedRow = {};
+                    dataKeys.forEach((key, index) => {
+                        if(row[fileKeys[index]]){
+                            transformedRow[key] = row[fileKeys[index]];
+                        }
+                    });
+                    return transformedRow;
+                });
+            }
+        });
+    
+        return transformedData;
+    };
+
 
 
     /*

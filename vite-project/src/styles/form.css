@@ -22,6 +22,43 @@
     transition: box-shadow 0.3s ease, transform 0.3s ease;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Adds space between Select elements */
+    gap: 15px;
 }
 
+.formList-container{
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formList-title{
+  margin: 0 0 20px 0;
+  font-size: 30px;
+  font-family: 'CalibriRegular';
+  color: #356084;
+}
+
+.formList-overflow{
+  overflow: auto;
+  max-height: 500px;
+}
+
+.formList-details{
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.formList-details-style{
+  margin: 10px 0;
+  font-size: 18px;
+  font-family: 'CalibriRegular';
+  color: #333;
+}

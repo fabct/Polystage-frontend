@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from './Select';
-import role from '../../../service/app-local';
+import {role} from '../../../service/app-local';
 
 const RightRespond = (props) => {
 

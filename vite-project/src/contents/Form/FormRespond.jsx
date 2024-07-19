@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { get } from '../../service/service';
+import { post } from '../../service/service';
 import { getUserInfo } from '../../service/function';
 import HeaderContent from '../Header/HeaderContent';
 import HeadForm from './Element/HeadForm';
@@ -9,7 +9,7 @@ const FormRespond = (props) => {
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
-        title: '',
+        titre: '',
         description: '',
         questions: []
     });
@@ -24,20 +24,21 @@ const FormRespond = (props) => {
     }, []);
 
     const FormInfo = () => {
-        get(`formulaireAllDetails/${props.id}`).then((data) => {
+        return post(`responseFormulaire/`,{id_stage:props.objectId.stageId, id_formulaire:props.objectId.fromId}).then((data) => {
             if (data.error) {
                 console.error(data.error);
             } else {
                 console.log("Data from API:", data); // Add this line
             const newForm = {
-                title: data.title,
+                titre: data.titre,
                 description: data.description,
                 questions: data.question ? data.question.map(questions => ({
                     ...questions,
-                    checkbox: questions.checkbox ? questions.checkbox : []
+                    checkbox: questions.checkbox ? questions.checkbox : [],
+                    response: questions.responses ? questions.responses : []
                 })) : []
             };
-            console.log("New form data:", newForm); // Add this line
+            console.log("form data:", newForm); // Add this line
             setForm(newForm);
             }
         });
@@ -52,13 +53,16 @@ const FormRespond = (props) => {
     const submitResponse = () => {
     }
 
+    const saveResponse = () => {
+    }
+
     const buttonStyle = {
         backgroundColor: '#00AEEF',
         color: 'white',
         border: 'none',
         borderRadius: '5px',
         padding: '20px',
-        margin: '30px auto',
+        margin: '10px',
         cursor: 'pointer',
     };
 
@@ -94,18 +98,18 @@ const FormRespond = (props) => {
                 <div style={{ gridArea: 'body', gridTemplateRows: 'auto auto', height: '100%', display: 'grid' }}>
                     <HeadForm
                         hasEditAccess={false}
-                        title={form.title}
+                        title={form.titre}
                         description={form.description}
                     />
                     {form.questions.map((question, index) => (
                         <div style={containerStyle} key={index}>
-                            {question.title}
+                            {question.titre}
                             {question.type === 'checkbox' ? (
                                 question.checkbox.map((option, optionIndex) => (
                                     <div key={optionIndex}>
                                         <label>
-                                            <input type={question.type} name={option.title} value={option.title} onChange={(e) => onInputChange(e, index, optionIndex)} />
-                                            {option.title}
+                                            <input type={question.type} name={option.titre} value={option.titre} onChange={(e) => onInputChange(e, index, optionIndex)} />
+                                            {option.titre}
                                         </label>
                                     </div>
                                 ))
@@ -114,7 +118,10 @@ const FormRespond = (props) => {
                             )}
                         </div>
                     ))}
-                    <button style={buttonStyle} onClick={submitResponse}>Sauvegarder</button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', margin:'10px auto'}}>
+                        <button style={buttonStyle} onClick={submitResponse}>Envoyer</button>
+                        <button style={buttonStyle} onClick={saveResponse}>Brouillons</button>
+                    </div>
                 </div>
             </div>
         );
