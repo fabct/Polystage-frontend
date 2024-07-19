@@ -6,6 +6,7 @@ import { post } from "../service/service";
 import StudentPage from "../contents/Student/StudentContent";
 import Jury from "../contents/Jury/Jury";
 import Loading from "../contents/Loading";
+import role from "../service/app-local";
 
 const GenericPage = (props) => {
     const [userInfo, setUserInfo] = useState(null);
@@ -39,11 +40,11 @@ const GenericPage = (props) => {
 
     const renderRoleContent = () => {
         switch (userInfo.profile) {
-            case 'ETU':
+            case role[1]:
                 return <StudentPage userInfo={userInfo} setObjectId={props.setObjectId} role={'etudiant'}/>;
-            case 'ENS':
+            case role[2]:
                 return isJury.is_jury ? <Jury userInfo={userInfo}  isJury={isJury} role={'jury'} setObjectId={props.setObjectId}/> : <div>Teacher</div>;
-            case 'PRO':
+            case role[4]:
                 return <div>Professional</div>;
             default:
                 return <div>Role not found</div>;

@@ -1,23 +1,21 @@
-import '../../index.css'
-import HeaderContent from '../Header/HeaderContent';
 import {useState, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getUserInfo } from "../../service/function";
 import { get } from "../../service/service";
 import Info from './InternshipInfo';
-import { buttonStyle3 } from '../Styles';
+import FormList from '../CommunContent/FormList';
+import Loading from '../Loading';
 
 const StudentPage = (props) => {
-    const navigate = useNavigate();
-    const [noteData, setNoteData] = useState(null); // [ {id: 1, note: 12}, {id: 2, note: 15}, {id: 3, note: 10} ]
     const [formData, setFormData] = useState([]);
     const [existingInternship, setExistingInternship] = useState(false);
-    const [internshipData, setInternshipData] = useState(null);
+    const [noteData, setNoteData] = useState(null);
+    const [studentData, setStudentData] = useState(null);
 
+    const [selectedStageIndex, setSelectedStageIndex] = useState(0);
+    const [stageData, setStageData] = useState(null);
 
     const path = [
         {type : 'stage', keys: ['nom_entreprise','sujet','confidentiel','date_debut','date_fin']},
-        {type : 'soutenance', keys: ['date','time','place']},
+        {type : 'soutenance', keys: ['date_soutenance','heure_soutenance','place']},
         {type : 'resultat', keys: ['note']}
     ];
 
@@ -40,9 +38,21 @@ const StudentPage = (props) => {
 
     useEffect(() => {
         handleSearchInternship();
-        handleGetForm();
-        console.log(internshipData);
     }, []);
+
+    useEffect(() => {
+        if (stageData) {
+            handleGetForm();
+        }
+    }, [stageData]);
+
+
+    const handleStageChange = (event) => {
+        console.log(event.target.value);
+        setSelectedStageIndex(Number(event.target.value));
+        setStageData(studentData.stage[Number(event.target.value)]);
+        handleGetForm();
+    };
 
     const handleSearchInternship = () => {
         return get('etudiantAll/').then((data) => {
@@ -52,33 +62,39 @@ const StudentPage = (props) => {
             else{
                 console.log(data);
                 setExistingInternship(true);
-                setInternshipData(data);
+                setStudentData(data);
+                setStageData(data.stage[selectedStageIndex]);
             }
         });
     };
 
     const handleGetForm = () => {
-        if(internshipData === null){
-            return;
-        }
-        return get(`formUser/${internshipData.stage.id}/`).then((data) => {
+        return get(`formUser/${stageData.id}/`).then((data) => {
             if(data.error){
                 console.error(data.error);
             }
             else{
-                console.log(data);
                 setFormData(data);
             }
         })
     }
 
-    const handleRespond = () => {
-        props.setObjectId(formData.id);
-        navigate(`/student/form/${formData.id}`);
+    if (!existingInternship) {
+        return <Loading />;
     }
 
     return(
         <>
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
+                <label htmlFor="stageSelect" style={{ marginRight: '10px' }}>Sélectionnez un stage :</label>
+                <select id="stageSelect" value={selectedStageIndex} onChange={handleStageChange}>
+                    {studentData.stage.map((stage, index) => (
+                        <option key={stage.id} value={index}>
+                            {stage.nom_entreprise} - {stage.sujet}
+                        </option>
+                    ))}
+                </select>
+            </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'auto', gridTemplateRows: 'auto auto auto', gap: '10px', padding: '20px 20px 0px 20px' }}>
                 <Info
                     title={'Stage'}
@@ -86,7 +102,7 @@ const StudentPage = (props) => {
                     keys={path}
                     type={path[0].type}
                     descriptionKeys={descriptionKeys}
-                    data={internshipData}
+                    data={stageData}
                     existingInternship={existingInternship}
                 />
                 <Info
@@ -95,7 +111,7 @@ const StudentPage = (props) => {
                     keys={path}
                     type={path[1].type}
                     descriptionKeys={descriptionKeys}
-                    data={internshipData}
+                    data={stageData}
                     existingInternship={existingInternship}
                 />
                 <Info 
@@ -107,24 +123,7 @@ const StudentPage = (props) => {
                     data={noteData}
                     existingInternship={existingInternship}
                 />
-                <div style={containerStyle}>
-                    <h1 style={headerStyle}>Formulaires :</h1>
-                    <div style={formDetailsStyle}>
-                        <div style={detailItemStyle}>Titre : {formData.title}</div>
-                        <div style={detailItemStyle}>Description : {formData.description}</div>
-                        <button style={buttonStyle} onClick={handleRespond}>Remplir</button>
-                    </div>
-                </div>
-            </div>
-            <div style={{display:'grid', gridTemplateColumns:'auto auto',padding: '0px 20px 20px 20px'}}>
-               {/*<DragDrop
-                    title={'Presentation'}
-                    style={{display:'grid',margin:'5px 10px', gridColumn:'1/2', borderRadius:'20px',background:'white', padding: '10px'}}
-                />
-                <DragDrop
-                    title={'Rapport'}
-                    style={{margin:'5px 10px', gridColumn:'2/3', borderRadius:'20px',background:'white', padding: '10px'}}
-                /> */}
+                <FormList forms={formData} role={props.role} setObjectId={props.setObjectId}/>
             </div>
         </>
     );

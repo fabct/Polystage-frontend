@@ -1,23 +1,32 @@
 import React from 'react';
 
 const Info = (props) => {
-    if (!props.existingInternship || !props.data || !props.data[props.type]) {
-        return (
-            <div className='content-info' style={props.style}>
-                <h1 className='header-style-internship-info title-internship-info'>{props.title}</h1>
-                <h1 className='header-style-internship-info title-internship-info'>Revenez Bientôt</h1>
-            </div>
-        );
-        
+    if (props.type !== '') {
+        if (!props.existingInternship || !props.data) {
+            return (
+                <div className='content-info' style={props.style}>
+                    <h1 className='header-style-internship-info title-internship-info'>{props.title}</h1>
+                    <h1 className='header-style-internship-info title-internship-info'>Revenez Bientôt</h1>
+                </div>
+            );
+
+        }
     }
 
     const getNestedValue = (obj, key) => {
         return key.split('.').reduce((acc, part) => acc && acc[part] ? acc[part] : null, obj);
     };
-        
+
+    let dataObject = null ;
     const currentKeys = props.keys.find(keyObj => keyObj.type === props.type).keys;
     const currentDescriptions = props.descriptionKeys.find(descObj => descObj.type === props.type).keys;
-    const dataObject = props.data[props.type][0]
+    if(props.data[props.type]){
+        dataObject = props.data[props.type][0]
+    }
+    else{
+        dataObject = props.data;
+    }
+
 
     if (!dataObject) {
         return (

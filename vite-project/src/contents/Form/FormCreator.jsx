@@ -5,7 +5,7 @@ import HeaderContent from '../Header/HeaderContent';
 import HeadForm from './Element/HeadForm';
 import Question from './Element/QuestionForm';
 import RightRespond from './Element/RightRespond';
-import { get, post } from '../../service/service';
+import { get, post, put } from '../../service/service';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading';
 
@@ -159,8 +159,8 @@ function FormCreator(props) {
                 }
             });
         }
-
-        return post(`modifyFormulaire/`, { id: props.id,langue:form.langue,profile:form.profile,session:form.session ,titre: form.titre, description: form.description, question: form.questions }).then((data) => {
+        console.log(form.questions);
+        return put(`modifyFormulaireAll/${props.id}/`, {id: props.id,langue:form.langue,profile:form.profile,session:form.session ,titre: form.titre, description: form.description, question: form.questions }).then((data) => {
             if (data.error) {
                 console.error(data.error);
             } else {
@@ -178,18 +178,17 @@ function FormCreator(props) {
                 console.error(data.error);
             } else {
                 console.log("Data from API:", data); // Add this line
-            const newForm = {
-                titre: data.titre,
-                description: data.description,
-                session: data.session,
-                profile:data.profile,
-                langue:data.langue,
-                questions: data.question ? data.question.map(questions => ({
-                    ...questions,
-                    checkbox: questions.checkbox ? questions.checkbox : []
-                })) : []
-            };
-            console.log("New form data:", newForm); // Add this line
+                const newForm = {
+                    titre: data.titre,
+                    description: data.description,
+                    session: data.session,
+                    profile:data.profile,
+                    langue:data.langue,
+                    questions: data.question ? data.question.map(questions => ({
+                        ...questions,
+                        checkbox: questions.checkbox ? questions.checkbox : []
+                    })) : []
+                };
             setForm(newForm);
             }
         });
