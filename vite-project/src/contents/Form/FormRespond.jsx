@@ -13,7 +13,6 @@ const FormRespond = (props) => {
         description: '',
         questions: []
     });
-    const [response, setResponse] = useState([]);
 
     useEffect(() => {
         FormInfo();
@@ -24,37 +23,66 @@ const FormRespond = (props) => {
     }, []);
 
     const FormInfo = () => {
-        return post(`responseFormulaire/`,{id_stage:props.objectId.stageId, id_formulaire:props.objectId.fromId}).then((data) => {
+        return post(`responseFormulaire/`, { id_stage: props.objectId.stageId, id_formulaire: props.objectId.fromId }).then((data) => {
             if (data.error) {
                 console.error(data.error);
             } else {
-                console.log("Data from API:", data); // Add this line
-            const newForm = {
-                titre: data.titre,
-                description: data.description,
-                questions: data.question ? data.question.map(questions => ({
-                    ...questions,
-                    checkbox: questions.checkbox ? questions.checkbox : [],
-                    response: questions.responses ? questions.responses : []
-                })) : []
-            };
-            console.log("form data:", newForm); // Add this line
-            setForm(newForm);
+                console.log("Data from API:", data);
+                const newForm = {
+                    titre: data.titre,
+                    description: data.description,
+                    questions: data.question ? data.question.map(question => ({
+                        ...question,
+                        checkbox: question.checkbox ? question.checkbox : [],
+                    })) : []
+                };
+                console.log("form data:", newForm);
+                setForm(newForm);
             }
         });
     };
 
-    const onInputChange = (e, index) => {
-        const responseCopy = [...response];
-        responseCopy[index] = e.target.value;
-        setResponse(responseCopy);
-    }
+    const onInputChange = (e, questionIndex) => {
+        const newQuestions = [...form.questions];
+        newQuestions[questionIndex].response.stage = props.objectId.stageId;
+        newQuestions[questionIndex].response.content = e.target.value;
+        setForm({
+            ...form,
+            questions: newQuestions
+        });
+    };
+
+    const onInputCheckboxChange = (e, questionIndex, optionIndex) => {
+        const newQuestions = [...form.questions];
+        newQuestions[questionIndex].checkbox[optionIndex].response.stage = props.objectId.stageId;
+        newQuestions[questionIndex].checkbox[optionIndex].response.valeur = e.target.checked;
+        setForm({
+            ...form,
+            questions: newQuestions
+        });
+    };
 
     const submitResponse = () => {
-    }
+        return post(`validateFormulaire/`, {id: props.objectId.fromId, formulaire : form ,langue:form.langue,profile:form.profile,session:form.session ,titre: form.titre, description: form.description, question: form.questions }).then((data) => {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                console.log("Data Saved", data);
+            }
+        }
+        );
+    };
 
-    const saveResponse = () => {
-    }
+    const saveBrouillonResponse = () => {
+        return post(`saveFormulaire/`, {id: props.objectId.fromId, formulaire : form ,langue:form.langue,profile:form.profile,session:form.session ,titre: form.titre, description: form.description, question: form.questions }).then((data) => {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                console.log("Data Saved", data);
+            }
+        }
+        );
+    };
 
     const buttonStyle = {
         backgroundColor: '#00AEEF',
@@ -85,6 +113,7 @@ const FormRespond = (props) => {
         maxWidth: '800px', // Assurez-vous que cette valeur correspond à celle de FormHeader
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
     };
+
     if (loading) {
         return <Loading />; // replace with your actual loading component or message
     } else {
@@ -108,24 +137,24 @@ const FormRespond = (props) => {
                                 question.checkbox.map((option, optionIndex) => (
                                     <div key={optionIndex}>
                                         <label>
-                                            <input type={question.type} name={option.titre} value={option.titre} onChange={(e) => onInputChange(e, index, optionIndex)} />
+                                            <input type="checkbox" name={option.titre} checked={option.response.valeur} onChange={(e) => onInputCheckboxChange(e, index, optionIndex)} />
                                             {option.titre}
                                         </label>
                                     </div>
                                 ))
                             ) : (
-                                <input style={InputStyle} type={question.type} onChange={(e) => onInputChange(e, index)} />
+                                <input style={InputStyle} type={question.type} value={question.response.content} onChange={(e) => onInputChange(e, index)} />
                             )}
                         </div>
                     ))}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', margin:'10px auto'}}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', margin: '10px auto' }}>
                         <button style={buttonStyle} onClick={submitResponse}>Envoyer</button>
-                        <button style={buttonStyle} onClick={saveResponse}>Brouillons</button>
+                        <button style={buttonStyle} onClick={saveBrouillonResponse}>Brouillons</button>
                     </div>
                 </div>
             </div>
         );
     }
-}
+};
 
 export default FormRespond;
