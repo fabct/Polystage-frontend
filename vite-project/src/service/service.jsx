@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-const url = import.meta.env.BACKEND_URL || 'http://localhost:8000';
+const url = process.env.BACKEND_URL || 'http://localhost:8000';
 
 console.log(process.env.BACKEND_URL);
 
