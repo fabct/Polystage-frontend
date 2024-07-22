@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 const url = import.meta.env.BACKEND_URL || 'http://localhost:8000';
 
-console.log(import.meta.env.BACKEND_URL);
+console.log(process.env.BACKEND_URL);
 
 const getCookie = () =>{
   const cookie = Cookies.get('userCookie');
