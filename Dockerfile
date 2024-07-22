@@ -7,11 +7,15 @@ RUN npm install
 
 COPY vite-project/ ./
 
-ENV VITE_PORT=${PORT}
-ENV VITE_HOST=${HOST}
-ENV BACKEND_URL=${BACKEND_URL}
+ARG PORT
+ENV VITE_PORT=$PORT
+ARG HOST
+ENV VITE_HOST=$HOST
+ARG BACKEND_URL
+ENV BACKEND_URL=$BACKEND_URL
+
 RUN npm run build
 
-EXPOSE ${PORT}
+EXPOSE $PORT
 
-CMD [ "npm", "run", "preview" ]
+CMD ["npm", "run", "preview"]

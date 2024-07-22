@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 
-const port = process.env.VITE_PORT || 8080; // Utilisez une valeur par défaut si non défini
+const port = parseInt(process.env.VITE_PORT, 10) || 8080;
 const host = process.env.VITE_HOST || 'localhost';
 
 export default defineConfig({
@@ -10,10 +10,11 @@ export default defineConfig({
   preview: {
     port: port,
     strictPort: true,
+    host: host
    },
    server: {
     port: port,
     strictPort: true,
-    host: true,
+    host: host,
    },
 })
