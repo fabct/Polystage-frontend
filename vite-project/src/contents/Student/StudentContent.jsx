@@ -25,17 +25,6 @@ const StudentPage = (props) => {
         {type : 'resultat', keys: ['Note']}
     ];
 
-    const trStyle = {
-        margin: '10px 10px',
-        backgroundColor:'white',  
-        borderRadius: '10px',
-        boxShadow: '0px 4px 4px #00000040',
-        height: '50px',
-        display: 'flex',
-        gridColumn: '1/4', 
-        gridRow: '3/3'
-    }
-
     useEffect(() => {
         handleSearchInternship();
     }, []);

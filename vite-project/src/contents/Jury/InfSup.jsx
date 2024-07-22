@@ -54,7 +54,7 @@ const InfSup = (props) => {
                     <p><strong>Email: </strong>{props.infSupData.stage.etudiant.email}</p>
                 </div>
                 <div className='infSup-content-form'>
-                    <FormList forms={formData} role={props.role} setObjectId={props.setObjectId}/>
+                    <FormList forms={formData} role={props.role} setObjectId={props.setObjectId} stageId={props.infSupData.stage.id}/>
                 </div>
             </div>
         </div>

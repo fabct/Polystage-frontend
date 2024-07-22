@@ -5,7 +5,7 @@ const FormList = (props) => {
     const navigate = useNavigate();
 
     const handleRespond = (id) => {
-        props.setObjectId({fromId:id, stageId:props.stageId});
+        props.setObjectId({fromId:id, stageId:props.stageId, role:props.role});
         navigate(`/${props.role}/form/${id}`);
     };
 
