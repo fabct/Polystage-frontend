@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import FormRespond from './contents/Form/FormRespond';
 import GenericPage from './pages/GenericPage';
 import { get } from './service/service';
+import Confidentiel from './contents/InformationComplémentaire/Confidentiel';
 
 function PrivateRoute({ children, ...props }) {
   const navigate = useNavigate();
@@ -82,6 +83,8 @@ function App() {
         <Route path="/admin/form/:formId" element={<PrivateRoute role="ADM" handleLogOutClick={handleLogOutClick}><FormCreator id={objectId} handleLogOutClick={handleLogOutClick} create={create}/></PrivateRoute>}/>
         <Route path="/:roleId" element={<PrivateRoute role={role} handleLogOutClick={handleLogOutClick}><GenericPage handleLogOutClick={handleLogOutClick} setObjectId={setObjectId}/></PrivateRoute>}/>
         <Route path="/:roleId/form/:formId" element={<PrivateRoute role={role} handleLogOutClick={handleLogOutClick}><FormRespond objectId={objectId} handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
+        <Route path="/confidentiel" element={<Confidentiel />}/>
+        <Route path="*" element={<div>Page not found</div>} />
       </Routes>
   )
 }

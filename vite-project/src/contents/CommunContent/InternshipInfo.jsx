@@ -21,7 +21,7 @@ const Info = (props) => {
     const currentKeys = props.keys.find(keyObj => keyObj.type === props.type).keys;
     const currentDescriptions = props.descriptionKeys.find(descObj => descObj.type === props.type).keys;
     if(props.data[props.type]){
-        dataObject = props.data[props.type][0]
+        dataObject = props.data[props.type][0] ? props.data[props.type][0] : props.data[props.type];
     }
     else{
         dataObject = props.data;
@@ -39,12 +39,13 @@ const Info = (props) => {
     return (
         <div className='content-info content-true' style={props.style}>
             <h1 className='header-style-internship-info title-content-internship-info'>{props.title}</h1>
-            {currentKeys.map((key, index) => (
-                <div key={index} className='.info-item-internship-info'>
-                    <div className='description-internship-info'>{currentDescriptions[index]}:</div>
-                    <div className='value-internship-info'>{getNestedValue(dataObject,key)}</div>
-                </div>
-            ))}
+            <div className='internship-info-container'>
+                {currentKeys.map((key, index) => (
+                    <div key={index} className='info-item-internship-info'>
+                        <div className='description-internship-info'>{currentDescriptions[index]}: {getNestedValue(dataObject,key)}</div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

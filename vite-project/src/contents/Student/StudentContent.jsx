@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import { get } from "../../service/service";
-import Info from './InternshipInfo';
+import Info from '../CommunContent/InternshipInfo';
 import FormList from '../CommunContent/FormList';
 import Loading from '../Loading';
 

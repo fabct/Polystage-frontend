@@ -33,7 +33,8 @@ const FormRespond = (props) => {
     const FormInfo = () => {
         return post(`responseFormulaire/`, { id_stage: props.objectId.stageId, id_formulaire: props.objectId.fromId }).then((data) => {
             if (data.error) {
-                console.error(data.error);
+                navigate(`/${props.objectId.role}`);
+                window.alert(data.error);
             } else {
                 console.log("Data from API:", data);
                 const newForm = {

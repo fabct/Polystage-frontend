@@ -27,23 +27,23 @@
     width: 100%;
 }
 
+.internship-info-container {
+    margin-top: 20px;
+  }
+  
 .info-item-internship-info {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #356084;
+    margin: 5px;
 }
-
+  
+.info-item-internship-info:last-child {
+    border-bottom: none;
+}
+  
 .description-internship-info {
-    font-size: 16px;
     font-family: 'CalibriRegular';
-    font-weight: bold;
     color: #333;
+    font-size: 16px;
+    flex: 1;
 }
-
-.content-true:hover {
-    background: #356084;
-    cursor: pointer;
-}
+  
