@@ -2,29 +2,31 @@
 function ButtonNavBar(props){
 
     const buttonStyle={
-        margin:'10px 20px',
-        border:'none',
-        backgroundColor: '#003865', 
+        margin:'10px 0',
+        border:'none', 
+        backgroundColor: props.isSelected ? '#00AEEF':'#003865', 
         fontFamily: 'CalibriRegular', 
-        fontSize: '36px', 
+        fontSize: '25px', 
         fontStyle: 'normal', 
         fontWeight: '400', 
         lineHeight: 'normal', 
         textAlign: 'left',
-        color: props.isSelected ? '#00AEEF':'#FFF',
+        color: '#FFF',
         display: 'flex',
         alignItems: 'center',
     }
 
 
     return(
-        <button 
-            style={buttonStyle} 
-            onClick={props.onClick}
+        <li className="nav-item my-0" style={buttonStyle}>
+            <a className="nav-link mx-3 my-2" style={{ "--bs-icon-link-transform": "translate3d(0, -.125rem, 0)" }} aria-current="page" 
+                href="#" 
+                onClick={props.onClick}
             >
-            <img src={props.logo} style={{marginRight:'15px'}}/>
-            {props.title}
-        </button>
+                <img src={props.logo} style={{marginRight:'15px', width:'25px', height:'25px'}}/>
+                {props.title}
+            </a>
+        </li>
     );
 }
 

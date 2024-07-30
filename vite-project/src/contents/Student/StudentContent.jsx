@@ -15,13 +15,13 @@ const StudentPage = (props) => {
 
     const path = [
         {type : 'stage', keys: ['nom_entreprise','sujet','confidentiel','date_debut','date_fin']},
-        {type : 'soutenance', keys: ['date_soutenance','heure_soutenance','place']},
+        {type : 'soutenance', keys: ['date_soutenance','heure_soutenance','jury.campus','jury.batiment','jury.salle','jury.num_jury','jury.zoom']},
         {type : 'resultat', keys: ['note']}
     ];
 
     const descriptionKeys = [
         {type : 'stage', keys: ['Company','Subject','Confidential','Start date','End date']},
-        {type : 'soutenance', keys: ['Date','Time']},
+        {type : 'soutenance', keys: ['Date','Time', 'Campus', 'Batiment', 'Salle', 'Jury n°', 'Lien Zoom']},
         {type : 'resultat', keys: ['Note']}
     ];
 
@@ -39,6 +39,13 @@ const StudentPage = (props) => {
     const handleStageChange = (event) => {
         console.log(event.target.value);
         setSelectedStageIndex(Number(event.target.value));
+        const value = studentData.stage[Number(event.target.value)].confidentiel;
+        if (value !== 'Oui' && value !== 'Non') {
+            studentData.stage[Number(event.target.value)].confidentiel = value ? 'Oui' : 'Non';
+        }
+        if(studentData.stage[Number(event.target.value)].soutenance[0].soutenu){
+            setNoteData({note :studentData.stage[Number(event.target.value)].soutenance[0].note});
+        }
         setStageData(studentData.stage[Number(event.target.value)]);
         handleGetForm();
     };
@@ -50,9 +57,13 @@ const StudentPage = (props) => {
             }
             else{
                 console.log(data);
-                setExistingInternship(true);
-                setStudentData(data);
+                setStudentData(data);        
+                data.stage[selectedStageIndex].confidentiel = data.stage[selectedStageIndex].confidentiel ? 'Oui' : 'Non';
+                if(!data.stage[selectedStageIndex].soutenance[0].soutenu){
+                    setNoteData({note :data.stage[selectedStageIndex].soutenance[0].note});
+                }
                 setStageData(data.stage[selectedStageIndex]);
+                setExistingInternship(true);
             }
         });
     };
@@ -74,20 +85,20 @@ const StudentPage = (props) => {
 
     return(
         <>
-            <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
-                <label htmlFor="stageSelect" style={{ marginRight: '10px' }}>Sélectionnez un stage :</label>
-                <select id="stageSelect" value={selectedStageIndex} onChange={handleStageChange}>
-                    {studentData.stage.map((stage, index) => (
-                        <option key={stage.id} value={index}>
-                            {stage.nom_entreprise} - {stage.sujet}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'auto', gridTemplateRows: 'auto auto auto', gap: '10px', padding: '20px 20px 0px 20px' }}>
+            <div className='mx-4 mt-2' style={{ display: 'grid', gridTemplateColumns: 'auto', gridTemplateRows: 'auto auto auto', gap: '10px'}}>
+                <div className='form-floating' style={{gridColumn: '1/4', gridRow: '1/2'}}>
+                    <select className="form-select" id="floatingSelect" aria-label="Floating label select example" value={selectedStageIndex} onChange={handleStageChange}>
+                        {studentData.stage.map((stage, index) => (
+                            <option key={stage.id} value={index}>
+                                {stage.nom_entreprise} - {stage.sujet}
+                            </option>
+                        ))}
+                    </select>
+                    <label htlmfor="floatingSelect">Sélectionnez un stage</label>
+                </div>
                 <Info
                     title={'Stage'}
-                    style={{gridColumn: '1/2', gridRow: '1/2'}}
+                    style={{gridColumn: '1/2', gridRow: '2/3'}}
                     keys={path}
                     type={path[0].type}
                     descriptionKeys={descriptionKeys}
@@ -96,7 +107,7 @@ const StudentPage = (props) => {
                 />
                 <Info
                     title={'Convocation'}
-                    style={{gridColumn:'2/3', gridRow:'1/2'}}
+                    style={{gridColumn:'2/3', gridRow:'2/3'}}
                     keys={path}
                     type={path[1].type}
                     descriptionKeys={descriptionKeys}
@@ -105,14 +116,14 @@ const StudentPage = (props) => {
                 />
                 <Info 
                     title={'Resultat'}
-                    style={{gridColumn: '3', gridRow: '1/2'}}
+                    style={{gridColumn: '3', gridRow: '2/3'}}
                     keys={path}
                     type={path[2].type}
                     descriptionKeys={descriptionKeys}
                     data={noteData}
                     existingInternship={existingInternship}
                 />
-                <div style={{margin: '0 10px',display: 'grid',gridColumn: '1/4',gridRow: '3/3'}}>
+                <div style={{display: 'grid',gridColumn: '1/4',gridRow: '3/3'}}>
                     <FormList forms={formData} role={props.role} setObjectId={props.setObjectId} stageId={stageData.id}/>
                 </div>
             </div>

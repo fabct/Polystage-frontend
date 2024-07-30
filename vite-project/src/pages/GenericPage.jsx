@@ -41,14 +41,14 @@ const GenericPage = (props) => {
     const renderRoleContent = () => {
         switch (userInfo.profile) {
             case role[1]:
-                return <StudentPage userInfo={userInfo} setObjectId={props.setObjectId} role={'etudiant'}/>;
+                return <StudentPage userInfo={userInfo} setObjectId={props.setObjectId} role={'ETU'}/>;
             case role[2]:
             case role[4]:
                 return isJury.is_jury ? <Jury userInfo={userInfo}  isJury={isJury} role={'jury'} setObjectId={props.setObjectId}/> : <div></div>;
             case role[3]:
                 return (
                     <>
-                        <Tuteur userInfo={userInfo} setObjectId={props.setObjectId} role={'tuteur'}/>
+                        <Tuteur userInfo={userInfo} setObjectId={props.setObjectId} role={'TUT'}/>
                         {isJury.is_jury ? (<Jury userInfo={userInfo}  isJury={isJury} role={'jury'} setObjectId={props.setObjectId}/>) :( <div></div>)}
                     </>
                     
@@ -64,10 +64,10 @@ const GenericPage = (props) => {
     else{
     return (
         <div className='general-content' style={{ gridTemplateArea: `'header header header' 'body body body'` }}>
-            <HeaderContent gridArea={'header'} handleLogOutClick={props.handleLogOutClick} data={userInfo} />
+            <HeaderContent gridArea={'header'} handleLogOutClick={props.handleLogOutClick} data={userInfo} profileInfo={true}/>
             <div style={{ gridArea: 'body', gridTemplateRows: 'auto auto', height: '100%' }}>
                 <div style={{ position: 'relative' }}>
-                    <div style={{ height: 'fit-content', backgroundColor: '#003865' }}>
+                    <div className='p-2' style={{ height: 'fit-content', backgroundColor: '#003865' }}>
                         <h1 className="user-welcome-title"> Bonjour {userInfo?.first_name} {userInfo?.last_name}</h1>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Info from '../CommunContent/InternshipInfo';
 import FormList from '../CommunContent/FormList';
 import Loading from '../Loading';
+import { WarningAlert } from '../CommunContent/Alert';
 
 const Tuteur = (props) => {
     const [data, setData] = useState(null);
@@ -85,30 +86,27 @@ const Tuteur = (props) => {
 
     return (
         <>
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
-            <label htmlFor="stageSelect" style={{ marginRight: '10px' }}>Sélectionnez un stage :</label>
-            <select id="stageSelect" value={selectedStageIndex} onChange={handleStageChange}>
-                {data.map((stage, index) => (
-                    <option key={stage.id} value={index}>
-                        {stage.nom_entreprise} - {stage.sujet}
-                    </option>
-                ))}
-            </select>
-        </div>
         {confidentiel?(
-        <>
-        
-        </>
-        ):(
-        <>
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}> Le stage est confidentiel 
-            <button onClick={handleConfidentiel}>En savoir Plus</button>
-            </div>
-        </>)}
+            <>
+                <WarningAlert message={'Le stage est confidentiel'} message_link={'en savoir +'} handleChange={handleConfidentiel}/>
+            </>
+            ):(
+            <>
+            </>)}
         <div style={{ display: 'grid', gridTemplateColumns: 'auto', gridTemplateRows: 'auto auto auto', gap: '10px', padding: '20px 20px 0px 20px' }}>
+            <div className='form-floating' style={{ gridColumn: '1/10', gridRow: '1/2' }}>
+                <select className="form-select" id="floatingSelect" aria-label="Floating label select example"  value={selectedStageIndex} onChange={handleStageChange}>
+                    {data.map((stage, index) => (
+                        <option key={stage.id} value={index}>
+                            {stage.nom_entreprise} - {stage.sujet}
+                        </option>
+                    ))}
+                </select>
+                <label htlmfor="floatingSelect">Sélectionnez un stage </label>
+            </div>
             <Info
                 title={'Stage'}
-                style={{ gridColumn: '1/5', gridRow: '1/2' }}
+                style={{ gridColumn: '1/5', gridRow: '2/3' }}
                 keys={path}
                 type={path[0].type}
                 descriptionKeys={descriptionKeys}
@@ -117,14 +115,14 @@ const Tuteur = (props) => {
             />
             <Info
                 title={'Etudiant'}
-                style={{ gridColumn: '5/10', gridRow: '1/2' }}
+                style={{ gridColumn: '5/10', gridRow: '2/3' }}
                 keys={path}
                 type={path[1].type}
                 descriptionKeys={descriptionKeys}
                 data={stageData}
                 existingInternship={existingInternship}
             />
-            <div style={{margin: '0 10px',display: 'grid',gridColumn: '1/10',gridRow: '3/3'}}>
+            <div style={{display: 'grid',gridColumn: '1/10',gridRow: '3/3'}}>
                 <FormList forms={formData} role={props.role} setObjectId={props.setObjectId} stageId={stageData.id}/>
             </div>
         </div>

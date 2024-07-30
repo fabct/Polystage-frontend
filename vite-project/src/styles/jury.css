@@ -1,52 +1,13 @@
-.calendar-container {
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.mes-infos-container {
+    border-radius: 2px;
+    padding: 10px;
     background-color: white;
 }
 
-.calendar-title {
+.mes-infos-title {
     text-align: center;
     color: #356084;
-    margin-bottom: 20px;
     font-family: 'CalibriRegular';
-}
-
-.calendar-navigation {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-.calendar-navigation button {
-    background-color: #356084;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 0 10px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.calendar-navigation button:hover {
-    background-color: #274a6e;
-}
-
-.calendar-grid {
-    display: flex;
-    justify-content: space-between;
-}
-
-.day-column {
-    flex: 1;
-    margin: 10px;
-}
-
-.day-column h3 {
-    text-align: center;
-    color: #003865;
-    font-size: 1.2em;
-    margin-bottom: 10px;
 }
 
 .event {
@@ -133,7 +94,7 @@
 /* List View */
 .list-container {
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: 'CalibriRegular';
@@ -205,11 +166,8 @@
 .infSup-container {
     background: white;
     padding: 20px;
-    border-radius: 5px;
-    margin: 20px;
+    border-radius: 2px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    max-width: 1000px;
-    margin: 20px auto;
     font-family: 'CalibriRegular';
 }
 
@@ -233,7 +191,7 @@
     color: white;
     padding: 5px 10px;
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: 100%;
     font-size: 16px;
 }
 
@@ -259,24 +217,13 @@
     padding-bottom: 5px;
 }
 
-.info-jury {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 20px auto;
-    text-align: left;
-    font-family: 'CalibriRegular', sans-serif;
-}
-
-.info-jury h1 {
+.info-jury-h1 {
     color: #003865;
     font-size: 28px;
     margin-bottom: 10px;
 }
 
-.info-jury h2 {
+.info-jury-h2 {
     color: #333;
     font-size: 20px;
     margin: 5px 0;

@@ -6,7 +6,7 @@ import Content from "../contents/Admin/Content";
 import { getUserInfo } from "../service/function";
 import SessionDetails from "../contents/Admin/SessionDetails";
 import ModifyData from "../contents/Admin/Content/ModifyData";
-import CreateContentForm from "../contents/Admin/Content/Element/CreateContentForm";
+import icon from '../assets/icon.svg';
 import { useNavigate } from 'react-router-dom';
 import Loading from "../contents/Loading";
 
@@ -34,6 +34,7 @@ const AdminPage = (props) => {
         { type: 'session'},
         { type: 'jury'},
         { type: 'internship'},
+        { type: 'soutenance'},
         { type: 'form'},
         { type: 'email'},
         { type: 'import'},
@@ -77,20 +78,32 @@ const AdminPage = (props) => {
     }
     else{
         return (
-            <div className='general-content' style={{gridTemplateArea:`'header header header' 'body body body'`, height:'100%'}}>
-                <HeaderContent 
-                    gridArea={'header'}
-                    handleLogOutClick ={props.handleLogOutClick}
-                    data={userInfo}
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr 1fr', height: '100%' }}>
-                    <div style={{ gridRow: '1 / span 2', gridColumn: '1', backgroundColor: '#003865',height:'100%'}}>
-                        <NavBarAdmin 
-                            onClick = {handleButtonClick}
-                            selectedButton = {selectedButton}
+            <div className='general-content' style={{height:'100%'}}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr 1fr', height: '100%', width:'100%', position:'absolute'}}>
+                    <div style={{ gridRow: '1 / span 2', gridColumn: '1', backgroundColor: '#003865',height:'100%', width:'fit-content'}}>
+                        <div>
+                            <div className="user-info-admin mx-3">
+                                <div className="mb-2">
+                                    <img src={icon} alt="user" style={{width:'35px'}}/>
+                                </div>
+                                {userInfo.first_name} {userInfo.last_name}
+                            </div>
+                            <div>
+                            <NavBarAdmin 
+                                onClick = {handleButtonClick}
+                                selectedButton = {selectedButton}
+                            />
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{gridRow: '1', gridColumn:'2/ span 2'}}>
+                        <HeaderContent 
+                        gridArea={'header'}
+                        handleLogOutClick ={props.handleLogOutClick}
+                        profileInfo={false}
                         />
                     </div>
-                    <div style={{ gridRow: '1', gridColumn: '2 / span 2', background: '#E6E6E6' }}>
+                    <div style={{ gridRow: '2', gridColumn: '2 / span 2', background: '#E6E6E6' }}>
                         {renderContent()}
                     </div>
                 </div>

@@ -4,20 +4,22 @@ import logout from '../../assets/logoutIcon.svg'
 const ProfileInfoButton = (props) => {
     const data = props.data;
     return(
-        <div style={{gridTemplateColumns: 'auto auto auto',display:'flex',margin:'10px', marginLeft:'auto', marginRight:'0', width: 'fit-content', height: '80px', borderRadius: '50px',background: '#003865'}}>
-            <div style={{display:'flex', margin: 'auto', alignContent:'center'}}>
-                <div style={{margin: '10px 10px'}}>
-                    <img src={icon} style={{width: '50px', height: '50px'}}/>
-                </div>
-                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin:'5px'}}>
-                    <h1 style={{fontFamily: "CalibriRegular", fontSize: '20px',textAlign: 'center',fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal', color:'white'}}>{data.first_name} {data.last_name}</h1>
-                </div>
-
-            </div>
-            <div style={{display:'flex', width: '3px', height: '80px', flexShrink: '0', background:'#011F38'}}></div>
-            <div style={{display: 'flex', width: '64px', height: '80px', padding: '0 5px', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flexShrink: '0'}} onClick={props.handleLogOutClick}>
-                <img src={logout} style={{width: '35px',height: '35px'}}/>
-            </div>
+        <div style={{gridTemplateColumns: 'auto auto auto',display:'flex', marginLeft:'auto', marginRight:'0'}}>
+            {props.profileInfo?
+            (<>
+                <ul class="navbar-nav me-auto">
+                <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style={{fontFamily: "CalibriRegular", fontSize: '20px',textAlign: 'center',fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal'}}>
+                            {data.first_name} {data.last_name}
+                        </a>
+                    <ul className="dropdown-menu">
+                      <li><a className="dropdown-item" href="#" onClick={props.handleLogOutClick}> Déconnexion <img src={logout} style={{width: '15px',height: '15px',marginLeft:'auto'}}/></a></li>
+                    </ul>
+                </li>
+                </ul>
+            </>):(<>
+                <a className="dropdown-item" href="#" onClick={props.handleLogOutClick}><img src={logout} style={{width: '20px',height: '20px',marginLeft:'auto'}}/> Déconnexion</a>
+            </>)}
         </div>
     );
 }

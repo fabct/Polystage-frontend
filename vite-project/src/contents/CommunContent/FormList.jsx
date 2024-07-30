@@ -1,12 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { role_str } from '../../service/app-local';
 
 const FormList = (props) => {
     const navigate = useNavigate();
 
     const handleRespond = (id) => {
-        props.setObjectId({fromId:id, stageId:props.stageId, role:props.role});
-        navigate(`/${props.role}/form/${id}`);
+        const objectId = {fromId:id, stageId:props.stageId, role:props.role, role_str:role_str[props.role]};
+        props.setObjectId(objectId);
+        navigate(`/${objectId.role_str}/form/${id}`, { state: { objectId } });
     };
 
     return (
@@ -17,7 +19,8 @@ const FormList = (props) => {
                     <div key={form.id} className='formList-details'>
                         <div className='formList-details-style'>Titre : {form.titre}</div>
                         <div className='formList-details-style'>Description : {form.description}</div>
-                        <button onClick={() => handleRespond(form.id)}>Remplir</button>
+                        <div className='formList-details-style'>Date limite : {form.date_limite}</div>
+                        <button type="button" className='btn btn-primary btn-lg' onClick={() => handleRespond(form.id)}>Remplir</button>
                     </div>
                 ))}
             </div>

@@ -8,129 +8,47 @@ const intdivStyle={
     backgroundColor :'white'
 }
 
+function Title(props){
+    return <h1 style={{gridArea: 'subtitle', textAlign:'center', marginTop:'45px',color: 'black', fontFamily: 'CalibriRegular', fontSize: '48px', fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal'}}>{props.content}</h1>;
+}
 
+function Paragraph(props){
+    return <p style={{gridArea: props.gridArea, textAlign:'center', color: props.color, fontFamily: 'CalibriRegular', fontSize: '20px', fontWeight: '400', lineHeight: 'normal'}}>{props.content}</p>;
+        
+}
 
 function LoginContent(props){
 
     const divStyle={
         ...intdivStyle,
-        gridArea: props.content,
     }
 
-    function Title(props){
-        return <h1 style={{gridArea: 'subtitle', textAlign:'center', marginTop:'45px',color: 'black', fontFamily: 'CalibriRegular', fontSize: '48px', fontStyle: 'normal', fontWeight: '400', lineHeight: 'normal'}}>{props.content}</h1>;
-    }
-    
-    function Paragraph(props){
-        return <p style={{gridArea: props.gridArea, textAlign:'center', color: props.color, fontFamily: 'CalibriRegular', fontSize: '20px', fontWeight: '400', lineHeight: 'normal'}}>{props.content}</p>;
-            
-    }
-
-    const renderContent = () => {
-        if(props.forgotPassword === true){
-            return(
-                <div style={{...divStyle,gridTemplateAreas: `'subtitle' 'p' 'mail' 'send'`}}>
-                    <Title 
-                        content={'Reset Password'}
-                    />
-                    <Paragraph 
-                        gridArea={'p'}
-                        color={'black'}
-                        content={'Please enter your email address'}
-                    />
-                    <InputLogin 
-                        gridArea={'mail'}
-                        value={props.usernameValue} 
-                        type={'email'}
-                        placeholder={"email"}
-                        onChange={props.usernameOnChange}
-                        marginBottom={'25px'}
-                    />
-                    <Button
-                        gridArea={'send'}
-                        onClick={props.handleVerifyCode}
-                        content={'Send'}
-                        marginBottom={'54px'}
-                    />
-                </div>
-            );
-        }
-        if(props.verifyCode === true){
-            return(
-                <div style={{...divStyle,gridTemplateAreas: `'subtitle' 'p' 'code' 'send'`}}>
-                    <Title 
-                        content={'Reset Password'}
-                    />
-                    <Paragraph 
-                        gridArea={'p'}
-                        color={'black'}
-                        content={'Please enter the code sent to your email address'}
-                    />
-                    <InputLogin 
-                        gridArea={'code'}
-                        value={props.codeValue} 
-                        type={'text'}
-                        placeholder={"Code"}
-                        onChange={props.codeOnChange}
-                        marginBottom={'25px'}
-                    />
-                    <Button
-                        gridArea={'send'}
-                        onClick={props.handleResetPassword}
-                        content={'Send'}
-                        marginBottom={'54px'}
-                    />
-                </div>
-            );
-        }
-    
-        else{
-            return(
-            <div style={{...divStyle, gridTemplateAreas: `'subtitle' 'p' 'error' 'username' 'password' 'forgot' 'login'`}}>
+    return(
+        <div className="g-start-2 container-fluid">
+            <div style={{...divStyle, gridTemplateAreas: `'subtitle' 'p' 'error' 'username' 'password' 'button'`}}>
                 <Title 
-                    content={'Login'}
+                    content={'Connection'}
                 />
                 <Paragraph 
                     gridArea={'p'}
                     color={'black'}
-                    content={'Please enter your username and password'}
+                    content={'Entrer votre email et mot de passe'}
                 />
-                {props.loginError === true ? <Paragraph gridArea={'error'} color={'red'} content={'Invalid username or password'} /> : null}
-                <InputLogin 
-                    gridArea={'username'}
-                    value={props.usernameValue} 
-                    type={'text'}
-                    placeholder={"Username"}
-                    onChange={props.usernameOnChange}
-                    marginBottom={'25px'}
-                />
-                <InputLogin 
-                    gridArea={'password'}
-                    value={props.passwordValue} 
-                    type={'password'}
-                    placeholder={"Password"}
-                    onChange={props.passwordOnChange}
-                    marginTop={'25px'}
-                />
-                <button style={{gridArea: 'forgot', textAlign:'center',  margin :'25px auto', border:'none', background:'none', fontFamily: 'CalibriRegular', fontSize: '20px',fontWeight: '400', textDecorationLine:'underline'}} onClick={props.handleForgotPassword}>Forgot Password?</button>
-                <Button
-                    gridArea={'login'}
-                    onClick={props.loginHandle}
-                    content={'Login'}
-                    marginBottom={'54px'}
-                />
+                <div className="form-floating mb-3 mx-20 p-2">
+                     <input type="email" className="form-control" id="floatingInput" placeholder="name@example.com" onChange={props.usernameOnChange} value={props.usernameValue}/>
+                    <label htmlfor="floatingInput">Email address</label>
+                </div>
+                <div className="form-floating mx-20 p-2">
+                      <input type="password" className="form-control" id="floatingPassword" placeholder="Password" onChange={props.passwordOnChange} value={props.passwordValue}/>
+                      <label htmlfor="floatingPassword">Password</label>
+                </div>
+                <div className="d-grid gap-2 col-6 mx-auto" style={{gridArea: 'button'}}>
+                    <button type="button" className="btn btn-link" style={{textAlign:'center', fontFamily: 'CalibriRegular', fontSize: '20px',fontWeight: '400'}} onClick={props.handleForgotPassword}>Forgot Password?</button>
+                    <button type="button" className='btn btn-primary btn-lg mb-5' style={{textAlign:'center', border:'none', fontFamily: 'CalibriRegular', fontSize: '20px',fontWeight: '400'}} onClick={props.loginHandle}>Login</button>
+                </div>
             </div>
-            );
-
-        }
-
-    }
-
-    return(
-        <>
-            {renderContent()}
-        </>
+        </div>
     );
 }
 
-export default LoginContent;
+export {LoginContent, Paragraph, Title};

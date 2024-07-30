@@ -19,9 +19,9 @@ const InfSup = (props) => {
     const form = () => {
         return get(`formUser/${props.infSupData.stage.id}/`).then((data) => {
             if (data.error) {
-                console.error(data.error);
+                props.setError(true);
+                props.setMessageError(data.error);
             } else {
-                console.log(data);
                 setFormData(data);
             }
         });
@@ -35,7 +35,7 @@ const InfSup = (props) => {
         <div className="infSup-container">
             <div className="infSup-header">
                 <h2 className="infSup-title">Soutenance de {props.infSupData.stage.etudiant.first_name} {props.infSupData.stage.etudiant.last_name}</h2>
-                <button onClick={handleClose} className="infSup-closeButton">X</button>
+                <button type="button" class="btn-close" aria-label="Close" onClick={handleClose}></button>
             </div>
             <div className="infSup-content">
                 <div className="infSup-content-inf">

@@ -21,3 +21,12 @@
     font-weight: 400;
     line-height: 1.5;
 }
+
+.login-grid{
+    --bs-rows: 3; 
+    --bs-columns: 3; 
+    background-color :#14AEEF; 
+    height:100%; 
+    width: 100%;
+    position:absolute;  
+}

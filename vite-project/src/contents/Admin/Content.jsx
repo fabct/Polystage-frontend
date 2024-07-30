@@ -3,7 +3,7 @@ import { get, post, put } from '../../service/service';
 import RenderContent from './Content/RenderContent';
 import ContentTitle from './Content/Element/Title';
 import AdminFunction from './adminFunction';
-import SearchContent from './Content/Element/SearchContent';
+import SearchContent from '../CommunContent/SearchContent';
 import ImportContent from '../Admin/Content/ImportContent';
 import ExportContent from '../Admin/Content/ExportContent';
 import { useNavigate } from 'react-router-dom';
@@ -851,8 +851,8 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
 
     return (
         <div>
-            <div style={{gridTemplateAreas:`'search . .' 'result result result' '. . button'`,borderRadius: '5px', background: '#D9D9D9', padding:'10px'}}>
-                <div style={{gridArea:'search', margin:'20px 20px', borderRadius: '20px', background:'white', display:'flex', width:'fit-content'}}>
+            <div style={{gridTemplateAreas:`'search . .' 'result result result' '. . button'`, padding:'10px'}}>
+                <div className='mx-2 my-3' style={{gridArea:'search', borderRadius: '20px', background:'white', display:'flex', width:'fit-content'}}>
                 {renderSearch()}
                 </div>
                 <div style={{gridArea:'result',backgroundColor:'white',borderRadius:'5px'}}>

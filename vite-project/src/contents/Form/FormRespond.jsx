@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { post } from '../../service/service';
 import { getUserInfo } from '../../service/function';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import HeaderContent from '../Header/HeaderContent';
 import HeadForm from './Element/HeadForm';
 import Loading from '../Loading';
@@ -17,8 +17,12 @@ const FormRespond = (props) => {
         session: '',
         profile:'',
         langue: '',
+        date_limite: '',
         question: []
     });
+
+    const location = useLocation();
+    const objectId = location.state.objectId;
 
     useEffect(() => {
         FormInfo();
@@ -31,14 +35,15 @@ const FormRespond = (props) => {
     const navigate = useNavigate();
 
     const FormInfo = () => {
-        return post(`responseFormulaire/`, { id_stage: props.objectId.stageId, id_formulaire: props.objectId.fromId }).then((data) => {
+        return post(`responseFormulaire/`, { id_stage: objectId.stageId, id_formulaire: objectId.fromId }).then((data) => {
             if (data.error) {
-                navigate(`/${props.objectId.role}`);
+                navigate(`/${objectId.role_str}`);
                 window.alert(data.error);
             } else {
                 console.log("Data from API:", data);
                 const newForm = {
                     id: data.id,
+                    date_limite: data.date_limite,
                     langue: data.langue,
                     profile: data.profile,
                     session: data.session,
@@ -46,11 +51,14 @@ const FormRespond = (props) => {
                     description: data.description,
                     question: data.question ? data.question.map(question => ({
                         ...question,
-                        response: question.response ? question.response : [],
-                        checkbox: question.checkbox ? question.checkbox : [],
+                        response: question.response ? question.response : {content: '', stage: ''},
+                        checkbox: question.checkbox ? question.checkbox.map(checkbox => ({
+                            ...checkbox,
+                            response: checkbox.response ? checkbox.response : {valeur: false, stage: ''},
+                        })): [],
                     })) : []
                 };
-                if(data.profile !== props.objectId.role){
+                if(data.profile !== objectId.role){
                     setNotModify(true);
                 }
                 console.log("form data:", newForm);
@@ -61,7 +69,7 @@ const FormRespond = (props) => {
 
     const onInputChange = (e, questionIndex) => {
         const newQuestions = [...form.question];
-        newQuestions[questionIndex].response.stage = props.objectId.stageId;
+        newQuestions[questionIndex].response.stage = objectId.stageId;
         newQuestions[questionIndex].response.content = e.target.value;
         setForm({
             ...form,
@@ -71,7 +79,7 @@ const FormRespond = (props) => {
 
     const onInputCheckboxChange = (e, questionIndex, optionIndex) => {
         const newQuestions = [...form.question];
-        newQuestions[questionIndex].checkbox[optionIndex].response.stage = props.objectId.stageId;
+        newQuestions[questionIndex].checkbox[optionIndex].response.stage = objectId.stageId;
         newQuestions[questionIndex].checkbox[optionIndex].response.valeur = e.target.checked;
         setForm({
             ...form,
@@ -81,24 +89,24 @@ const FormRespond = (props) => {
 
     const submitResponse = () => {
         window.confirm("Etes vous sur de vouloir envoyer vos réponse ? \n Vous ne pourrez plus les modifier après !");
-        return post(`validateFormulaire/`, {formulaire: form, id_stage: props.objectId.stageId}).then((data) => {
+        return post(`validateFormulaire/`, {formulaire: form, id_stage: objectId.stageId}).then((data) => {
             if (data.error) {
                 window.alert("Erreur lors de l'envoi du formulaire"+data.error);
             } else {
                 console.log("Data validate", data);
-                navigate(`/${props.objectId.role}`);
+                navigate(`/${objectId.role_str}`);
             }
         });
     };
 
     const saveBrouillonResponse = () => {
         window.confirm("Etes vous sur de vouloir erregistrer ce formulaire en brouillon ?");
-        return post(`saveFormulaire/`, {formulaire: form, id_stage: props.objectId.stageId}).then((data) => {
+        return post(`saveFormulaire/`, {formulaire: form, id_stage: objectId.stageId}).then((data) => {
             if (data.error) {
                 window.alert("Erreur lors de la sauvegarde du formulaire"+data.error);
             } else {
                 console.log("Data Saved", data);
-                navigate(`/${props.objectId.role}`);
+                navigate(`/${objectId.role_str}`);
             }
         });
     };

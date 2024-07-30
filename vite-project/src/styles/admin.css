@@ -19,7 +19,7 @@
     padding: 20px;
     margin: 10px 0;
     background-color: #f9f9f9;
-    border-radius: 10px;
+    border-radius: 5px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -228,4 +228,12 @@
     display: flex;
     justify-content: space-between;
     gap: 20px;
+}
+
+.user-info-admin{
+    margin-top:20px;
+    margin-bottom: 10px;
+    font-family: 'CalibriRegular', sans-serif;
+    color: white;
+    font-size: 18px;
 }

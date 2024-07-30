@@ -17,10 +17,11 @@ const getCookie = () =>{
 
 const post = async (endpoint, data) => {
   const token = getCookie();
+  const endpointsWithoutToken = ['sendCodeMail/', 'login/', 'verifyCode/','password/'];
   const headers = {
     'Content-Type': 'application/json'
   };
-  if (endpoint !== 'login/') {
+  if (!endpointsWithoutToken.includes(endpoint)) {
     const token = getCookie();
     headers['Authorization'] = 'Token ' + token;
   }
