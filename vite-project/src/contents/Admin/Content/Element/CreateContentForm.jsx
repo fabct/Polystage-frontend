@@ -11,8 +11,11 @@ const CreateContentForm = (props) => {
     const [add, setAdd] = useState(false);
     const [availableData, setAvailableData] = useState([]);
 
+    const handleInputChange = (event) => {
+        setSelectedData(event.target.value);
+    };
 
-    const handleOptionChange = (event) => {
+    const handdleChangeOption = (event) => {
         setSelectedOption(event.target.value);
     };
 
@@ -47,13 +50,11 @@ const CreateContentForm = (props) => {
 
     const inputsMap = {
         "ETU": props.inputs2,
-        "new": props.inputs2,
-        // Ajoutez plus de clés ici pour plus de combinaisons de type et de valeur
     };
 
     const inputs = inputsMap[selectedOption] || [];
 
-    const renderField = (key, value, type) => {
+    const renderField = (key, value, type,handleInpuChangeCell) => {
         if(value === undefined && type === 'object'){
             value = [];
         }
@@ -95,7 +96,7 @@ const CreateContentForm = (props) => {
                     <select
                         name={key}
                         value={value}
-                        onChange={handleOptionChange}
+                        onChange={(e) => {props.handleChangeSelect(e), handdleChangeOption(e)}}
                     >
                         {props.options.map((option, index) => (
                             <option key={index} value={option.value}>{option.text}</option>
@@ -113,7 +114,7 @@ const CreateContentForm = (props) => {
                         type="email"
                         name={key}
                         value={value}
-                        onChange={props.handleInpuChangeCell}
+                        onChange={handleInpuChangeCell}
                     />
                 </div>
             );
@@ -126,7 +127,7 @@ const CreateContentForm = (props) => {
                     type="text"
                     name={key}
                     value={value}
-                    onChange={props.handleInpuChangeCell}
+                    onChange={handleInpuChangeCell}
                 />
             </div>
         );
@@ -156,13 +157,18 @@ const CreateContentForm = (props) => {
                 <form>
                     {props.inputs.map((input, index) => (
                         <div key={index} style={props.cellAddStyle}>
-                            {renderField(input.infoCell, input.value, input.type)}
+                            {renderField(input.infoCell, input.value, input.type, input.handleInpuChangeCell)}
+                        </div>
+                    ))}
+                    {inputs.map((input, index) => (
+                        <div key={index} style={props.cellAddStyle}>
+                            {renderField(input.infoCell, input.value, input.type, input.handleInpuChangeCell)}
                         </div>
                     ))}
                 </form>
                 <div className='button-group'>
-                    <button style={buttonDeleteStyle} onClick={props.handleCancel}>Annuler</button>
-                    <button style={buttonStyle3} onClick={props.handleCreate}>Créer</button>
+                    <button className="btn btn-danger" onClick={props.handleCancel}>Annuler</button>
+                    <button className="btn btn-success" onClick={props.handleCreate}>Créer</button>
                 </div>
             </>
         );
@@ -170,8 +176,8 @@ const CreateContentForm = (props) => {
 
     return (
         <div className="modify-data-content">
+            <h1>{props.isAddingTitle}</h1>
             {renderContent()}
-            
         </div>
     );
 }

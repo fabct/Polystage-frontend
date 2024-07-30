@@ -1,8 +1,7 @@
 import React from 'react';
-import ModifyButton from './Element/ModifyButton';
-import DeleteButton from './Element/DeleteButton';
+import ContentTitle from './Element/Title';
 import CreateContentForm from './Element/CreateContentForm';
-import { buttonDeleteStyle, buttonStyle3 } from '../../Styles';
+
 
 // Paramètres pour le render Content
 /*
@@ -36,8 +35,10 @@ const cellAddStyle = {margin:'10px', fontFamily: 'CalibriRegular', fontStyle: 'n
 const content = (props) => {
     if(props.isAdding) {
         return(
+
             <CreateContentForm 
                 inputs={props.inputs}
+                inputs2={props.inputs2}
                 options={props.options}
                 handleChangeSelect={props.handleChangeSelect}
                 infoCellSelect={props.infoCellSelect}
@@ -45,26 +46,27 @@ const content = (props) => {
                 handleCancel={props.handleCancel}
                 type={props.type}
                 cellAddStyle={cellAddStyle}
+                isAddingTitle={props.isAddingTitle}
             />
         );
     }
     else{
         return(
-            <div id={props.content} className="render-table">
-                {props.data.map((data) => (
-                    <div className="tr-style" key={data.id} onClick={() => props.handleModify(data)}> 
-                        {props.keys.map((key) => (
-                            <div className="cell-style" key={key}>{getNestedValue(data, key)}</div>
-                        ))}
-                        <div className="cell-style">
-                            <DeleteButton 
-                                id={data.id}
-                                refresh={props.handleSearch}
-                                function={props.function}
-                            />
-                        </div>
-                    </div>
-                ))}
+            <div style={{background:'white'}}>
+                <ContentTitle 
+                researchTitle={props.researchTitle}
+                inputs = {props.inputsTitle}
+                isSearching={props.isSearching}
+                />
+                <div id={props.content} className="render-table">
+                    {props.data.map((data) => (
+                        <div className="tr-style mb-3" key={data.id} onClick={() => props.handleModify(data)}> 
+                            {props.keys.map((key) => (
+                                <div className="cell-style" key={key}>{getNestedValue(data, key)}</div>
+                            ))}
+                           </div>
+                    ))}
+                </div>
             </div>
         );
     }

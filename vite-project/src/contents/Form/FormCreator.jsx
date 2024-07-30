@@ -8,6 +8,7 @@ import RightRespond from './Element/RightRespond';
 import { get, post, put } from '../../service/service';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading';
+import {ErrorAlert} from "../CommunContent/Alert";
 
 /*
     FormCreator
@@ -53,6 +54,8 @@ import Loading from '../Loading';
 */
 
 function FormCreator(props) {
+    const [error, setError] = useState(false);
+    const [messageError, setMessageError] = useState('');
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [session, setSession] = useState([]);
@@ -152,30 +155,38 @@ function FormCreator(props) {
         if(props.create){
             return post(`createFormulaireAll/`, { id: props.id,langue:form.langue,profile:form.profile,session:form.session ,titre: form.titre, description: form.description, question: form.questions }).then((data) => {
                 if (data.error) {
-                    console.error(data.error);
+                    setError(true);
+                    setMessageError(error.message);
                 } else {
                     console.log(data);
                     navigate('/admin');
                 }
+            }).catch((error) => {
+                setError(true);
+                setMessageError(error.message);
             });
         }
         console.log(form.questions);
         return put(`modifyFormulaireAll/${props.id}/`, {id: props.id,langue:form.langue,profile:form.profile,session:form.session ,titre: form.titre, description: form.description, question: form.questions }).then((data) => {
             if (data.error) {
-                console.error(data.error);
+                setError(true);
+                setMessageError(error.message);
             } else {
                 console.log(data);
                 navigate('/admin');
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
-
         
     };
 
     const modifyForm = () => {
         get(`getFormulaireAll/${props.id}/`).then((data) => {
             if (data.error) {
-                console.error(data.error);
+                setError(true);
+                setMessageError(error.message);
             } else {
                 console.log("Data from API:", data); // Add this line
                 const newForm = {
@@ -191,18 +202,25 @@ function FormCreator(props) {
                 };
             setForm(newForm);
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     };
 
     const getSession = () => {
         return get(`sessionList/`).then((data) => {
             if(data.error){
-                console.error(data.error);
+                setError(true);
+                setMessageError(error.message);
             }
             else{
                 console.log(data);
                 setSession(data);
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     }
     
@@ -228,6 +246,7 @@ function FormCreator(props) {
                     data={userInfo}
                 />
                 <div style={{ gridArea: 'body', gridTemplateRows: 'auto auto', height: '100%', display: 'grid' }}>
+                    {error === true ? <ErrorAlert message={messageError} />: null}
                     <RightRespond session={session} onInputChange={onInputChange} form={form}/>
 
                     <HeadForm

@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { get, post } from '../../../service/service';
+import { get, post, delet, put} from '../../../service/service';
 import DataTable from './Element/DataTable';
 import AddInSession from './Element/AddInSession';
 import Loading from '../../Loading';
+import { ErrorAlert } from '../../CommunContent/Alert';
 
 const ModifyData = (props) => {
+    const [error, setError] = useState(false);
+    const [messageError, setMessageError] = useState('');
     const [dataDetails, setDataDetails] = useState(null);
     const [selectedData, setSelectedData] = useState('');
     const [availableData, setAvailableData] = useState([]);
@@ -20,6 +23,9 @@ const ModifyData = (props) => {
         return get(`${props.type}Details/${props.editingId}/`).then((response) => {
             setDataDetails(response);
             console.log(response);
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     };
 
@@ -36,7 +42,24 @@ const ModifyData = (props) => {
         });
     };
 
-    const handleRemove = () => {
+    const handleRemove = (id) => {
+        console.log(id);
+        return delet(`manageJuryMembreJury/`, {id_jury:props.editingId,id_membreJury: id}).then(data => {
+            if(data.error){
+                setError(true);
+                setMessageError(data.error);
+            }
+            else{
+                console.log(data);
+                setAdd(false);
+                setError(false);
+                setMessageError('');
+                getInfoData();
+            }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
     };
 
     const handleAddEnsigant = () => {
@@ -53,7 +76,25 @@ const ModifyData = (props) => {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        window.confirm('Voulez-vous vraiment sauvegarder vos modification ?');
+        return put(`${props.type}Details/${props.editingId}/`).then((response) => {
+            window.alert(response.success);
+            props.setEditing(false);
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
+    };
+
+    const handleDelete = () => {
+        window.confirm('Voulez-vous vraiment supprimer cet item ?');
+        return delet(`${props.type}Details/${props.editingId}/`).then((response) => {
+            window.alert(response.success);
+            props.setEditing(false);
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
     };
 
     const handleCancelClick = () => {
@@ -64,7 +105,23 @@ const ModifyData = (props) => {
         setSelectedData(e.target.value);
     };
 
-    const handleMemberAddClick = () => {
+    const handleMemberAddClick = (id_membreJury) => {
+        return post(`manageJuryMembreJury/`, {id_jury:props.editingId,id_membreJury: id_membreJury}).then(data => {
+            if(data.error){
+                setError(true);
+                setMessageError(data.error);
+            }
+            else{
+                console.log(data);
+                setAdd(false);
+                setError(false);
+                setMessageError('');
+                getInfoData();
+            }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
     }
 
     const renderContent = () => {
@@ -154,18 +211,22 @@ const ModifyData = (props) => {
                 <h1>Détails de la donnée</h1>
                 {Object.keys(dataDetails).map(key => renderField(key, dataDetails[key]))}
                 <div className='button-group'>
-                    <button type="button" className='add-button' onClick={handleSubmit}>Sauvegarder</button>
-                    <button type="button" className='remove-button'>Supprimer</button>
-                    <button type="button" className='back-button' onClick={handleBackClick}>Retour</button>
+                    <button type="button" className='btn btn-success' onClick={handleSubmit}>Sauvegarder</button>
+                    <button type="button" className='btn btn-danger'onClick={handleDelete}>Supprimer</button>
+                    <button type="button" className='btn btn-primary' onClick={handleBackClick}>Retour</button>
                 </div>
             </>
         );
     };
 
     return (
+        <>
+        {error === true ? <ErrorAlert message={messageError} />: null}
         <div className='modify-data-content'>
+            
             {renderContent()}
         </div>
+        </>
     );
 }
 

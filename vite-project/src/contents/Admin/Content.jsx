@@ -8,11 +8,14 @@ import ImportContent from '../Admin/Content/ImportContent';
 import ExportContent from '../Admin/Content/ExportContent';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { buttonStyle1 } from '../Styles';
 import documentCreator from '../../service/documentCreator';
 import * as XLSX from 'xlsx';
+import {ErrorAlert} from '../CommunContent/Alert';
 
 const Content = ({ type, setObjectId, handleModify, setCreate}) => {
+
+    const [error, setError] = useState(false);
+    const [messageError, setMessageError] = useState('');
 
     const [searchContent, setSearchContent] = useState('');
 
@@ -46,6 +49,8 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
 
 
     useEffect(() => {
+        setError(false);
+        setMessageError('');
         if (type === 'user') {
             handleSearchUser();
         } else if (type === 'session') {
@@ -195,11 +200,15 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
             setProfile('');
             setNumStudent('');
             setIsAdding(false);
+            setError(false);
+            setMessageError('');
             renderContent();
         }
     };
 
     const handleIsAdding = () => {
+        setError(false);
+        setMessageError('');
         if(type === 'user'){
             setIsAdding(true);
         }
@@ -232,8 +241,15 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
         return post(`userList/`, {first_name: firstName, last_name: name, email: email,num_etudiant: numStudent, profile: profile})
         .then(data => {
             if(data.error){
-                console.error(data.error);
-                window.alert(data.error);
+                setName('');
+                setFirstName('');
+                setEmail('');
+                setProfile('');
+                setNumStudent('');
+                setIsAdding(false);
+                handleSearchUser();
+                setError(true);
+                setMessageError(error.message);
             }
             else{
                 console.log(data);
@@ -246,7 +262,10 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                 handleSearchUser();
                 window.alert('Utilisateur créer !');
             }
-        })
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
     };
     
     const handleSearchUser = () => {
@@ -255,13 +274,17 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
         setData([]);
         return post(`userSearch/`, {search: searchContent}).then(data => {
             if(data.error){
-                console.error(data.error);
+                setError(true);
+                setMessageError(error.message);
             }
             else{
                 console.log(data);
                 setData(data);
             }
-        })
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
     }
 
     const handleModifyUser = () => {
@@ -271,8 +294,8 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                 return put(`userDetails/${editingId}/`, {email: email, first_name: firstName, last_name: name,profile: profile})
                 .then(data => {
                     if(data.error){
-                        window.alert(data.error);
-                        console.error(data.error);
+                        setError(true);
+                        setMessageError(error.message);
                         setName('');
                         setFirstName('');
                         setEmail('');
@@ -288,7 +311,10 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                         handleSearchUser();
                         window.alert('Information utilisateur mise à jour !');
                     }
-                })
+                }).catch((error) => {
+                    setError(true);
+                    setMessageError(error.message);
+                });
             }
         }
     };
@@ -301,18 +327,16 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
         setData([]);
         return get(`sessionList/`).then((data) => {
             if(data.error){
-                console.error(data.error);
+                setError(true);
+                setMessageError(error.message);
             }
             else{
                 console.log(data);
                 setData(data);
             }
-        });
-    }
-    
-    const handleGetFilière = () => {
-        AdminFunction.handleGetFiliere().then((data) => {
-            setSpecificData(data);
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     }
 
@@ -356,12 +380,16 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
     const handleSearchJury = () => {
         return get('juryList/').then((data) => {
             if(data.error){
-                console.error(data.error);
+                setError(true);
+                setMessageError(error.message);
             }
             else{
                 console.log(data);
                 setData(data);
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     }
 
@@ -372,12 +400,16 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
     const handleSearchInternship = () => {
         return post('stageSearch/',{search: searchContent}).then((data) => {
             if(data.error){
-                console.error(data.error);
+                setError(true);
+            setMessageError(error.message);
             }
             else{
                 console.log(data);
                 setData(data);
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     }
 
@@ -388,13 +420,17 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
     const handleGetForm = () => {
         return get(`formulaireList/`).then((data) => {
             if(data.error){
-                console.error(data.error);
+                setError(true);
+                setMessageError(error.message);
             }
             else{
                 console.log(data);
                 setData(data);
             }
-        })
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
     }
 
     /*
@@ -445,6 +481,9 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     setFile(null);
                     window.alert('Utilisateur importé avec succès !');
                 }
+            }).catch((error) => {
+                setError(true);
+                setMessageError(error.message);
             });
         }
         else if(fileType === 'stage'){  
@@ -462,6 +501,9 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     setFile(null);
                     window.alert('Stage importé avec succès !');
                 }
+            }).catch((error) => {
+                setError(true);
+                setMessageError(error.message);
             });
         }
         else if(fileType === 'soutenance'){
@@ -480,6 +522,9 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     setFile(null);
                     window.alert('Soutenance importé avec succès !');
                 }
+            }).catch((error) => {
+                setError(true);
+                setMessageError(error.message);
             });
         }
         else if(fileType === 'jury'){
@@ -498,6 +543,9 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     setFile(null);
                     window.alert('Jury importé avec succès !');
                 }
+            }).catch((error) => {
+                setError(true);
+                setMessageError(error.message);
             });
         }
         else if(fileType === 'session'){
@@ -516,6 +564,9 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     setFile(null);
                     window.alert('Session importé avec succès !');
                 }
+            }).catch((error) => {
+                setError(true);
+                setMessageError(error.message);
             });
         }
         else{
@@ -561,7 +612,8 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
    const promoDetails = (id) => {
         return get(`promoDetails/${id}`).then((data) => {
             if(data.error){
-                console.error(data.error);
+                setError(true);
+                setMessageError(error.message);
             }
             else{
                 setPromoSelected(data);
@@ -575,6 +627,9 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                 });
                 console.log(data);
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     }
 
@@ -589,7 +644,11 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     console.log(data);
                     documentCreator.exportDoc(data,fileType);
                 }
-            });
+            }).catch((error) => {
+                setError(true);
+                setMessageError(error.message);
+            }
+            );
         }
     }
 
@@ -599,6 +658,11 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
     */
 
     const renderSearch = () => {
+        if(isAdding){
+            return (
+                <></>
+            );
+        }
         if(type ==='user'){
             return (
                 <SearchContent 
@@ -630,95 +694,24 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
         }
     }
 
-    const renderTitle = () => {
-        if(type === 'user'){
-            return(
-                <ContentTitle 
-                    researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'Prénom'},{ name: 'Nom'},{ name: 'Mail'},{ name: 'Profil'}, { name: 'Supprimer'}]}
-                    isAdding={isAdding}
-                    isSearching={true}
-                    isAddingTitle={'Nouvel utilisateur'}
-                />
-            );
-        }
-        if(type === 'session'){
-            return(
-                <ContentTitle 
-                    researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'Nom de la séssion'}, { name: 'Supprimer'}]}
-                    isAdding={isAdding}
-                    isSearching={true}
-                    isAddingTitle={'Nouvelle Session'}
-                />
-            );
-        }
-        if(type === 'jury'){
-            return(
-                <ContentTitle 
-                    researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'Numéro de jury'}, { name: 'Campus'}, { name: 'Batiment'}, { name: 'Salle'},{ name: 'Supprimer'}]}
-                    isAdding={isAdding}
-                    isSearching={true}
-                    isAddingTitle={'Nouveaux Jury'}
-                />
-            );
-        }
-        if(type === 'internship'){
-            return(
-                <ContentTitle 
-                    researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'Nom Entreprise'},{ name: 'Sujet'},{ name: 'Confidentialité'},{ name: 'Date de debut'},{ name: 'Date de fin'},{ name: 'Supprimer'}]}
-                    isAdding={isAdding}
-                    isSearching={true}
-                    isAddingTitle={'Nouveau stage'}
-                />
-            );
-        }
-        if(type === 'form'){
-            return(
-                <ContentTitle 
-                    researchTitle={'Résultat de la recherche'}
-                    inputs = {[{ name: 'Nom du formulaire'},{ name: 'Description'},{ name: 'Supprimer'}]}
-                    isAdding={isAdding}
-                    isSearching={true}
-                />
-            );
-        }
-        if (type === 'import') {
-            return(
-                <ContentTitle 
-                    researchTitle={'Importer des données'}
-                    inputs = {[]}
-                    isAdding={false}
-                    isSearching={false}
-                />
-            );
-        }
-        if(type === 'export'){
-            return(
-                <ContentTitle 
-                    researchTitle={'Exporter des données'}
-                    inputs = {[]}
-                    isAdding={false}
-                    isSearching={false}
-                />
-            );
-        }
-    }
-
     // Rendu du contenu
     const renderContent = () => {
         const key = getTypeKeys(type);
         if (type === 'user') {
             return (
+                <>
+                
                 <RenderContent 
+                    researchTitle={'Résultat de la recherche'}
+                    inputsTitle = {[{ name: 'Prénom'},{ name: 'Nom'},{ name: 'Mail'},{ name: 'Profil'}]}
+                    isSearching={true}
+                    isAddingTitle={'Nouvel utilisateur'}
                     data={data}
                     inputs = {[
-                        { infoCell: 'First Name', handleInpuChangeCell: handleFirstNameChange, type: 'text' },
-                        { infoCell: 'Name', handleInpuChangeCell: handleNameChange, type: 'text' },
-                        { infoCell: 'Email', handleInpuChangeCell: handleEmailChange, type: 'text'},
-                        { infoCell: 'Num Student', value: numStudent, handleInpuChangeCell: handleNumStudentChange, type: 'selector' }
+                        { infoCell: 'First Name', handleInpuChangeCell: handleFirstNameChange,value:firstName ,type: 'text' },
+                        { infoCell: 'Name', handleInpuChangeCell: handleNameChange,value:name, type: 'text' },
+                        { infoCell: 'Email', handleInpuChangeCell: handleEmailChange,value:email,type: 'text'},
+                        { infoCell: 'Profile', handleInpuChangeCell: handleProfileChange,value:profile ,type: 'selector' }
                     ]}
                     options = {[
                         {value: "",text: "Sélectionner profile", type: 'text' },
@@ -727,6 +720,9 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                         {value: "ENS",text: "ENS", type: 'text' },
                         {value: "TUT",text: "TUT", type: 'text' },
                         {value: "PRO",text: "PRO", type: 'text' },
+                    ]}
+                    inputs2 = {[
+                        { infoCell: 'Numéro Etudiant', handleInpuChangeCell: handleNumStudentChange,value:numStudent ,type: 'text' },
                     ]}
                     handleChangeSelect = {handleProfileChange}
                     infoCellSelect = {'Profile :'}
@@ -741,11 +737,17 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     type = {type}
                     keys = {key}
                 />
+                </>
             );
         }
         if (type === 'session') {
             return(
+            <>           
             <RenderContent 
+                researchTitle={'Résultat de la recherche'}
+                inputsTitle = {[{ name: 'Nom de la séssion'}]}
+                isSearching={true}
+                isAddingTitle={'Nouvelle Session'}
                 data={data}
                 inputs={[
                     { infoCell: 'Nom', handleInpuChangeCell: handleNomChange, type: 'text', value: data.nom },
@@ -766,21 +768,37 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                 type = {type}
                 keys = {key}
             />
+            </>
             );
         }
         if (type === 'jury'){
-            return (<RenderContent 
+            return (
+            <>
+            <RenderContent 
+            researchTitle={'Résultat de la recherche'}
+            inputsTitle = {[{ name: 'Numéro de jury'}, { name: 'Campus'}, { name: 'Batiment'}, { name: 'Salle'}]}
+            isAdding={isAdding}
+            isSearching={true}
+            isAddingTitle={'Nouveaux Jury'}
             data={data}
             handleModify = {handleModify}
             handleSearch = {handleSearchJury}
             function = {'juryDetails'}
             type = {type}
             keys = {key}
-        />);
+            />
+            </>
+            );
         }
         if (type === 'internship') {
             return(
+                <>
                 <RenderContent 
+                    researchTitle={'Résultat de la recherche'}
+                    inputsTitle = {[{ name: 'Nom Entreprise'},{ name: 'Sujet'},{ name: 'Confidentialité'},{ name: 'Date de debut'},{ name: 'Date de fin'}]}
+                    isAdding={isAdding}
+                    isSearching={true}
+                    isAddingTitle={'Nouveau stage'}
                     data={data}
                     handleModify = {handleModify}
                     handleSearch = {handleSearchInternship}
@@ -788,11 +806,17 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     type = {type}
                     keys = {key}
                 />
+                </>
             );
         }
         if (type === 'form') {
             return(
+                <>
                 <RenderContent 
+                    researchTitle={'Résultat de la recherche'}
+                    inputsTitle = {[{ name: 'Nom du formulaire'},{ name: 'Description'}]}
+                    isAdding={isAdding}
+                    isSearching={true}
                     data={data}
                     handleModify = {handleModify}
                     handleSearch = {handleGetForm}
@@ -800,10 +824,18 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     type = {type}
                     keys = {key}
                 />
+                </>
             );
         }
         if (type === 'import') {
             return(
+                <>
+                <ContentTitle 
+                    researchTitle={'Importer des données'}
+                    inputs = {[]}
+                    isAdding={false}
+                    isSearching={false}
+                />
                 <ImportContent
                     isUpload={isUpload}
                     handleDropFile = {handleDropFile}
@@ -811,10 +843,19 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     setFileType={setFileType}
                     fileType={fileType}
                 /> 
+                <button className='btn btn-primary' onClick={handleIsAdding}>Download</button>
+                </>
             );
         }
         if (type === 'export') {
             return(
+                <>
+                <ContentTitle 
+                    researchTitle={'Exporter des données'}
+                    inputs = {[]}
+                    isAdding={false}
+                    isSearching={false}
+                />
                 <ExportContent
                     style={{margin:'5px 10px', gridColumn:'2/3', borderRadius:'20px',background:'white', padding: '10px'}}
                     handleGetPromos={handleGetContent}
@@ -824,26 +865,34 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
                     handlePromoSelected={handlePromoSelected}
                     setFileType={setFileType}
                     fileType={fileType}
-                /> 
+                />
+                <button className='btn btn-primary' onClick={handleIsAdding}>Download</button>
+                </>
             );
         }
         // Ajoutez d'autres conditions pour les autres types
     };
 
     const renderButton = () => {
-        if (type === 'import'){
-            return(
-                <button style={buttonStyle1} onClick={handleIsAdding}>Upload</button>
-            );
-        }
         if (type === 'export'){
             return(
-                <button style={buttonStyle1} onClick={handleIsAdding}>Download</button>
+                <></>
+            );
+        }
+
+        if(type === 'import'){
+            return(
+                <></>
+            );
+        }
+        if(isAdding){
+            return(
+                <></>
             );
         }
         else{
             return(
-                <button style={buttonStyle1} onClick={handleIsAdding}>Créer</button>
+                <button type="button" className='btn btn-primary' onClick={handleIsAdding}>Créer</button>
             );
         }
     };
@@ -851,16 +900,18 @@ const Content = ({ type, setObjectId, handleModify, setCreate}) => {
 
     return (
         <div>
-            <div style={{gridTemplateAreas:`'search . .' 'result result result' '. . button'`, padding:'10px'}}>
-                <div className='mx-2 my-3' style={{gridArea:'search', borderRadius: '20px', background:'white', display:'flex', width:'fit-content'}}>
-                {renderSearch()}
+            {error === true ? <ErrorAlert message={messageError} />: null}
+            <div style={{gridTemplateAreas:`'button button button' 'result result result'`, padding:'10px'}}>
+                <div className='mx-2 my-3 clearfix' style={{gridArea:'button'}}>
+                    <div className='float-start'>
+                    {renderSearch()}
+                    </div>
+                    <div className='float-end my-auto'>
+                    {renderButton()}
+                    </div>
                 </div>
-                <div style={{gridArea:'result',backgroundColor:'white',borderRadius:'5px'}}>
-                {renderTitle()}
+                <div className='mx-2 my-3' style={{gridArea:'result',borderRadius:'5px'}}>
                 {renderContent()}
-                </div>
-                <div style={{ gridArea: 'button', display: 'flex', justifyContent: 'center'}}>
-                {renderButton()}
                 </div>
             </div>
         </div>

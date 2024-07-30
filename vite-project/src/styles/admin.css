@@ -60,11 +60,10 @@
 }
 
 .tr-style {
-    margin: 10px 0;
     background-color: white; 
     border: 1px solid #ddd;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    border-radius: 5px;
     height: 50px;
     display: flex;
     width: 100%;
@@ -72,6 +71,7 @@
 
 .tr-style:hover {
     background: #00AEEF;
+    color: white;
     cursor: pointer;
 }
 
@@ -236,4 +236,27 @@
     font-family: 'CalibriRegular', sans-serif;
     color: white;
     font-size: 18px;
+}
+
+.button-nav{
+    font-family: 'CalibriRegular';
+    font-size: 25px; 
+    font-style:normal;
+    font-weight: 400 ;
+    line-height: normal ;
+    text-align: left;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    margin:10px 0;
+    border:none;
+}
+
+.button-nav:hover {
+    background-color: #012a4d; /* Couleur de fond lors du survol */
+    cursor: pointer;
+}
+
+.selected-button{
+    background-color: #012a4d;
 }

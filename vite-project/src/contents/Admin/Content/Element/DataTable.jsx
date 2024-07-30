@@ -1,29 +1,33 @@
 import React from 'react';
 
 const DataTable = ({ title, headers, data, handleRemove, handleRowClick, addButtonLabel, handleAdd }) => (
-    <div className='table'>
-        <div className='legend'>
-            <h1 style={{textAlign:'center', fontFamily: 'CalibriRegular', fontStyle: 'normal'}}>{title}</h1>
-            <div className='legend-div'>
+    <div className="d-flex flex-column mt-5">
+    <h1 style={{ textAlign: 'center', fontFamily: 'CalibriRegular'}}>{title}</h1>
+    <table className="table table-striped mt-0">
+        <thead>
+            <tr>
                 {headers.map((header, index) => (
-                    <div style={{flex: 1, margin: 'auto'}} key={index}>{header}</div>
+                    <th key={index} scope="col">{header}</th>
                 ))}
-            </div>
-        </div>
-        <div className="render-table">
-            {data.map((item) => (
-                <div className="tr-style" key={item.id} onClick={() => handleRowClick && handleRowClick(item.id)}>
+            </tr>
+        </thead>
+        <tbody>
+            {Array.isArray(data) && data.map((item) => (
+                <tr scope="row" onClick={() => handleRowClick && handleRowClick(item.id)}>
                     {Object.values(item).map((value, index) => (
-                        <div className="cell-style" key={index}>{value}</div>
+                        <th key={index} style={{ fontFamily: 'CalibriRegular'}}>{value}</th>
                     ))}
-                    <div className="cell-style">
-                        <button className="remove-button" onClick={(e) => {e.stopPropagation(); handleRemove(item.id);}}>Retirer</button>
-                    </div>
-                </div>
+                    <th>
+                        <button className="btn btn-danger" onClick={() => handleRemove(item.id)}>Retirer</button>
+                    </th>
+                </tr>
             ))}
-        </div>
-        <button className='add-button' onClick={handleAdd}>{addButtonLabel}</button>
+        </tbody>
+    </table>
+    <div className="mt-auto d-flex justify-content-center">
+        <button className='btn btn-primary' onClick={handleAdd}>{addButtonLabel}</button>
     </div>
+</div>
 );
 
 export default DataTable;

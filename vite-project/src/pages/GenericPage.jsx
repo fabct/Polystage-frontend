@@ -7,8 +7,11 @@ import Jury from "../contents/Jury/Jury";
 import Tuteur from "../contents/Tuteur/Tuteur";
 import Loading from "../contents/Loading";
 import {role} from "../service/app-local";
+import {ErrorAlert} from "../contents/CommunContent/Alert";
 
 const GenericPage = (props) => {
+    const [error, setError] = useState(false);
+    const [messageError, setMessageError] = useState('');
     const [userInfo, setUserInfo] = useState(null);
     const [isJury, setIsJury] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -23,6 +26,9 @@ const GenericPage = (props) => {
             else{
                 setLoading(false);
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     }, []);
 
@@ -35,6 +41,9 @@ const GenericPage = (props) => {
             setIsJury(response);
             setLoading(false);
         }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     }
 
@@ -59,7 +68,12 @@ const GenericPage = (props) => {
     }
 
     if (loading) {
-        return <Loading />;
+        return (
+            <>
+            {error === true ? <ErrorAlert message={messageError} />: null}
+            <Loading />
+            </>
+        );
     }
     else{
     return (
@@ -71,6 +85,7 @@ const GenericPage = (props) => {
                         <h1 className="user-welcome-title"> Bonjour {userInfo?.first_name} {userInfo?.last_name}</h1>
                     </div>
                 </div>
+                {error === true ? <ErrorAlert message={messageError} />: null}
                 {renderRoleContent()}
             </div>
         </div>

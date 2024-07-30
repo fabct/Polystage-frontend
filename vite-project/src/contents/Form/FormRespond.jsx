@@ -5,8 +5,11 @@ import { useNavigate,useLocation } from 'react-router-dom';
 import HeaderContent from '../Header/HeaderContent';
 import HeadForm from './Element/HeadForm';
 import Loading from '../Loading';
+import {ErrorAlert} from "../CommunContent/Alert";
 
 const FormRespond = (props) => {
+    const [error, setError] = useState(false);
+    const [messageError, setMessageError] = useState('');
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [notModify, setNotModify] = useState(false);
@@ -64,6 +67,9 @@ const FormRespond = (props) => {
                 console.log("form data:", newForm);
                 setForm(newForm);
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     };
 
@@ -96,6 +102,9 @@ const FormRespond = (props) => {
                 console.log("Data validate", data);
                 navigate(`/${objectId.role_str}`);
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     };
 
@@ -108,6 +117,9 @@ const FormRespond = (props) => {
                 console.log("Data Saved", data);
                 navigate(`/${objectId.role_str}`);
             }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     };
 
@@ -142,7 +154,12 @@ const FormRespond = (props) => {
     };
 
     if (loading) {
-        return <Loading />; // replace with your actual loading component or message
+        return(
+            <>
+                {error === true ? <ErrorAlert message={messageError} />: null}
+                <Loading />
+            </>
+        );
     } else {
         return (
             <div style={{ gridTemplateArea: `'header header header' 'body body body'`, background: '#E6E6E6', height: '100%' }}>
@@ -152,6 +169,7 @@ const FormRespond = (props) => {
                     data={userInfo}
                 />
                 <div style={{ gridArea: 'body', gridTemplateRows: 'auto auto', height: '100%', display: 'grid' }}>
+                    {error === true ? <ErrorAlert message={messageError} />: null}
                     <HeadForm
                         hasEditAccess={false}
                         title={form.titre}

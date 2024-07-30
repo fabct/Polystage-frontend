@@ -79,8 +79,9 @@ const AdminPage = (props) => {
     else{
         return (
             <div className='general-content' style={{height:'100%'}}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr 1fr', height: '100%', width:'100%', position:'absolute'}}>
-                    <div style={{ gridRow: '1 / span 2', gridColumn: '1', backgroundColor: '#003865',height:'100%', width:'fit-content'}}>
+                <div className="container-fluid" style={{height: '100%', width:'100%', position:'absolute'}}>
+                <div className="row h-100">
+                    <div className="col-auto px-0 d-flex flex-column align-items-left" style={{backgroundColor: '#003865', width:'fit-content'}}>
                         <div>
                             <div className="user-info-admin mx-3">
                                 <div className="mb-2">
@@ -96,16 +97,18 @@ const AdminPage = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div style={{gridRow: '1', gridColumn:'2/ span 2'}}>
+                    <div className="col  px-0">
                         <HeaderContent 
                         gridArea={'header'}
                         handleLogOutClick ={props.handleLogOutClick}
                         profileInfo={false}
                         />
+                        <div className="col-12" style={{background: '#E6E6E6' }}>
+                         {renderContent()}
+                        </div>
                     </div>
-                    <div style={{ gridRow: '2', gridColumn: '2 / span 2', background: '#E6E6E6' }}>
-                        {renderContent()}
-                    </div>
+                    
+                </div>
                 </div>
             </div>
         );

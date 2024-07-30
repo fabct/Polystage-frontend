@@ -43,7 +43,9 @@ const AdminFunction = {
                 console.log(data);
                 return data// This line needs to be corrected
             }
-        })
+        }).catch((error) => {
+            console.error(error);
+        });
     },
 
     handleUpdatePromo : (props) => {
@@ -56,7 +58,9 @@ const AdminFunction = {
                 console.log(data);
                 return data// This line needs to be corrected
             }
-        })
+        }).catch((error) => {         
+            console.error(error);
+        });
     }
 }
 

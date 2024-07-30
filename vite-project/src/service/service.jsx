@@ -31,6 +31,11 @@ const post = async (endpoint, data) => {
     body: JSON.stringify(data)
   });
 
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
   return response.json();
 };
 
@@ -43,6 +48,10 @@ const get = async (endpoint) => {
       'Content-Type': 'application/json'
     }
   });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
   return response.json();
 };
 
@@ -55,7 +64,10 @@ const delet = async (endpoint) => {
       'Content-Type': 'application/json'
     }
   });
-
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
   return response.json();
 };
 
@@ -69,7 +81,10 @@ const put = async (endpoint, data) => {
     },
     body: JSON.stringify(data)
   });
-
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
   return response.json();
 };
 

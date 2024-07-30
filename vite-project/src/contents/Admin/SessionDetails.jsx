@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { get, post } from '../../service/service';
 import DataTable from './Content/Element/DataTable';
 import AddInSession from './Content/Element/AddInSession';
+import {ErrorAlert} from '../CommunContent/Alert';
 import Loading from '../Loading';
 
 const SessionDetails = (props) => {
+    const [error, setError] = useState(false);
+    const [messageError, setMessageError] = useState('');
     const [session, setSession] = useState(null);
     const [addStudent, setAddStudent] = useState(false);
     const [addJury, setAddJury] = useState(false);
@@ -13,19 +16,19 @@ const SessionDetails = (props) => {
 
     useEffect(() => {
         getInfoSession();
-        
     }, []);
 
     const getInfoSession = () => {
         return get(`getInfoSession/${props.editingId}/`).then((response) => {
             setSession(response);
             console.log(response);
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
         });
     };
 
-    const handleRemove = (id) => {
-        window.confirm('Voulez-vous vraiment retirer cet item ?');
-    };
+    
 
     const handleBackClick = () => {
         props.setEditing(false);
@@ -44,23 +47,67 @@ const SessionDetails = (props) => {
         })
     };
 
-    const handleJuryAddClick = () => {
+    const handleRemoveJury = (id) => {
+        return delet(`manageJuryMembreJury/`, {id_jury:props.editingId,id_membreJury: id}).then(data => {
+            if(data.error){
+                setError(true);
+                setMessageError(data.error);
+            }
+            else{
+                console.log(data);
+                setAdd(false);
+                setError(false);
+                setMessageError('');
+                getInfoData();
+            }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
+    };
+
+    const handleJuryAddClick = (id_membreJury) => {
+        return post(`manageJuryMembreJury/`, {id_jury:props.editingId,id_membreJury: id_membreJury}).then(data => {
+            if(data.error){
+                setError(true);
+                setMessageError(data.error);
+            }
+            else{
+                console.log(data);
+                setAdd(false);
+                setError(false);
+                setMessageError('');
+                getInfoData();
+            }
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
     }
 
-    const handleStudentAddClick = () => {
+    const handleRemoveStudent = (id) => {
+
+    }
+
+    const handleStudentAddClick = (id) => {
+
     }
 
     const handleAddJury = () => {
         setAddJury(true);
         return get(`juryList/`).then(data => {
             if(data.error){
-                console.error(data.error);
+                setError(true);
+                setMessageError(error.message);
             }
             else{
                 console.log(data);
                 setAvailableData(data);
             }
-        })
+        }).catch((error) => {
+            setError(true);
+            setMessageError(error.message);
+        });
     };
 
     const handleSelectChange = (e) => {
@@ -75,7 +122,10 @@ const SessionDetails = (props) => {
 
     if (!session) {
         return (
+            <>
+            {error === true ? <ErrorAlert message={messageError} />: null}
             <Loading />
+            </>
         );
     }
      
@@ -126,7 +176,7 @@ const SessionDetails = (props) => {
                     first_name,
                     email
                 }))}
-                handleRemove={handleRemove}
+                handleRemove={handleRemoveStudent}
                 handleRowClick={null}
                 addButtonLabel="Ajouter un étudiant"
                 handleAdd={handleAddStudent}
@@ -140,7 +190,7 @@ const SessionDetails = (props) => {
                     num_jury,
                     salle
                 }))}
-                handleRemove={handleRemove}
+                handleRemove={handleRemoveJury}
                 handleRowClick={null}
                 addButtonLabel="Ajouter un jury"
                 handleAdd={handleAddJury}
@@ -152,6 +202,7 @@ const SessionDetails = (props) => {
 
     return (
         <div className='session-content'>
+            {error === true ? <ErrorAlert message={messageError} />: null}
             {renderContent()}
             <div className='back-div'>
                 <button className='back-button' onClick={handleBackClick}>Retour</button>
