@@ -6,8 +6,6 @@ import {ErrorAlert} from '../CommunContent/Alert';
 import Loading from '../Loading';
 
 const SessionDetails = (props) => {
-    const [error, setError] = useState(false);
-    const [messageError, setMessageError] = useState('');
     const [session, setSession] = useState(null);
     const [addStudent, setAddStudent] = useState(false);
     const [addJury, setAddJury] = useState(false);
@@ -23,8 +21,8 @@ const SessionDetails = (props) => {
             setSession(response);
             console.log(response);
         }).catch((error) => {
-            setError(true);
-            setMessageError(error.message);
+            props.setError(true);
+            props.setMessageError(error.message);
         });
     };
 
@@ -50,38 +48,38 @@ const SessionDetails = (props) => {
     const handleRemoveJury = (id) => {
         return delet(`manageJuryMembreJury/`, {id_jury:props.editingId,id_membreJury: id}).then(data => {
             if(data.error){
-                setError(true);
-                setMessageError(data.error);
+                props.setError(true);
+                props.setMessageError(data.error);
             }
             else{
                 console.log(data);
                 setAdd(false);
-                setError(false);
-                setMessageError('');
+                props.setError(false);
+                props.setMessageError('');
                 getInfoData();
             }
         }).catch((error) => {
-            setError(true);
-            setMessageError(error.message);
+            props.setError(true);
+            props.setMessageError(error.message);
         });
     };
 
     const handleJuryAddClick = (id_membreJury) => {
         return post(`manageJuryMembreJury/`, {id_jury:props.editingId,id_membreJury: id_membreJury}).then(data => {
             if(data.error){
-                setError(true);
-                setMessageError(data.error);
+                props.setError(true);
+                props.setMessageError(data.error);
             }
             else{
                 console.log(data);
                 setAdd(false);
-                setError(false);
-                setMessageError('');
+                props.setError(false);
+                props.setMessageError('');
                 getInfoData();
             }
         }).catch((error) => {
-            setError(true);
-            setMessageError(error.message);
+            props.setError(true);
+            props.setMessageError(error.message);
         });
     }
 
@@ -97,16 +95,16 @@ const SessionDetails = (props) => {
         setAddJury(true);
         return get(`juryList/`).then(data => {
             if(data.error){
-                setError(true);
-                setMessageError(error.message);
+                props.setError(true);
+                props.setMessageError(error.message);
             }
             else{
                 console.log(data);
                 setAvailableData(data);
             }
         }).catch((error) => {
-            setError(true);
-            setMessageError(error.message);
+            props.setError(true);
+            props.setMessageError(error.message);
         });
     };
 
@@ -123,8 +121,7 @@ const SessionDetails = (props) => {
     if (!session) {
         return (
             <>
-            {error === true ? <ErrorAlert message={messageError} />: null}
-            <Loading />
+                <Loading />
             </>
         );
     }
@@ -202,7 +199,6 @@ const SessionDetails = (props) => {
 
     return (
         <div className='session-content'>
-            {error === true ? <ErrorAlert message={messageError} />: null}
             {renderContent()}
             <div className='back-div'>
                 <button className='back-button' onClick={handleBackClick}>Retour</button>

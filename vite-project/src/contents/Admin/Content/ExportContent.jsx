@@ -1,6 +1,7 @@
 import CSVLogo from '../../../assets/CSV.svg';
 import XLSLogo from '../../../assets/XLS.svg';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import ContentTitle from './Element/Title';
 
 const ExportContent = (props) => {
 
@@ -17,6 +18,13 @@ const ExportContent = (props) => {
 
 
     return(
+        <div style={{background:'white'}}>
+        <ContentTitle 
+                    researchTitle={'Exporter des données'}
+                    inputs = {[]}
+                    isAdding={false}
+                    isSearching={false}
+                />
         <div style={{gridArea:'result', margin:'10px 20px', height:'auto',background:'white',borderRadius:'20px',overflow:'auto'}}>
             <div style={props.style}>
                 <h1 style={{textAlign:'center' ,margin:'25px 47px', color: 'black', fontFamily: 'CalibriRegular', fontSize: '35px', fontWeight: '400'}}>{props.title}</h1>
@@ -86,6 +94,7 @@ const ExportContent = (props) => {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 };

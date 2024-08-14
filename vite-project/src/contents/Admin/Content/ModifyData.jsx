@@ -6,8 +6,6 @@ import Loading from '../../Loading';
 import { ErrorAlert } from '../../CommunContent/Alert';
 
 const ModifyData = (props) => {
-    const [error, setError] = useState(false);
-    const [messageError, setMessageError] = useState('');
     const [dataDetails, setDataDetails] = useState(null);
     const [selectedData, setSelectedData] = useState('');
     const [availableData, setAvailableData] = useState([]);
@@ -24,14 +22,16 @@ const ModifyData = (props) => {
             setDataDetails(response);
             console.log(response);
         }).catch((error) => {
-            setError(true);
-            setMessageError(error.message);
+            props.setError(true);
+            props.setMessageError(error.message);
         });
     };
 
     const handleBackClick = () => {
         window.confirm('Êtes vous vraiment sûr de revenir en arrière vos changement ne seront pas sauvegarder ?');
         props.setEditing(false);
+        props.setError(false);
+        props.setMessageError('');
     };
 
     const handleChange = (e) => {
@@ -46,19 +46,19 @@ const ModifyData = (props) => {
         console.log(id);
         return delet(`manageJuryMembreJury/`, {id_jury:props.editingId,id_membreJury: id}).then(data => {
             if(data.error){
-                setError(true);
-                setMessageError(data.error);
+                props.setError(true);
+                props.setMessageError(data.error);
             }
             else{
                 console.log(data);
                 setAdd(false);
-                setError(false);
-                setMessageError('');
+                props.setError(false);
+                props.setMessageError('');
                 getInfoData();
             }
         }).catch((error) => {
-            setError(true);
-            setMessageError(error.message);
+            props.setError(true);
+            props.setMessageError(error.message);
         });
     };
 
@@ -81,8 +81,8 @@ const ModifyData = (props) => {
             window.alert(response.success);
             props.setEditing(false);
         }).catch((error) => {
-            setError(true);
-            setMessageError(error.message);
+            props.setError(true);
+            props.setMessageError(error.message);
         });
     };
 
@@ -92,12 +92,14 @@ const ModifyData = (props) => {
             window.alert(response.success);
             props.setEditing(false);
         }).catch((error) => {
-            setError(true);
-            setMessageError(error.message);
+            props.setError(true);
+            props.etMessageError(error.message);
         });
     };
 
     const handleCancelClick = () => {
+        props.setError(false);
+        props.setMessageError('');
         setAdd(false);
     }
 
@@ -108,19 +110,19 @@ const ModifyData = (props) => {
     const handleMemberAddClick = (id_membreJury) => {
         return post(`manageJuryMembreJury/`, {id_jury:props.editingId,id_membreJury: id_membreJury}).then(data => {
             if(data.error){
-                setError(true);
-                setMessageError(data.error);
+                props.setError(true);
+                props.setMessageError(data.error);
             }
             else{
                 console.log(data);
                 setAdd(false);
-                setError(false);
-                setMessageError('');
+                props.setError(false);
+                props.setMessageError('');
                 getInfoData();
             }
         }).catch((error) => {
-            setError(true);
-            setMessageError(error.message);
+            props.setError(true);
+            props.setMessageError(error.message);
         });
     }
 
@@ -221,7 +223,6 @@ const ModifyData = (props) => {
 
     return (
         <>
-        {error === true ? <ErrorAlert message={messageError} />: null}
         <div className='modify-data-content'>
             
             {renderContent()}

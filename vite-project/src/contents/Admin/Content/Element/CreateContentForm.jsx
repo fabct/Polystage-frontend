@@ -20,7 +20,12 @@ const CreateContentForm = (props) => {
     };
 
     const handleMemberAddClick = (id) => {
-        setSelectedData('');
+        if(add === 'Etudiant'){
+            props.handleEtudiant(id);
+        }
+        if(add === 'Jury'){
+            props.handleJury(id);
+        }
         setAdd(false);
     };
 
@@ -37,6 +42,17 @@ const CreateContentForm = (props) => {
         add ? setAdd(false) : setAdd(true);
         if(key === 'Etudiant'){
             return post(`userSearch/`, {search:'',profile:'ETU'}).then(data => {
+                if(data.error){
+                    console.error(data.error);
+                }
+                else{
+                    console.log(data);
+                    setAvailableData(data);
+                }
+            })
+        }
+        if(key === 'Membre Jury'){
+            return post(`userSearch/`, {search:'',profile:''}).then(data => {
                 if(data.error){
                     console.error(data.error);
                 }
@@ -63,6 +79,40 @@ const CreateContentForm = (props) => {
         }
 
         if (type === 'object') {
+            if(key === 'Etudiant'){
+                return (
+                    <DataTable 
+                        title={key} 
+                        headers={['Id', 'Email', 'Nom', 'Prénom', 'Actions']}
+                        data={value.map(({ id, email, last_name, first_name }) => ({
+                            id,
+                            email,
+                            last_name,
+                            first_name,
+                        }))}
+                        handleRemove={props.handleRemove}
+                        handleRowClick={null}
+                        addButtonLabel={`Ajouter ${key}`}
+                        handleAdd={()=> handleAdd(key)}
+                    />
+                );
+            }
+            if(key === 'Jury'){
+                return (
+                <DataTable 
+                    title={key} 
+                    headers={['Numéro', 'Actions']}
+                    data={value.map(({ num_jury}) => ({
+                        num_jury,
+                    }))}
+                    handleRemove={props.handleRemove}
+                    handleRowClick={null}
+                    addButtonLabel={`Ajouter ${key}`}
+                    handleAdd={()=> handleAdd(key)}
+                />
+                );
+            }
+
             return (
                 <DataTable 
                     title={key} 
@@ -144,8 +194,7 @@ const CreateContentForm = (props) => {
                         first_name,
                         last_name,
                         email
-                }))}
-                handleSelectChange={handleSelectChange}
+                })) }
                 handleStudentAddClick={handleMemberAddClick}
                 handleCancelClick={handleCancelClick}
                 />

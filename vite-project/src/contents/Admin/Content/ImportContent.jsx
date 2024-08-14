@@ -5,6 +5,7 @@ import soutenanceIcon from '../../../assets/soutenance.svg';
 import juryIcon from '../../../assets/group.svg';
 import sessionIcon from "../../../assets/promo.svg";
 import React, { useState, useEffect } from 'react';
+import ContentTitle from './Element/Title';
 
 const ImportContent = (props) => {
 
@@ -31,6 +32,13 @@ const ImportContent = (props) => {
     };
 
     return(
+        <div style={{background:'white'}}>
+        <ContentTitle 
+                    researchTitle={'Importer des données'}
+                    inputs = {[]}
+                    isAdding={false}
+                    isSearching={false}
+                />
         <div style={{gridArea:'result', height:'auto',background:'white',borderRadius:'5px',overflow:'auto'}}>
 
             <div>
@@ -123,6 +131,7 @@ const ImportContent = (props) => {
                     </>
                 )}
             </div>
+        </div>
         </div>
     );
 };

@@ -5,6 +5,7 @@ const AddInSession = (props) => {
     const [displayValue, setDisplayValue] = useState(''); // Nouvel état pour l'affichage
 
     const handleInputChange = (event) => {
+        setDisplayValue(event.target.value);
         const selectedValue = JSON.parse(event.target.value);
         setInputValue(selectedValue.id);
         setDisplayValue(selectedValue.fullName);

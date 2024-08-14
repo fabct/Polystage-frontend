@@ -76,10 +76,11 @@ function App() {
     navigate('/'); // Use navigate here
   };
 
+  // 
   return (
       <Routes>
         <Route path="/" element={<LoginPage handleLogOutClick={handleLogOutClick}/>} />
-        <Route path="/admin" element={<PrivateRoute role="ADM" handleLogOutClick={handleLogOutClick}><AdminPage  handleLogOutClick={handleLogOutClick} setObjectId={setObjectId} setCreate={setCreate}/></PrivateRoute>}/>
+        <Route path="/admin/*" element={<PrivateRoute role="ADM" handleLogOutClick={handleLogOutClick}><AdminPage  handleLogOutClick={handleLogOutClick} setObjectId={setObjectId} setCreate={setCreate}/></PrivateRoute>}/>
         <Route path="/admin/form/:formId" element={<PrivateRoute role="ADM" handleLogOutClick={handleLogOutClick}><FormCreator id={objectId} handleLogOutClick={handleLogOutClick} create={create}/></PrivateRoute>}/>
         <Route path="/:roleId" element={<PrivateRoute role={role} handleLogOutClick={handleLogOutClick}><GenericPage handleLogOutClick={handleLogOutClick} setObjectId={setObjectId}/></PrivateRoute>}/>
         <Route path="/:roleId/form/:formId" element={<PrivateRoute role={role} handleLogOutClick={handleLogOutClick}><FormRespond objectId={objectId} handleLogOutClick={handleLogOutClick}/></PrivateRoute>}/>
